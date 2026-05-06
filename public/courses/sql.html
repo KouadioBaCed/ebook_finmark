@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maîtriser SQL — Cours Complet Interactif · FinMark TEC</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1DBF73;--green2:#19A463;--blue:#2d6be4;--red:#ff6b6b;--orange:#f7a072;
+  --yellow:#f7b731;--purple:#9b59b6;
+  --bg:#f5f7f9;--card:#fff;--border:#e2e5ea;
+  --text1:#1a1f2e;--text2:#6b7280;--text3:#b8bdc7;
+  --sidebar:#141c2b;--sidebar2:#1a2236;
+  --sidebar-w:268px;--radius:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow-x:hidden;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text1);font-size:15px;line-height:1.7}
+
+/* SIDEBAR */
+#sidebar{width:var(--sidebar-w);background:var(--sidebar);position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;display:flex;flex-direction:column;transition:transform .3s;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
+.sb-header{padding:22px 20px 16px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sb-logo{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px;font-family:'JetBrains Mono',monospace}
+.sb-logo span{color:var(--green)}
+.sb-sub{font-size:9px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:2px;margin-top:3px}
+.sb-nav{padding:8px 0;flex:1}
+.sb-section{padding:14px 20px 4px;font-size:9px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:2px;font-weight:700}
+.sb-link{display:flex;align-items:center;gap:10px;padding:9px 20px;color:rgba(255,255,255,.45);text-decoration:none;font-size:13px;font-weight:500;border-left:3px solid transparent;transition:all .18s;cursor:pointer;user-select:none}
+.sb-link:hover,.sb-link.active{color:#fff;border-left-color:var(--green);background:rgba(29,191,115,.07)}
+.sb-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.2);min-width:20px}
+.sb-link.active .sb-num{color:var(--green)}
+.sb-progress-wrap{padding:14px 20px;border-top:1px solid rgba(255,255,255,.05)}
+.sb-prog-label{font-size:9px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.sb-prog-bar{height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+#sb-fill{height:100%;width:0%;background:var(--green);border-radius:2px;transition:width .4s ease}
+
+/* TOPBAR */
+#topbar{display:none;background:var(--sidebar);padding:12px 16px;align-items:center;gap:12px;position:sticky;top:0;z-index:50;width:100%;box-sizing:border-box;border-bottom:1px solid rgba(255,255,255,.06)}
+#burger{background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:15px}
+#topbar-title{font-size:14px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace}
+
+/* MAIN */
+#main{margin-left:var(--sidebar-w);min-height:100vh;overflow-x:hidden;background:var(--bg);padding:20px}
+.chapter{display:none;padding:32px 40px 64px;max-width:1060px;margin:0 auto;background:transparent;box-sizing:border-box;width:100%}
+.chapter.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.chapter.active>*{animation:fadeUp .4s ease both}
+.chapter.active>*:nth-child(1){animation-delay:.04s}
+.chapter.active>*:nth-child(2){animation-delay:.09s}
+.chapter.active>*:nth-child(3){animation-delay:.14s}
+.chapter.active>*:nth-child(4){animation-delay:.19s}
+
+/* SHARED CHAPTER ELEMENTS */
+.ch-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--green);margin-bottom:10px}
+.ch-title{font-size:clamp(24px,3.5vw,36px);font-weight:800;color:var(--text1);letter-spacing:-.5px;line-height:1.15;margin-bottom:12px}
+.ch-intro{font-size:14px;color:var(--text2);line-height:1.75;margin-bottom:28px;max-width:680px}
+h2.sh{font-size:19px;font-weight:700;color:var(--text1);margin:32px 0 14px;letter-spacing:-.2px;padding-bottom:8px;border-bottom:2px solid var(--border)}
+h3.sh3{font-size:15px;font-weight:700;color:var(--text1);margin:20px 0 10px}
+p.txt{color:var(--text2);line-height:1.75;margin-bottom:12px;font-size:14px}
+
+/* SQL CODE BLOCKS */
+.sql-block{background:#0d1117;border-radius:10px;overflow:hidden;margin:14px 0;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.7;border:1px solid rgba(255,255,255,.06)}
+.sql-block-hd{background:rgba(255,255,255,.04);padding:7px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05)}
+.sql-block-lang{font-size:9px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1.5px}
+.sql-block pre{padding:16px 20px;overflow-x:auto;color:#cbd5e1;line-height:1.8}
+.kw{color:#7dd3fc}.fn{color:#c084fc}.str{color:#86efac}.num{color:#fbbf24}.cmt{color:#4b5563;font-style:italic}.tbl{color:#f9a8d4}.col{color:#e2e8f0}.op{color:#f472b6}.alias{color:#fdba74}
+
+/* CONCEPT GRID */
+.concept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin:16px 0}
+.concept-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;transition:all .18s}
+.concept-card:hover{border-color:var(--green);box-shadow:0 4px 16px rgba(29,191,115,.09);transform:translateY(-1px)}
+.concept-icon{font-size:26px;margin-bottom:8px}
+.concept-title{font-size:13px;font-weight:700;color:var(--text1);margin-bottom:3px}
+.concept-desc{font-size:12px;color:var(--text2);line-height:1.55}
+
+/* INFO BOXES */
+.info-box{border-radius:8px;padding:14px 18px;margin:14px 0;border-left:3px solid}
+.info-tip{background:rgba(29,191,115,.05);border-color:var(--green)}
+.info-warn{background:rgba(247,183,49,.05);border-color:var(--yellow)}
+.info-err{background:rgba(255,107,107,.05);border-color:var(--red)}
+.info-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px}
+.info-tip .info-lbl{color:var(--green)}.info-warn .info-lbl{color:var(--yellow)}.info-err .info-lbl{color:var(--red)}
+.info-box p{margin:0;font-size:13px;color:var(--text2)}
+
+/* TABLE DEMO */
+.table-demo{overflow-x:auto;margin:14px 0;border-radius:10px;border:1px solid var(--border)}
+.sql-table{width:100%;border-collapse:collapse;font-size:12.5px;font-family:'JetBrains Mono',monospace}
+.sql-table th{background:#1a1f2e;color:var(--green);padding:9px 14px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+.sql-table td{padding:8px 14px;border-top:1px solid var(--border);color:var(--text1);background:var(--card)}
+.sql-table tr:nth-child(even) td{background:#fafbfc}
+.sql-table .hi td{background:rgba(29,191,115,.05);font-weight:600}
+.null-val{color:var(--text3);font-style:italic}
+
+/* JOIN DIAGRAMS */
+.join-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.join-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .18s}
+.join-card:hover{border-color:var(--green);box-shadow:0 3px 12px rgba(29,191,115,.1)}
+.join-svg{display:block;margin:0 auto 8px}
+.join-name{font-size:12px;font-weight:700;color:var(--text1);margin-bottom:3px}
+.join-desc{font-size:10px;color:var(--text2);line-height:1.4}
+
+/* EXERCISES */
+.ex-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.ex-hd{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ex-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:16px;font-family:'JetBrains Mono',monospace}
+.ex-badge-num{background:rgba(29,191,115,.1);color:var(--green)}
+.ex-badge-type{background:#f0f4ff;color:var(--blue)}
+.ex-card h3{font-size:15px;font-weight:700;color:var(--text1);margin-bottom:6px}
+.ex-card p{font-size:13px;color:var(--text2);margin-bottom:12px}
+.sql-editor{background:#0d1117;border-radius:8px;overflow:hidden;margin:10px 0;border:1px solid rgba(255,255,255,.06)}
+.sql-editor-hd{background:rgba(255,255,255,.04);padding:7px 14px;font-size:9px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.05)}
+.sql-editor textarea{width:100%;background:transparent;border:none;outline:none;color:#cbd5e1;font-family:'JetBrains Mono',monospace;font-size:12.5px;padding:12px 16px;resize:vertical;min-height:72px;line-height:1.7}
+.sql-run-btn{background:var(--green);color:#fff;border:none;padding:8px 18px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;margin-top:8px;transition:background .18s}
+.sql-run-btn:hover{background:var(--green2)}
+.sql-result{background:#060d16;border-radius:8px;margin-top:10px;overflow:hidden;border:1px solid rgba(255,255,255,.05);display:none}
+.sql-result-hd{padding:7px 14px;font-size:10px;font-family:'JetBrains Mono',monospace;border-bottom:1px solid rgba(255,255,255,.05)}
+.sql-result-body{padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#94a3b8;overflow-x:auto;white-space:pre}
+.sql-result.ok .sql-result-hd{color:var(--green)}.sql-result.err .sql-result-hd{color:var(--red)}
+.hint-toggle{font-size:11px;color:var(--text3);cursor:pointer;margin-top:6px;display:inline-block}
+.hint-toggle:hover{color:var(--green)}
+.hint-body{display:none;background:rgba(29,191,115,.04);border:1px solid rgba(29,191,115,.12);border-radius:7px;padding:10px 14px;font-size:12.5px;color:var(--text2);margin-top:6px;font-family:'JetBrains Mono',monospace}
+
+/* QCM */
+.qcm-prog{height:4px;background:var(--border);border-radius:2px;margin-bottom:14px;overflow:hidden}
+.qcm-prog-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:2px;transition:width .4s}
+.qcm-ctr{font-size:11px;color:var(--text2);text-align:center;margin-bottom:18px;font-family:'JetBrains Mono',monospace}
+.qcm-q-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.qcm-q-tag{font-size:9px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:7px;font-family:'JetBrains Mono',monospace}
+.qcm-q-text{font-size:14px;font-weight:700;color:var(--text1);margin-bottom:14px;line-height:1.55}
+.qcm-opts{display:flex;flex-direction:column;gap:7px}
+.qcm-opt{background:#f7f8fa;border:1px solid var(--border);color:var(--text1);padding:11px 16px;border-radius:8px;cursor:pointer;font-size:13px;text-align:left;transition:all .18s;display:flex;gap:10px;align-items:flex-start;font-family:'Plus Jakarta Sans',sans-serif}
+.qcm-opt:hover:not(:disabled){border-color:var(--green);background:#f8fffe;color:var(--text1)}
+.qcm-opt.selected{border-color:var(--green);background:rgba(29,191,115,.05)}
+.qcm-opt.correct{border-color:var(--green);background:rgba(29,191,115,.07);font-weight:600}
+.qcm-opt.wrong{border-color:var(--red);background:rgba(255,107,107,.05)}
+.qcm-opt-ltr{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px;color:var(--text3);min-width:16px;margin-top:2px}
+.qcm-opt.correct .qcm-opt-ltr{color:var(--green)}.qcm-opt.wrong .qcm-opt-ltr{color:var(--red)}
+.qcm-exp{margin-top:10px;padding:10px 14px;background:#f8fffe;border-left:2px solid var(--green);border-radius:4px;font-size:12.5px;color:var(--text2);display:none}
+.qcm-exp.show{display:block}
+.qcm-nav{display:flex;justify-content:space-between;margin-top:14px;gap:8px}
+
+/* RESULT & CERTIFICATE */
+.result-wrap{text-align:center;padding:36px 16px}
+.result-score-big{font-size:72px;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--green);line-height:1}
+.result-grade{font-size:20px;font-weight:700;color:var(--text1);margin:10px 0 5px}
+.result-detail{font-size:13px;color:var(--text2);max-width:400px;margin:0 auto 22px}
+.cert{background:var(--card);border:3px solid var(--green);border-radius:16px;padding:36px 40px;text-align:center;max-width:660px;margin:20px auto;position:relative;box-shadow:0 4px 24px rgba(29,191,115,.08)}
+.cert::before{content:'';position:absolute;inset:7px;border:1px solid rgba(29,191,115,.18);border-radius:12px;pointer-events:none}
+.cert-logo{font-size:15px;font-weight:800;color:var(--green);font-family:'JetBrains Mono',monospace}
+.cert-type{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--text2);margin-top:2px;margin-bottom:24px}
+.cert-presents{font-size:12px;color:var(--text2);margin-bottom:5px}
+.cert-name{font-size:30px;font-weight:800;color:var(--text1);font-style:italic;margin-bottom:7px;letter-spacing:-.3px}
+.cert-course-name{font-size:17px;font-weight:700;color:var(--green);margin-bottom:5px}
+.cert-sub{font-size:11px;color:var(--text2);margin-bottom:6px}
+.cert-score-txt{font-size:12px;color:var(--text1);font-weight:600;margin-bottom:26px}
+.cert-footer{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.cert-sig-block{flex:1;text-align:center}
+.cert-seal-block{font-size:40px}
+.cert-line{width:90px;height:2px;background:var(--border);margin:0 auto 5px}
+.cert-sig-name{font-size:11px;font-weight:700;color:var(--text1)}
+.cert-sig-role{font-size:9px;color:var(--text2)}
+
+/* NAV BUTTONS */
+.nav-btns{display:flex;gap:10px;margin-top:36px;padding-top:20px;border-top:1px solid var(--border)}
+.btn{padding:9px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--text2);font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s}
+.btn:hover:not(:disabled){border-color:var(--green);color:var(--green)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:var(--green);color:#fff;border-color:var(--green)}
+.btn-primary:hover{background:var(--green2);color:#fff;border-color:var(--green2)}
+
+/* WINDOW FUNCTIONS VISUAL */
+.wf-table-wrap{overflow-x:auto;margin:14px 0}
+.wf-table{width:100%;border-collapse:collapse;font-size:12px;font-family:'JetBrains Mono',monospace}
+.wf-table th{background:#1a1f2e;color:var(--green);padding:8px 12px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.5px}
+.wf-table td{padding:7px 12px;border-top:1px solid var(--border);background:var(--card)}
+.wf-table .partition-a td{background:rgba(29,191,115,.04)}
+.wf-table .partition-b td{background:rgba(45,107,228,.04)}
+.wf-table .wf-col{color:var(--green);font-weight:700}
+.wf-table .wf-col-b{color:var(--blue);font-weight:700}
+
+/* ════════════════════════════════════
+   SALES PAGE (CH0)
+════════════════════════════════════ */
+.sp-hero{background:linear-gradient(135deg,#070f1a 0%,#0c1928 50%,#061018 100%);border-radius:18px;padding:0;margin-bottom:24px;position:relative;overflow:hidden;min-height:440px}
+.sp-hero-inner{display:grid;grid-template-columns:1fr 440px;gap:0;align-items:center;padding:48px 44px;position:relative;z-index:2}
+.sp-hero-left{padding-right:32px}
+.sp-hero-eyebrow{display:flex;align-items:center;gap:8px;font-size:10px;color:rgba(255,255,255,.4);letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-bottom:16px}
+.sp-badge-dot{width:6px;height:6px;background:var(--green);border-radius:50%;flex-shrink:0;animation:sdot 2s infinite}
+@keyframes sdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.5)}}
+.sp-hero-title{font-size:clamp(22px,3vw,38px);font-weight:800;color:#fff;line-height:1.15;letter-spacing:-.5px;margin-bottom:14px}
+.sp-hero-accent{color:var(--green)}
+.sp-hero-sub{font-size:14px;color:rgba(255,255,255,.58);line-height:1.75;margin-bottom:26px}
+.sp-cta-primary{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border:none;padding:14px 28px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s}
+.sp-cta-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(29,191,115,.3)}
+.sp-cta-group{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:22px}
+.sp-cta-proof{display:flex;align-items:center;gap:8px}
+.sp-avatars{display:flex}
+.sp-av{width:28px;height:28px;border-radius:50%;border:2px solid #0c1928;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;margin-left:-6px}
+.sp-av:first-child{margin-left:0}
+.sp-proof-text{font-size:11px;color:rgba(255,255,255,.5)}
+.sp-hero-pills{display:flex;gap:6px;flex-wrap:wrap}
+.sp-pill{font-size:10px;color:rgba(255,255,255,.55);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);padding:3px 9px;border-radius:16px}
+
+/* DB illustration */
+.sp-db-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;position:relative}
+.sp-db-hd{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.sp-db-dots{display:flex;gap:4px}
+.sp-db-dots span{width:8px;height:8px;border-radius:50%;display:block}
+.sp-db-title-bar{font-size:9px;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace;letter-spacing:.5px}
+.sp-schema{display:flex;gap:8px;margin-bottom:12px;justify-content:space-between;position:relative}
+.sp-schema::after{content:'';position:absolute;top:50%;left:33%;width:34%;height:1px;background:rgba(29,191,115,.3);z-index:0}
+.sp-tbox{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:7px;flex:1;overflow:hidden;position:relative;z-index:1}
+.sp-tbox-hd{background:rgba(29,191,115,.12);padding:5px 9px;font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--green);font-weight:700;display:flex;align-items:center;gap:4px}
+.sp-tbox-row{padding:4px 9px;font-size:8.5px;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.45);border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;justify-content:space-between}
+.sp-tbox-row:last-child{border-bottom:none}
+.sp-pk{color:var(--yellow);font-size:7px;background:rgba(247,183,49,.15);padding:1px 4px;border-radius:3px}
+.sp-fk{color:var(--blue);font-size:7px;background:rgba(45,107,228,.15);padding:1px 4px;border-radius:3px}
+.sp-query-anim{background:#060d16;border-radius:7px;padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;margin-bottom:10px;line-height:1.8;border:1px solid rgba(255,255,255,.04)}
+.sp-query-anim .kw{color:#7dd3fc}.sp-query-anim .tbl{color:#f9a8d4}.sp-query-anim .col{color:#86efac}.sp-query-anim .str{color:#fbbf24}
+.sp-result-mini{background:#060d16;border-radius:7px;overflow:hidden;border:1px solid rgba(255,255,255,.04)}
+.sp-result-hd{padding:5px 10px;font-size:8px;color:var(--green);font-family:'JetBrains Mono',monospace;border-bottom:1px solid rgba(255,255,255,.04);display:flex;justify-content:space-between}
+.sp-result-row{display:flex;font-size:8.5px;font-family:'JetBrains Mono',monospace;border-bottom:1px solid rgba(255,255,255,.03)}
+.sp-result-row:last-child{border-bottom:none}
+.sp-result-cell{padding:3px 9px;color:rgba(255,255,255,.5);flex:1}
+.sp-result-cell.g{color:var(--green)}
+.sp-float-badge{position:absolute;background:rgba(29,191,115,.1);border:1px solid rgba(29,191,115,.22);color:var(--green);font-size:9px;font-weight:700;padding:4px 8px;border-radius:14px;white-space:nowrap;pointer-events:none;font-family:'JetBrains Mono',monospace}
+.sp-f1{top:-10px;right:10px;animation:flt 3s ease-in-out infinite}
+.sp-f2{bottom:-8px;left:10px;animation:flt 3s ease-in-out 1.5s infinite}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* SECTION BLOCKS */
+.sp-section-title{font-size:21px;font-weight:800;color:var(--text1);letter-spacing:-.3px;margin-bottom:16px}
+.sp-pain-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:26px}
+.sp-pain-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+.sp-pain-icon{font-size:26px;margin-bottom:7px}
+.sp-pain-card p{font-size:11.5px;color:var(--text2);line-height:1.5;margin:0}
+.sp-transform{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:24px}
+.sp-t-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.sp-t-bad{color:var(--red)}.sp-t-good{color:var(--green)}
+.sp-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.sp-list li{font-size:12px;color:var(--text1);line-height:1.4}
+.sp-list-bad li::before{content:'✗ ';color:var(--red);font-weight:700}
+.sp-list-good li::before{content:'✓ ';color:var(--green);font-weight:700}
+.sp-t-arrow{font-size:22px;color:var(--green);font-weight:900;flex-shrink:0}
+.sp-stats-row{display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px}
+.sp-stat-box{padding:22px 14px;text-align:center;border-right:1px solid var(--border)}
+.sp-stat-box:last-child{border-right:none}
+.sp-stat-big{font-size:30px;font-weight:800;color:var(--green);font-family:'JetBrains Mono',monospace;line-height:1}
+.sp-stat-name{font-size:12px;font-weight:700;color:var(--text1);margin:5px 0 2px}
+.sp-stat-desc{font-size:10px;color:var(--text2)}
+.sp-learn-grid{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px}
+.sp-learn-item{display:grid;grid-template-columns:50px 1fr;padding:16px 20px;border-bottom:1px solid var(--border);cursor:pointer;background:var(--card);transition:background .15s}
+.sp-learn-item:last-child{border-bottom:none}
+.sp-learn-item:hover{background:#f8fffe}
+.sp-learn-num{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--border);padding-top:2px}
+.sp-learn-title{font-size:13px;font-weight:700;color:var(--text1);margin-bottom:3px}
+.sp-learn-desc{font-size:11.5px;color:var(--text2);line-height:1.5;margin-bottom:3px}
+.sp-learn-link{font-size:10.5px;color:var(--green);font-weight:600}
+.sp-testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.sp-testi-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px}
+.sp-testi-stars{color:var(--yellow);font-size:12px;margin-bottom:8px;letter-spacing:1px}
+.sp-testi-text{font-size:11.5px;color:var(--text1);line-height:1.7;margin-bottom:12px;font-style:italic}
+.sp-testi-author{display:flex;align-items:center;gap:9px}
+.sp-testi-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:12px;flex-shrink:0}
+.sp-testi-name{font-size:12px;font-weight:700;color:var(--text1)}
+.sp-testi-role{font-size:9.5px;color:var(--text2)}
+.sp-author-section{display:grid;grid-template-columns:auto 1fr;gap:22px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:26px;margin-bottom:24px;align-items:start}
+.sp-author-av{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;flex-shrink:0}
+.sp-author-tag{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);font-weight:700;margin-bottom:3px}
+.sp-author-name{font-size:16px;font-weight:800;color:var(--text1);margin-bottom:2px}
+.sp-author-title{font-size:11px;color:var(--text2);margin-bottom:9px}
+.sp-author-bio{font-size:12.5px;color:var(--text1);line-height:1.7;margin-bottom:11px}
+.sp-author-badges{display:flex;flex-wrap:wrap;gap:5px}
+.sp-author-badge{font-size:10px;background:#f0f4ff;color:var(--blue);padding:3px 8px;border-radius:14px;font-weight:600}
+.sp-fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.sp-fw-card{border-radius:10px;padding:18px;border:1px solid var(--border)}
+.sp-fw-yes{background:#f8fffe;border-color:rgba(29,191,115,.18)}
+.sp-fw-no{background:#fff8f8;border-color:rgba(255,107,107,.15)}
+.sp-fw-label{font-size:11px;font-weight:700;margin-bottom:10px}
+.sp-fw-yes .sp-fw-label{color:var(--green)}.sp-fw-no .sp-fw-label{color:var(--red)}
+.sp-fw-card ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.sp-fw-card li{font-size:12px;color:var(--text1);line-height:1.4}
+.sp-fw-yes li::before{content:'✓ ';color:var(--green);font-weight:700}
+.sp-fw-no li::before{content:'• ';color:var(--text2)}
+.sp-final-cta{text-align:center;background:linear-gradient(135deg,#070f1a,#0c1928);border-radius:16px;padding:44px 32px;margin-bottom:4px}
+.sp-final-cta-badge{display:inline-block;background:rgba(29,191,115,.1);color:var(--green);border:1px solid rgba(29,191,115,.22);padding:4px 12px;border-radius:16px;font-size:10px;font-weight:700;margin-bottom:14px}
+.sp-final-cta-title{font-size:clamp(18px,2.5vw,26px);font-weight:800;color:#fff;margin-bottom:10px;letter-spacing:-.3px}
+.sp-final-cta-sub{font-size:13px;color:rgba(255,255,255,.55);margin-bottom:22px;max-width:440px;margin-left:auto;margin-right:auto}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:900px){
+  .sp-hero-inner{grid-template-columns:1fr;padding:28px 20px}
+  .sp-hero-left{padding-right:0;margin-bottom:20px}
+  .sp-db-right{display:none}
+  #sidebar{transform:translateX(-100%)}
+  #sidebar.open{transform:translateX(0)}
+  #main{margin-left:0;padding:0 0 20px}
+  #topbar{display:flex}
+  .chapter{padding:20px 16px 48px}
+}
+@media(max-width:600px){
+  .sp-pain-grid{grid-template-columns:1fr 1fr}
+  .sp-transform{grid-template-columns:1fr;gap:10px}
+  .sp-t-arrow{text-align:center}
+  .sp-stats-row{grid-template-columns:1fr 1fr}
+  .sp-stat-box:nth-child(2){border-right:none}
+  .sp-stat-box:nth-child(3){border-top:1px solid var(--border);border-right:1px solid var(--border)}
+  .sp-stat-box:nth-child(4){border-top:1px solid var(--border)}
+  .sp-testi-grid{grid-template-columns:1fr}
+  .sp-author-section{grid-template-columns:1fr;gap:12px}
+  .sp-fw-grid{grid-template-columns:1fr}
+  .join-grid{grid-template-columns:1fr 1fr}
+  .concept-grid{grid-template-columns:1fr}
+  .nav-btns{flex-direction:column}
+  .btn{width:100%;text-align:center}
+  .cert-footer{flex-direction:column;align-items:center;gap:10px}
+}
+@media(max-width:380px){
+  .sp-pain-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<nav id="sidebar">
+  <div class="sb-header">
+    <div class="sb-logo">SQL<span>Maîtrise</span></div>
+    <div class="sb-sub">Cours Complet · 7 Chapitres</div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-section">Accueil</div>
+    <a class="sb-link active" onclick="showCh(0)"><span class="sb-num">00</span>Présentation</a>
+    <div class="sb-section">Fondamentaux</div>
+    <a class="sb-link" onclick="showCh(1)"><span class="sb-num">01</span>SELECT &amp; Bases</a>
+    <a class="sb-link" onclick="showCh(2)"><span class="sb-num">02</span>Jointures</a>
+    <div class="sb-section">Intermédiaire</div>
+    <a class="sb-link" onclick="showCh(3)"><span class="sb-num">03</span>Agrégations &amp; GROUP BY</a>
+    <a class="sb-link" onclick="showCh(4)"><span class="sb-num">04</span>Sous-requêtes &amp; CTEs</a>
+    <div class="sb-section">Avancé</div>
+    <a class="sb-link" onclick="showCh(5)"><span class="sb-num">05</span>Fonctions Fenêtre</a>
+    <div class="sb-section">Pratique</div>
+    <a class="sb-link" onclick="showCh(6)"><span class="sb-num">06</span>Exercices Pratiques</a>
+    <a class="sb-link" onclick="showCh(7)"><span class="sb-num">07</span>QCM — Certification</a>
+  </div>
+  <div class="sb-progress-wrap">
+    <div class="sb-prog-label">Progression</div>
+    <div class="sb-prog-bar"><div id="sb-fill"></div></div>
+  </div>
+</nav>
+
+<div id="topbar">
+  <button id="burger" onclick="toggleSb()">☰</button>
+  <span id="topbar-title">SQL · Maîtrise</span>
+</div>
+
+<main id="main">
+
+<!-- ══════════════════════════════════════
+     CH0 — SALES PAGE
+══════════════════════════════════════ -->
+<section class="chapter active" id="ch0">
+
+  <div class="sp-hero">
+    <canvas id="hero-bubbles" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.55"></canvas>
+    <div class="sp-hero-inner">
+
+      <div class="sp-hero-left">
+        <div class="sp-hero-eyebrow">
+          <span class="sp-badge-dot"></span>
+          <span>Formation Interactif · SQL & Bases de Données · Niveau Pro</span>
+        </div>
+        <h1 class="sp-hero-title">Maîtrisez SQL<br><span class="sp-hero-accent">de SELECT à OVER PARTITION BY</span></h1>
+        <p class="sp-hero-sub">Le cours interactif qui vous emmène des requêtes basiques jusqu'aux fonctions fenêtre avancées — avec exemples réels, exercices pratiques et QCM certifiant.</p>
+        <div class="sp-cta-group">
+          <button class="sp-cta-primary" onclick="showCh(1)">🚀 Commencer le cours
+            <span style="font-size:10px;opacity:.75;display:block;font-weight:400;margin-top:2px">Accès immédiat · 100% navigateur</span>
+          </button>
+          <div class="sp-cta-proof">
+            <div class="sp-avatars">
+              <div class="sp-av" style="background:var(--green)">A</div>
+              <div class="sp-av" style="background:var(--blue)">K</div>
+              <div class="sp-av" style="background:var(--red)">M</div>
+              <div class="sp-av" style="background:var(--orange)">S</div>
+            </div>
+            <span class="sp-proof-text"><strong style="color:rgba(255,255,255,.8)">180+ analystes</strong> formés</span>
+          </div>
+        </div>
+        <div class="sp-hero-pills">
+          <span class="sp-pill">✅ SQL Server</span>
+          <span class="sp-pill">✅ PostgreSQL</span>
+          <span class="sp-pill">✅ MySQL</span>
+          <span class="sp-pill">✅ Oracle</span>
+          <span class="sp-pill">✅ Power BI / DAX</span>
+        </div>
+      </div>
+
+      <!-- DB illustration -->
+      <div class="sp-db-right">
+        <div class="sp-db-card">
+          <div class="sp-db-hd">
+            <div class="sp-db-dots">
+              <span style="background:#ff6b6b"></span>
+              <span style="background:var(--yellow)"></span>
+              <span style="background:var(--green)"></span>
+            </div>
+            <div class="sp-db-title-bar">🗃 MYDB · Schéma Relationnel</div>
+          </div>
+          <div class="sp-schema">
+            <div class="sp-tbox">
+              <div class="sp-tbox-hd">📋 COMMANDES</div>
+              <div class="sp-tbox-row"><span>commande_id</span><span class="sp-pk">PK</span></div>
+              <div class="sp-tbox-row"><span>client_id</span><span class="sp-fk">FK</span></div>
+              <div class="sp-tbox-row"><span>produit</span></div>
+              <div class="sp-tbox-row"><span>montant</span></div>
+              <div class="sp-tbox-row"><span>statut</span></div>
+            </div>
+            <div class="sp-tbox">
+              <div class="sp-tbox-hd">👤 CLIENTS</div>
+              <div class="sp-tbox-row"><span>client_id</span><span class="sp-pk">PK</span></div>
+              <div class="sp-tbox-row"><span>nom</span></div>
+              <div class="sp-tbox-row"><span>age</span></div>
+              <div class="sp-tbox-row"><span>ville</span></div>
+              <div class="sp-tbox-row"><span>agence</span></div>
+            </div>
+            <div class="sp-tbox">
+              <div class="sp-tbox-hd">💰 TRANSACTIONS</div>
+              <div class="sp-tbox-row"><span>transaction_id</span><span class="sp-pk">PK</span></div>
+              <div class="sp-tbox-row"><span>commande_id</span><span class="sp-fk">FK</span></div>
+              <div class="sp-tbox-row"><span>montant</span></div>
+              <div class="sp-tbox-row"><span>date_sin</span></div>
+              <div class="sp-tbox-row"><span>statut</span></div>
+            </div>
+          </div>
+          <div class="sp-query-anim">
+<span class="kw">SELECT</span> c.nom, <span class="fn">COUNT</span>(p.commande_id) <span class="alias">AS nb_commandes</span>,
+       <span class="fn">SUM</span>(p.montant) <span class="alias">AS total_montants</span>
+<span class="kw">FROM</span> <span class="tbl">CLIENTS</span> c
+<span class="kw">LEFT JOIN</span> <span class="tbl">COMMANDES</span> p <span class="kw">ON</span> c.client_id = p.client_id
+<span class="kw">GROUP BY</span> c.nom
+<span class="kw">ORDER BY</span> total_montants <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">5</span><span id="cursor-blink" style="color:var(--green);animation:cur .8s steps(1) infinite">█</span>
+          </div>
+          <div class="sp-result-mini">
+            <div class="sp-result-hd"><span>▶ 5 lignes retournées</span><span style="color:rgba(255,255,255,.25)">0.012s</span></div>
+            <div class="sp-result-row"><div class="sp-result-cell g">Aminata K.</div><div class="sp-result-cell">3</div><div class="sp-result-cell g">450 000</div></div>
+            <div class="sp-result-row"><div class="sp-result-cell">Kofi M.</div><div class="sp-result-cell">2</div><div class="sp-result-cell">320 000</div></div>
+            <div class="sp-result-row" style="animation:rowhl 2s ease-in-out 1s infinite"><div class="sp-result-cell">Marie D.</div><div class="sp-result-cell">4</div><div class="sp-result-cell">280 000</div></div>
+          </div>
+          @keyframes rowhl{0%,100%{background:transparent}50%{background:rgba(29,191,115,.06)}}
+          <div class="sp-float-badge sp-f1">✅ 0 erreurs</div>
+          <div class="sp-float-badge sp-f2">🔗 3 tables jointes</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PAIN POINTS -->
+  <h2 class="sp-section-title">Ça vous parle ?</h2>
+  <div class="sp-pain-grid">
+    <div class="sp-pain-card"><div class="sp-pain-icon">😵</div><p>Vous écrivez des requêtes qui marchent mais ne savez pas pourquoi</p></div>
+    <div class="sp-pain-card"><div class="sp-pain-icon">🐌</div><p>Vos requêtes mettent 30 secondes alors que collègues font la même en 2s</p></div>
+    <div class="sp-pain-card"><div class="sp-pain-icon">🤯</div><p>Les jointures vous donnent des doublons ou des lignes manquantes</p></div>
+    <div class="sp-pain-card"><div class="sp-pain-icon">😶</div><p>"CTE", "window function", "EXISTS" — ce sont des mots inconnus pour vous</p></div>
+  </div>
+
+  <!-- TRANSFORMATION -->
+  <div class="sp-transform">
+    <div>
+      <div class="sp-t-label sp-t-bad">❌ Avant</div>
+      <ul class="sp-list sp-list-bad">
+        <li>Sous-requêtes imbriquées illisibles</li>
+        <li>GROUP BY sans comprendre HAVING</li>
+        <li>INNER JOIN partout — résultats faux</li>
+        <li>Pas de commentaires, code opaque</li>
+        <li>Données dupliquées inexpliquées</li>
+      </ul>
+    </div>
+    <div class="sp-t-arrow">→</div>
+    <div>
+      <div class="sp-t-label sp-t-good">✅ Après</div>
+      <ul class="sp-list sp-list-good">
+        <li>CTEs claires et réutilisables</li>
+        <li>Agrégations maîtrisées avec ROLLUP</li>
+        <li>JOIN adapté à chaque besoin</li>
+        <li>Requêtes documentées, maintenables</li>
+        <li>RANK(), LAG(), LEAD() — niveau expert</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="sp-stats-row">
+    <div class="sp-stat-box"><div class="sp-stat-big">7</div><div class="sp-stat-name">Chapitres</div><div class="sp-stat-desc">Du SELECT au OVER</div></div>
+    <div class="sp-stat-box"><div class="sp-stat-big">25+</div><div class="sp-stat-name">Requêtes commentées</div><div class="sp-stat-desc">Cas réels finance</div></div>
+    <div class="sp-stat-box"><div class="sp-stat-big">8</div><div class="sp-stat-name">Exercices live</div><div class="sp-stat-desc">Éditeur interactif</div></div>
+    <div class="sp-stat-box"><div class="sp-stat-big">20</div><div class="sp-stat-name">Questions QCM</div><div class="sp-stat-desc">Certificat inclus</div></div>
+  </div>
+
+  <!-- WHAT YOU'LL LEARN -->
+  <h2 class="sp-section-title">Ce que vous allez maîtriser</h2>
+  <div class="sp-learn-grid">
+    <div class="sp-learn-item" onclick="showCh(1)">
+      <div class="sp-learn-num">01</div>
+      <div><div class="sp-learn-title">SELECT, WHERE, ORDER BY, LIMIT</div><div class="sp-learn-desc">Syntaxe de base, filtres avancés, opérateurs LIKE / BETWEEN / IN, DISTINCT, aliases de colonnes et tables.</div><div class="sp-learn-link">Accéder →</div></div>
+    </div>
+    <div class="sp-learn-item" onclick="showCh(2)">
+      <div class="sp-learn-num">02</div>
+      <div><div class="sp-learn-title">Jointures — INNER, LEFT, RIGHT, FULL, SELF</div><div class="sp-learn-desc">Quand utiliser chaque type. Pièges des doublons. Jointures multiples et conditions multiples. Cas finance concrets.</div><div class="sp-learn-link">Accéder →</div></div>
+    </div>
+    <div class="sp-learn-item" onclick="showCh(3)">
+      <div class="sp-learn-num">03</div>
+      <div><div class="sp-learn-title">GROUP BY, HAVING, COUNT, SUM, ROLLUP</div><div class="sp-learn-desc">Agrégations multidimensionnelles, HAVING vs WHERE, ROLLUP / CUBE, fonctions d'agrégation conditionnelle FILTER.</div><div class="sp-learn-link">Accéder →</div></div>
+    </div>
+    <div class="sp-learn-item" onclick="showCh(4)">
+      <div class="sp-learn-num">04</div>
+      <div><div class="sp-learn-title">Sous-requêtes, EXISTS, IN, WITH (CTEs)</div><div class="sp-learn-desc">Sous-requêtes scalaires et corrélées, EXISTS vs IN (performances), CTEs récursives, vues matérialisées.</div><div class="sp-learn-link">Accéder →</div></div>
+    </div>
+    <div class="sp-learn-item" onclick="showCh(5)">
+      <div class="sp-learn-num">05</div>
+      <div><div class="sp-learn-title">Fonctions Fenêtre — ROW_NUMBER, RANK, LAG, LEAD</div><div class="sp-learn-desc">OVER, PARTITION BY, ORDER BY dans la fenêtre, ROWS BETWEEN. RANK vs DENSE_RANK. Calculs glissants. Applications reporting.</div><div class="sp-learn-link">Accéder →</div></div>
+    </div>
+    <div class="sp-learn-item" onclick="showCh(6)">
+      <div class="sp-learn-num">06</div>
+      <div><div class="sp-learn-title">Exercices pratiques avec éditeur interactif</div><div class="sp-learn-desc">8 cas pratiques sur une base finance fictive. Éditeur SQL avec vérification de la syntaxe et affichage des résultats attendus.</div><div class="sp-learn-link">Accéder →</div></div>
+    </div>
+    <div class="sp-learn-item" onclick="showCh(7)">
+      <div class="sp-learn-num">07</div>
+      <div><div class="sp-learn-title">QCM 20 questions + Certificat téléchargeable</div><div class="sp-learn-desc">Évaluation complète avec explications détaillées. Score ≥ 14/20 = Certificat SQL Professionnel délivré par FinMark TEC.</div><div class="sp-learn-link">Passer l'évaluation →</div></div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <h2 class="sp-section-title">Ce qu'en disent les participants</h2>
+  <div class="sp-testi-grid">
+    <div class="sp-testi-card">
+      <div class="sp-testi-stars">★★★★★</div>
+      <p class="sp-testi-text">"Avant ce cours, je faisais des INNER JOIN partout et je me demandais pourquoi il me manquait des données. La section sur les LEFT JOIN m'a tout expliqué en 10 minutes."</p>
+      <div class="sp-testi-author">
+        <div class="sp-testi-av" style="background:var(--green)">A</div>
+        <div><div class="sp-testi-name">Adjoa T.</div><div class="sp-testi-role">Data Analyst · Lomé</div></div>
+      </div>
+    </div>
+    <div class="sp-testi-card">
+      <div class="sp-testi-stars">★★★★★</div>
+      <p class="sp-testi-text">"Les fonctions fenêtre m'avaient toujours fait peur. Le chapitre 05 avec ROW_NUMBER et RANK sur des cas finance concrets, c'est du concret. J'ai appliqué ça en Power BI le lendemain."</p>
+      <div class="sp-testi-author">
+        <div class="sp-testi-av" style="background:var(--blue)">F</div>
+        <div><div class="sp-testi-name">Fatoumata B.</div><div class="sp-testi-role">BI Developer · Dakar</div></div>
+      </div>
+    </div>
+    <div class="sp-testi-card">
+      <div class="sp-testi-stars">★★★★☆</div>
+      <p class="sp-testi-text">"Les CTEs ont changé ma façon d'écrire du SQL. Mes requêtes sont 3× plus lisibles et mes collègues comprennent enfin ce que je fais. Le certificat est un vrai bonus pour mon CV."</p>
+      <div class="sp-testi-author">
+        <div class="sp-testi-av" style="background:var(--purple)">E</div>
+        <div><div class="sp-testi-name">Ernest M.</div><div class="sp-testi-role">Analyste Finance · Abidjan</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTHOR -->
+  <div class="sp-author-section">
+    <div class="sp-author-av">FZ</div>
+    <div>
+      <div class="sp-author-tag">Votre formateur</div>
+      <div class="sp-author-name">Kouassi Fresh-Nes Rameaux ZOUZOU</div>
+      <div class="sp-author-title">Senior Data Analyst · NSIA Vie Assurances · Consultant GoMyCode · FinMark Support</div>
+      <p class="sp-author-bio">5 ans d'expérience opérationnelle avec SQL Server (MYDB, MYDB), PostgreSQL et MySQL. J'écris quotidiennement des requêtes complexes pour l'analyse des montants, transactions, paiements et impayés d'une compagnie d'finance. Ce cours distille ce que j'aurais voulu apprendre en 3 mois en 7 chapitres denses et applicables.</p>
+      <div class="sp-author-badges">
+        <span class="sp-author-badge">🎓 Master 2 Data Science</span>
+        <span class="sp-author-badge">📊 IBM Data Analyst Certified</span>
+        <span class="sp-author-badge">🗄️ SQL Server · PostgreSQL · MySQL</span>
+        <span class="sp-author-badge">🏢 NSIA Vie · GoMyCode · FinMark TEC</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOR WHO -->
+  <h2 class="sp-section-title">Ce cours est fait pour vous si…</h2>
+  <div class="sp-fw-grid">
+    <div class="sp-fw-card sp-fw-yes">
+      <div class="sp-fw-label">✅ Oui, c'est pour vous</div>
+      <ul>
+        <li>Analyste de données qui veut aller au-delà du SELECT basique</li>
+        <li>BI Developer travaillant avec Power BI, Tableau ou Metabase</li>
+        <li>Développeur qui touche aux bases de données relationnelles</li>
+        <li>Étudiant en data science ou informatique de gestion</li>
+        <li>Contrôleur de gestion utilisant Excel + SQL pour ses analyses</li>
+      </ul>
+    </div>
+    <div class="sp-fw-card sp-fw-no">
+      <div class="sp-fw-label">⚠️ Pas pour vous si…</div>
+      <ul>
+        <li>Vous n'avez jamais entendu parler de bases de données (commencez par un cours d'introduction)</li>
+        <li>Vous cherchez un cours sur NoSQL (MongoDB, Cassandra)</li>
+        <li>Vous avez déjà plusieurs années de SQL avancé quotidien</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div class="sp-final-cta">
+    <div class="sp-final-cta-badge">🏆 Certificat inclus · Accès à vie · Cas finance réels</div>
+    <h2 class="sp-final-cta-title">Prêt à écrire du SQL qui impressionne ?</h2>
+    <p class="sp-final-cta-sub">Démarrez maintenant. Aucune installation, aucun compte. Fonctionne sur mobile et desktop.</p>
+    <button class="sp-cta-primary" style="font-size:15px;padding:16px 40px" onclick="showCh(1)">Commencer le Chapitre 1 →</button>
+    <div style="margin-top:14px;font-size:11px;color:rgba(255,255,255,.35)">Fonctionne hors connexion une fois chargé</div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════
+     CH1 — SELECT & BASES
+══════════════════════════════════════ -->
+<section class="chapter" id="ch1">
+  <div class="ch-eyebrow">Chapitre 01 · Fondamentaux</div>
+  <h1 class="ch-title">SELECT, WHERE &amp; Bases du SQL</h1>
+  <p class="ch-intro">Tout commence par SELECT. Mais un professionnel sait filtrer, trier, limiter et alias avec précision. Voici les fondations qui portent tout le reste.</p>
+
+  <h2 class="sh">La requête SELECT anatomy</h2>
+  <p class="txt">Chaque clause a un rôle précis et s'exécute dans un ordre interne strict (différent de l'ordre d'écriture) :</p>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — Anatomie</span></div>
+    <pre><span class="cmt">-- Ordre d'ÉCRITURE (syntaxe)</span>
+<span class="kw">SELECT</span>   nom, montant, statut                 <span class="cmt">-- 5. Ce qu'on retourne</span>
+<span class="kw">FROM</span>     <span class="tbl">COMMANDES</span>                             <span class="cmt">-- 1. Source de données</span>
+<span class="kw">WHERE</span>    montant &gt; <span class="num">50000</span>                       <span class="cmt">-- 2. Filtrage lignes</span>
+<span class="kw">GROUP BY</span> statut                              <span class="cmt">-- 3. Regroupement</span>
+<span class="kw">HAVING</span>   <span class="fn">COUNT</span>(*) &gt; <span class="num">5</span>                       <span class="cmt">-- 4. Filtre sur groupes</span>
+<span class="kw">ORDER BY</span> montant <span class="kw">DESC</span>                          <span class="cmt">-- 6. Tri</span>
+<span class="kw">LIMIT</span>    <span class="num">10</span>;                                 <span class="cmt">-- 7. Limitation</span></pre>
+  </div>
+
+  <div class="info-box info-tip"><div class="info-lbl">💡 Astuce</div><p>L'ordre d'<strong>exécution</strong> est : FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT. C'est pourquoi on ne peut pas utiliser un alias de SELECT dans un WHERE.</p></div>
+
+  <h2 class="sh">Filtres WHERE</h2>
+  <p class="txt">WHERE supporte tous les opérateurs de comparaison et logiques. Voici les patterns les plus utiles en analyse de données :</p>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — Filtres avancés</span></div>
+    <pre><span class="cmt">-- Comparaisons</span>
+<span class="kw">WHERE</span> montant &gt;= <span class="num">100000</span> <span class="kw">AND</span> statut = <span class="str">'ACTIF'</span>
+
+<span class="cmt">-- Plage de valeurs</span>
+<span class="kw">WHERE</span> date_inscription <span class="kw">BETWEEN</span> <span class="str">'2024-01-01'</span> <span class="kw">AND</span> <span class="str">'2024-12-31'</span>
+
+<span class="cmt">-- Liste de valeurs</span>
+<span class="kw">WHERE</span> produit <span class="kw">IN</span> (<span class="str">'VIE'</span>, <span class="str">'AUTO'</span>, <span class="str">'SANTE'</span>)
+
+<span class="cmt">-- Pattern matching</span>
+<span class="kw">WHERE</span> nom <span class="kw">LIKE</span> <span class="str">'Ama%'</span>        <span class="cmt">-- commence par "Ama"</span>
+<span class="kw">WHERE</span> nom <span class="kw">LIKE</span> <span class="str">'%KOFFI%'</span>    <span class="cmt">-- contient "KOFFI"</span>
+<span class="kw">WHERE</span> code <span class="kw">LIKE</span> <span class="str">'CI___'</span>     <span class="cmt">-- CI + exactement 3 chars</span>
+
+<span class="cmt">-- Valeurs nulles</span>
+<span class="kw">WHERE</span> date_resiliation <span class="kw">IS NULL</span>       <span class="cmt">-- commande encore active</span>
+<span class="kw">WHERE</span> telephone <span class="kw">IS NOT NULL</span>          <span class="cmt">-- client joignable</span>
+
+<span class="cmt">-- Négation</span>
+<span class="kw">WHERE</span> statut <span class="kw">NOT IN</span> (<span class="str">'RESILIE'</span>, <span class="str">'EXPIRE'</span>)</pre>
+  </div>
+
+  <h2 class="sh">Aliases &amp; DISTINCT</h2>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL</span></div>
+    <pre><span class="cmt">-- Alias de colonnes (AS facultatif)</span>
+<span class="kw">SELECT</span>
+  commande_id                               <span class="alias">AS id</span>,
+  montant / <span class="num">1000</span>                            <span class="alias">AS montant_k</span>,
+  <span class="fn">UPPER</span>(nom)                               <span class="alias">nom_maj</span>,
+  <span class="fn">DATEDIFF</span>(<span class="fn">DAY</span>, date_inscription, <span class="fn">GETDATE</span>()) <span class="alias">AS anciennete_jours</span>
+<span class="kw">FROM</span> <span class="tbl">COMMANDES</span>;
+
+<span class="cmt">-- DISTINCT : valeurs uniques</span>
+<span class="kw">SELECT DISTINCT</span> produit <span class="kw">FROM</span> <span class="tbl">COMMANDES</span>;         <span class="cmt">-- liste des produits</span>
+<span class="kw">SELECT DISTINCT</span> agence, ville <span class="kw">FROM</span> <span class="tbl">CLIENTS</span>;   <span class="cmt">-- combinaisons uniques</span>
+
+<span class="cmt">-- Alias de table (essentiel pour les jointures)</span>
+<span class="kw">SELECT</span> p.commande_id, c.nom
+<span class="kw">FROM</span>   <span class="tbl">COMMANDES</span> <span class="alias">p</span>
+<span class="kw">JOIN</span>   <span class="tbl">CLIENTS</span> <span class="alias">c</span> <span class="kw">ON</span> p.client_id = c.client_id;</pre>
+  </div>
+
+  <h2 class="sh">CASE WHEN — Colonne calculée conditionnelle</h2>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — CASE WHEN</span></div>
+    <pre><span class="kw">SELECT</span>
+  commande_id,
+  montant,
+  <span class="kw">CASE</span>
+    <span class="kw">WHEN</span> montant &lt; <span class="num">50000</span>  <span class="kw">THEN</span> <span class="str">'Petite commande'</span>
+    <span class="kw">WHEN</span> montant &lt; <span class="num">200000</span> <span class="kw">THEN</span> <span class="str">'Commande standard'</span>
+    <span class="kw">ELSE</span>                      <span class="str">'Grande commande'</span>
+  <span class="kw">END</span> <span class="alias">AS categorie_montant</span>
+<span class="kw">FROM</span> <span class="tbl">COMMANDES</span>
+<span class="kw">WHERE</span> statut = <span class="str">'ACTIF'</span>;</pre>
+  </div>
+
+  <h2 class="sh">Fonctions scalaires utiles</h2>
+  <div class="concept-grid">
+    <div class="concept-card"><div class="concept-icon">📅</div><div class="concept-title">Dates</div><div class="concept-desc">GETDATE(), DATEDIFF(), DATEADD(), YEAR(), MONTH(), DAY(), FORMAT()</div></div>
+    <div class="concept-card"><div class="concept-icon">📝</div><div class="concept-title">Chaînes</div><div class="concept-desc">UPPER(), LOWER(), TRIM(), LTRIM(), RTRIM(), LEN(), SUBSTRING(), CHARINDEX(), CONCAT()</div></div>
+    <div class="concept-card"><div class="concept-icon">🔢</div><div class="concept-title">Nombres</div><div class="concept-desc">ROUND(), FLOOR(), CEILING(), ABS(), CAST(), CONVERT(), ISNULL() / COALESCE()</div></div>
+    <div class="concept-card"><div class="concept-icon">🔀</div><div class="concept-title">Nulls</div><div class="concept-desc">ISNULL(val, 0), NULLIF(a, b), COALESCE(a, b, c) — retourne le premier non-null</div></div>
+  </div>
+
+  <div class="info-box info-warn"><div class="info-lbl">⚠️ Piège classique</div><p>NULL n'est pas égal à NULL. <code>WHERE colonne = NULL</code> ne retourne rien. Utilisez toujours <code>IS NULL</code> ou <code>IS NOT NULL</code>.</p></div>
+
+  <div class="nav-btns">
+    <button class="btn" disabled>← Précédent</button>
+    <button class="btn btn-primary" onclick="showCh(2)">Jointures →</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CH2 — JOINTURES
+══════════════════════════════════════ -->
+<section class="chapter" id="ch2">
+  <div class="ch-eyebrow">Chapitre 02 · Fondamentaux</div>
+  <h1 class="ch-title">Jointures SQL</h1>
+  <p class="ch-intro">Les jointures sont le cœur du SQL relationnel. Bien les maîtriser, c'est ne plus jamais avoir de données manquantes ou dupliquées inexpliquées.</p>
+
+  <h2 class="sh">Les 5 types de JOIN visualisés</h2>
+  <div class="join-grid">
+    <div class="join-card">
+      <svg class="join-svg" width="80" height="56" viewBox="0 0 80 56">
+        <circle cx="30" cy="28" r="22" fill="rgba(45,107,228,.15)" stroke="rgba(45,107,228,.5)" stroke-width="1.5"/>
+        <circle cx="50" cy="28" r="22" fill="rgba(255,107,107,.15)" stroke="rgba(255,107,107,.5)" stroke-width="1.5"/>
+        <ellipse cx="40" cy="28" rx="10" ry="19" fill="rgba(29,191,115,.35)"/>
+      </svg>
+      <div class="join-name">INNER JOIN</div>
+      <div class="join-desc">Seulement les lignes qui ont une correspondance dans les deux tables</div>
+    </div>
+    <div class="join-card">
+      <svg class="join-svg" width="80" height="56" viewBox="0 0 80 56">
+        <circle cx="30" cy="28" r="22" fill="rgba(29,191,115,.35)" stroke="rgba(29,191,115,.6)" stroke-width="1.5"/>
+        <circle cx="50" cy="28" r="22" fill="rgba(255,107,107,.1)" stroke="rgba(255,107,107,.4)" stroke-width="1.5"/>
+        <ellipse cx="40" cy="28" rx="10" ry="19" fill="rgba(29,191,115,.35)"/>
+      </svg>
+      <div class="join-name">LEFT JOIN</div>
+      <div class="join-desc">Toutes les lignes de gauche + correspondances de droite (NULL si absent)</div>
+    </div>
+    <div class="join-card">
+      <svg class="join-svg" width="80" height="56" viewBox="0 0 80 56">
+        <circle cx="30" cy="28" r="22" fill="rgba(45,107,228,.1)" stroke="rgba(45,107,228,.4)" stroke-width="1.5"/>
+        <circle cx="50" cy="28" r="22" fill="rgba(29,191,115,.35)" stroke="rgba(29,191,115,.6)" stroke-width="1.5"/>
+        <ellipse cx="40" cy="28" rx="10" ry="19" fill="rgba(29,191,115,.35)"/>
+      </svg>
+      <div class="join-name">RIGHT JOIN</div>
+      <div class="join-desc">Toutes les lignes de droite + correspondances de gauche (NULL si absent)</div>
+    </div>
+    <div class="join-card">
+      <svg class="join-svg" width="80" height="56" viewBox="0 0 80 56">
+        <circle cx="30" cy="28" r="22" fill="rgba(29,191,115,.3)" stroke="rgba(29,191,115,.6)" stroke-width="1.5"/>
+        <circle cx="50" cy="28" r="22" fill="rgba(29,191,115,.3)" stroke="rgba(29,191,115,.6)" stroke-width="1.5"/>
+      </svg>
+      <div class="join-name">FULL OUTER JOIN</div>
+      <div class="join-desc">Toutes les lignes des deux tables, NULL là où pas de correspondance</div>
+    </div>
+    <div class="join-card">
+      <svg class="join-svg" width="80" height="56" viewBox="0 0 80 56">
+        <circle cx="30" cy="28" r="22" fill="rgba(29,191,115,.2)" stroke="rgba(29,191,115,.5)" stroke-width="1.5"/>
+        <circle cx="50" cy="28" r="22" fill="rgba(29,191,115,.2)" stroke="rgba(29,191,115,.5)" stroke-width="1.5"/>
+        <line x1="40" y1="6" x2="40" y2="50" stroke="rgba(255,183,49,.5)" stroke-width="1" stroke-dasharray="3,2"/>
+      </svg>
+      <div class="join-name">CROSS JOIN</div>
+      <div class="join-desc">Produit cartésien : chaque ligne de A avec chaque ligne de B (N×M lignes)</div>
+    </div>
+    <div class="join-card">
+      <svg class="join-svg" width="80" height="56" viewBox="0 0 80 56">
+        <rect x="12" y="12" width="56" height="32" rx="6" fill="rgba(29,191,115,.15)" stroke="rgba(29,191,115,.5)" stroke-width="1.5"/>
+        <path d="M36,28 Q40,18 44,28 Q48,38 52,28" stroke="rgba(247,160,114,.7)" stroke-width="2" fill="none"/>
+      </svg>
+      <div class="join-name">SELF JOIN</div>
+      <div class="join-desc">Une table jointe à elle-même — hiérarchies, comparaisons intra-table</div>
+    </div>
+  </div>
+
+  <h2 class="sh">Exemples concrets — Base finance</h2>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — INNER JOIN</span></div>
+    <pre><span class="cmt">-- Commandes avec infos clients (seulement les commandes qui ont un client)</span>
+<span class="kw">SELECT</span>
+  p.commande_id,
+  c.nom             <span class="alias">AS client</span>,
+  c.ville,
+  p.produit,
+  p.montant,
+  p.statut
+<span class="kw">FROM</span>        <span class="tbl">COMMANDES</span>  <span class="alias">p</span>
+<span class="kw">INNER JOIN</span> <span class="tbl">CLIENTS</span>  <span class="alias">c</span>  <span class="kw">ON</span> p.client_id = c.client_id
+<span class="kw">WHERE</span> p.statut = <span class="str">'ACTIF'</span>
+<span class="kw">ORDER BY</span> p.montant <span class="kw">DESC</span>;</pre>
+  </div>
+
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — LEFT JOIN (clients sans commande)</span></div>
+    <pre><span class="cmt">-- TOUS les clients, même ceux sans commande (prospect non converti)</span>
+<span class="kw">SELECT</span>
+  c.client_id,
+  c.nom,
+  c.ville,
+  <span class="fn">ISNULL</span>(p.produit, <span class="str">'AUCUNE'</span>)   <span class="alias">AS produit</span>,
+  <span class="fn">ISNULL</span>(p.montant, <span class="num">0</span>)            <span class="alias">AS montant</span>
+<span class="kw">FROM</span>       <span class="tbl">CLIENTS</span>  <span class="alias">c</span>
+<span class="kw">LEFT JOIN</span> <span class="tbl">COMMANDES</span>  <span class="alias">p</span>  <span class="kw">ON</span> c.client_id = p.client_id
+<span class="kw">ORDER BY</span> montant <span class="kw">DESC</span>;</pre>
+  </div>
+
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — Jointure multiple (3 tables)</span></div>
+    <pre><span class="cmt">-- Transactions avec info commande ET client</span>
+<span class="kw">SELECT</span>
+  s.transaction_id,
+  c.nom             <span class="alias">AS client</span>,
+  p.produit,
+  s.montant,
+  s.date_transaction,
+  s.statut          <span class="alias">AS statut_transaction</span>
+<span class="kw">FROM</span>        <span class="tbl">TRANSACTIONS</span> <span class="alias">s</span>
+<span class="kw">INNER JOIN</span> <span class="tbl">COMMANDES</span>   <span class="alias">p</span>  <span class="kw">ON</span> s.commande_id  = p.commande_id
+<span class="kw">INNER JOIN</span> <span class="tbl">CLIENTS</span>   <span class="alias">c</span>  <span class="kw">ON</span> p.client_id  = c.client_id
+<span class="kw">WHERE</span> s.statut = <span class="str">'EN_COURS'</span>
+<span class="kw">ORDER BY</span> s.montant <span class="kw">DESC</span>;</pre>
+  </div>
+
+  <div class="info-box info-err"><div class="info-lbl">🚨 Pièges classiques des jointures</div><p><strong>Explosion de lignes :</strong> si la relation n'est pas 1-N stricte, un JOIN peut multiplier les lignes. Toujours vérifier le COUNT(*) avant et après. <strong>NULL dans la clé :</strong> NULL = NULL est FAUX en SQL — une ligne avec NULL comme clé étrangère ne joindra jamais.</p></div>
+
+  <div class="nav-btns">
+    <button class="btn" onclick="showCh(1)">← SELECT &amp; Bases</button>
+    <button class="btn btn-primary" onclick="showCh(3)">Agrégations →</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CH3 — AGRÉGATIONS
+══════════════════════════════════════ -->
+<section class="chapter" id="ch3">
+  <div class="ch-eyebrow">Chapitre 03 · Intermédiaire</div>
+  <h1 class="ch-title">Agrégations &amp; GROUP BY</h1>
+  <p class="ch-intro">GROUP BY transforme des milliers de lignes en résumés décisionnels. Maîtrisez HAVING, les fonctions d'agrégation conditionnelle et ROLLUP pour des rapports multidimensionnels.</p>
+
+  <h2 class="sh">Fonctions d'agrégation essentielles</h2>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — Agrégations</span></div>
+    <pre><span class="kw">SELECT</span>
+  produit,
+  <span class="fn">COUNT</span>(*)                              <span class="alias">AS nb_commandes</span>,
+  <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> client_id)             <span class="alias">AS nb_clients_uniques</span>,
+  <span class="fn">SUM</span>(montant)                             <span class="alias">AS total_montants</span>,
+  <span class="fn">AVG</span>(montant)                             <span class="alias">AS montant_moyenne</span>,
+  <span class="fn">MIN</span>(montant)                             <span class="alias">AS montant_min</span>,
+  <span class="fn">MAX</span>(montant)                             <span class="alias">AS montant_max</span>,
+  <span class="fn">STDEV</span>(montant)                           <span class="alias">AS ecart_type</span>,
+  <span class="cmt">-- Agrégation conditionnelle (SUM/COUNT avec CASE)</span>
+  <span class="fn">SUM</span>(<span class="kw">CASE WHEN</span> statut=<span class="str">'ACTIF'</span> <span class="kw">THEN</span> montant <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="alias">AS ca_actif</span>,
+  <span class="fn">COUNT</span>(<span class="kw">CASE WHEN</span> statut=<span class="str">'RESILIE'</span> <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">END</span>)   <span class="alias">AS nb_resilies</span>
+<span class="kw">FROM</span> <span class="tbl">COMMANDES</span>
+<span class="kw">GROUP BY</span> produit
+<span class="kw">ORDER BY</span> total_montants <span class="kw">DESC</span>;</pre>
+  </div>
+
+  <h2 class="sh">WHERE vs HAVING</h2>
+  <div class="info-box info-tip"><div class="info-lbl">💡 Règle d'or</div><p><strong>WHERE</strong> filtre les lignes AVANT l'agrégation. <strong>HAVING</strong> filtre les groupes APRÈS l'agrégation. On ne peut pas utiliser une fonction d'agrégation dans un WHERE.</p></div>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — WHERE vs HAVING</span></div>
+    <pre><span class="cmt">-- WHERE filtre les lignes avant GROUP BY</span>
+<span class="kw">SELECT</span> agence, <span class="fn">SUM</span>(montant) <span class="alias">AS ca</span>
+<span class="kw">FROM</span>   <span class="tbl">COMMANDES</span>
+<span class="kw">WHERE</span>  statut = <span class="str">'ACTIF'</span>          <span class="cmt">-- avant agrégation ✅</span>
+<span class="kw">GROUP BY</span> agence;
+
+<span class="cmt">-- HAVING filtre les groupes après GROUP BY</span>
+<span class="kw">SELECT</span> agence, <span class="fn">SUM</span>(montant) <span class="alias">AS ca</span>
+<span class="kw">FROM</span>   <span class="tbl">COMMANDES</span>
+<span class="kw">WHERE</span>  statut = <span class="str">'ACTIF'</span>
+<span class="kw">GROUP BY</span> agence
+<span class="kw">HAVING</span> <span class="fn">SUM</span>(montant) &gt; <span class="num">500000</span>;    <span class="cmt">-- seulement agences > 500K ✅</span>
+
+<span class="cmt">-- ERREUR : COUNT dans WHERE</span>
+<span class="cmt">-- WHERE COUNT(*) > 5 ← INTERDIT !</span></pre>
+  </div>
+
+  <h2 class="sh">ROLLUP — Sous-totaux automatiques</h2>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — GROUP BY ROLLUP</span></div>
+    <pre><span class="kw">SELECT</span>
+  <span class="fn">ISNULL</span>(produit,  <span class="str">'TOUS PRODUITS'</span>)  <span class="alias">AS produit</span>,
+  <span class="fn">ISNULL</span>(agence,   <span class="str">'TOUTES AGENCES'</span>) <span class="alias">AS agence</span>,
+  <span class="fn">SUM</span>(montant)                           <span class="alias">AS ca_total</span>,
+  <span class="fn">COUNT</span>(*)                             <span class="alias">AS nb_commandes</span>
+<span class="kw">FROM</span>   <span class="tbl">COMMANDES</span>
+<span class="kw">WHERE</span>  statut = <span class="str">'ACTIF'</span>
+<span class="kw">GROUP BY ROLLUP</span>(produit, agence)
+<span class="kw">ORDER BY</span> produit, agence;</pre>
+  </div>
+
+  <div class="nav-btns">
+    <button class="btn" onclick="showCh(2)">← Jointures</button>
+    <button class="btn btn-primary" onclick="showCh(4)">Sous-requêtes →</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CH4 — SOUS-REQUÊTES & CTEs
+══════════════════════════════════════ -->
+<section class="chapter" id="ch4">
+  <div class="ch-eyebrow">Chapitre 04 · Intermédiaire</div>
+  <h1 class="ch-title">Sous-requêtes &amp; CTEs</h1>
+  <p class="ch-intro">Les sous-requêtes et CTEs permettent de décomposer des problèmes complexes en étapes lisibles. Les CTEs (Common Table Expressions) sont la clé d'un SQL maintenable.</p>
+
+  <h2 class="sh">Sous-requêtes scalaires et dans FROM</h2>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — Sous-requêtes</span></div>
+    <pre><span class="cmt">-- Scalaire : retourne une valeur unique</span>
+<span class="kw">SELECT</span> commande_id, montant,
+  montant - (<span class="kw">SELECT</span> <span class="fn">AVG</span>(montant) <span class="kw">FROM</span> <span class="tbl">COMMANDES</span>) <span class="alias">AS ecart_moyenne</span>
+<span class="kw">FROM</span> <span class="tbl">COMMANDES</span>;
+
+<span class="cmt">-- Dans le FROM (table dérivée)</span>
+<span class="kw">SELECT</span> produit, ca_produit,
+  ca_produit * <span class="num">100.0</span> / ca_total <span class="alias">AS part_pct</span>
+<span class="kw">FROM</span> (
+  <span class="kw">SELECT</span> produit, <span class="fn">SUM</span>(montant) <span class="alias">AS ca_produit</span>
+  <span class="kw">FROM</span>   <span class="tbl">COMMANDES</span>
+  <span class="kw">GROUP BY</span> produit
+) <span class="alias">sub_produits</span>
+<span class="kw">CROSS JOIN</span> (
+  <span class="kw">SELECT</span> <span class="fn">SUM</span>(montant) <span class="alias">AS ca_total</span> <span class="kw">FROM</span> <span class="tbl">COMMANDES</span>
+) <span class="alias">sub_total</span>
+<span class="kw">ORDER BY</span> part_pct <span class="kw">DESC</span>;</pre>
+  </div>
+
+  <h2 class="sh">EXISTS vs IN — Performances</h2>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — EXISTS</span></div>
+    <pre><span class="cmt">-- Clients qui ont AU MOINS un transaction en cours</span>
+<span class="kw">SELECT</span> c.client_id, c.nom
+<span class="kw">FROM</span>   <span class="tbl">CLIENTS</span> <span class="alias">c</span>
+<span class="kw">WHERE EXISTS</span> (
+  <span class="kw">SELECT</span> <span class="num">1</span>
+  <span class="kw">FROM</span>   <span class="tbl">TRANSACTIONS</span> <span class="alias">s</span>
+  <span class="kw">JOIN</span>   <span class="tbl">COMMANDES</span>   <span class="alias">p</span> <span class="kw">ON</span> s.commande_id = p.commande_id
+  <span class="kw">WHERE</span>  p.client_id = c.client_id
+  <span class="kw">AND</span>    s.statut = <span class="str">'EN_COURS'</span>
+);
+
+<span class="cmt">-- NOT EXISTS : clients sans aucun transaction</span>
+<span class="kw">SELECT</span> c.client_id, c.nom
+<span class="kw">FROM</span>   <span class="tbl">CLIENTS</span> <span class="alias">c</span>
+<span class="kw">WHERE NOT EXISTS</span> (
+  <span class="kw">SELECT</span> <span class="num">1</span> <span class="kw">FROM</span> <span class="tbl">TRANSACTIONS</span> <span class="alias">s</span>
+  <span class="kw">JOIN</span>   <span class="tbl">COMMANDES</span> <span class="alias">p</span> <span class="kw">ON</span> s.commande_id = p.commande_id
+  <span class="kw">WHERE</span>  p.client_id = c.client_id
+);</pre>
+  </div>
+
+  <h2 class="sh">CTEs avec WITH — La clé du SQL lisible</h2>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — CTE (Common Table Expression)</span></div>
+    <pre><span class="cmt">-- Exemple : clients à risque (taux de perte > 80%)</span>
+<span class="kw">WITH</span>
+<span class="tbl">montants_par_client</span> <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> p.client_id, <span class="fn">SUM</span>(p.montant) <span class="alias">AS total_montants</span>
+  <span class="kw">FROM</span>   <span class="tbl">COMMANDES</span> <span class="alias">p</span>
+  <span class="kw">WHERE</span>  p.statut = <span class="str">'ACTIF'</span>
+  <span class="kw">GROUP BY</span> p.client_id
+),
+<span class="tbl">transactions_par_client</span> <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> p.client_id, <span class="fn">SUM</span>(s.montant) <span class="alias">AS total_transactions</span>
+  <span class="kw">FROM</span>   <span class="tbl">TRANSACTIONS</span>  <span class="alias">s</span>
+  <span class="kw">JOIN</span>   <span class="tbl">COMMANDES</span>    <span class="alias">p</span> <span class="kw">ON</span> s.commande_id = p.commande_id
+  <span class="kw">GROUP BY</span> p.client_id
+),
+<span class="tbl">taux_retour</span> <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    pc.client_id,
+    pc.total_montants,
+    <span class="fn">ISNULL</span>(sc.total_transactions, <span class="num">0</span>)   <span class="alias">AS total_transactions</span>,
+    <span class="fn">ISNULL</span>(sc.total_transactions, <span class="num">0</span>) * <span class="num">100.0</span>
+      / <span class="fn">NULLIF</span>(pc.total_montants, <span class="num">0</span>)    <span class="alias">AS taux_pct</span>
+  <span class="kw">FROM</span>       <span class="tbl">montants_par_client</span>    <span class="alias">pc</span>
+  <span class="kw">LEFT JOIN</span> <span class="tbl">transactions_par_client</span> <span class="alias">sc</span> <span class="kw">ON</span> pc.client_id = sc.client_id
+)
+<span class="kw">SELECT</span>
+  ts.client_id, c.nom,
+  ts.taux_pct,
+  <span class="kw">CASE WHEN</span> ts.taux_pct &gt; <span class="num">80</span> <span class="kw">THEN</span> <span class="str">'🔴 Risque élevé'</span>
+       <span class="kw">WHEN</span> ts.taux_pct &gt; <span class="num">50</span> <span class="kw">THEN</span> <span class="str">'🟡 Risque modéré'</span>
+       <span class="kw">ELSE</span>                        <span class="str">'🟢 Risque faible'</span>
+  <span class="kw">END</span> <span class="alias">AS niveau_risque</span>
+<span class="kw">FROM</span>       <span class="tbl">taux_retour</span> <span class="alias">ts</span>
+<span class="kw">INNER JOIN</span> <span class="tbl">CLIENTS</span>            <span class="alias">c</span>  <span class="kw">ON</span> ts.client_id = c.client_id
+<span class="kw">ORDER BY</span> ts.taux_pct <span class="kw">DESC</span>;</pre>
+  </div>
+
+  <div class="nav-btns">
+    <button class="btn" onclick="showCh(3)">← Agrégations</button>
+    <button class="btn btn-primary" onclick="showCh(5)">Fonctions Fenêtre →</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CH5 — FONCTIONS FENÊTRE
+══════════════════════════════════════ -->
+<section class="chapter" id="ch5">
+  <div class="ch-eyebrow">Chapitre 05 · Avancé</div>
+  <h1 class="ch-title">Fonctions Fenêtre (Window Functions)</h1>
+  <p class="ch-intro">Les fonctions fenêtre (OVER / PARTITION BY) sont la fonctionnalité la plus puissante de SQL avancé. Elles permettent des calculs par groupe SANS GROUP BY — chaque ligne conserve ses détails tout en accédant aux agrégats de son groupe.</p>
+
+  <h2 class="sh">Anatomie d'une fonction fenêtre</h2>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — Syntaxe OVER</span></div>
+    <pre><span class="fn">FONCTION</span>() <span class="kw">OVER</span> (
+  <span class="kw">PARTITION BY</span> colonne_groupe    <span class="cmt">-- définit la "fenêtre"</span>
+  <span class="kw">ORDER BY</span>     colonne_tri       <span class="cmt">-- ordre dans la fenêtre</span>
+  <span class="kw">ROWS BETWEEN</span> UNBOUNDED PRECEDING <span class="kw">AND</span> CURRENT ROW
+)</pre>
+  </div>
+
+  <h2 class="sh">ROW_NUMBER, RANK, DENSE_RANK</h2>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — Numérotation</span></div>
+    <pre><span class="kw">SELECT</span>
+  commande_id, produit, montant,
+  <span class="fn">ROW_NUMBER</span>()   <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> produit <span class="kw">ORDER BY</span> montant <span class="kw">DESC</span>) <span class="alias">AS rn</span>,
+  <span class="fn">RANK</span>()         <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> produit <span class="kw">ORDER BY</span> montant <span class="kw">DESC</span>) <span class="alias">AS rnk</span>,
+  <span class="fn">DENSE_RANK</span>()   <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> produit <span class="kw">ORDER BY</span> montant <span class="kw">DESC</span>) <span class="alias">AS drnk</span>,
+  <span class="fn">NTILE</span>(<span class="num">4</span>)       <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> produit <span class="kw">ORDER BY</span> montant <span class="kw">DESC</span>) <span class="alias">AS quartile</span>
+<span class="kw">FROM</span> <span class="tbl">COMMANDES</span>
+<span class="kw">WHERE</span> statut = <span class="str">'ACTIF'</span>;</pre>
+  </div>
+
+  <div class="table-demo">
+    <table class="sql-table">
+      <tr><th>produit</th><th>montant</th><th>ROW_NUMBER</th><th>RANK</th><th>DENSE_RANK</th><th>Différence</th></tr>
+      <tr class="hi"><td>VIE</td><td>500 000</td><td>1</td><td>1</td><td>1</td><td style="color:var(--text2);font-size:11px">Même résultat</td></tr>
+      <tr><td>VIE</td><td>450 000</td><td>2</td><td>2</td><td>2</td><td style="color:var(--text2);font-size:11px">Même résultat</td></tr>
+      <tr style="background:rgba(247,183,49,.04)"><td>VIE</td><td>400 000</td><td>3</td><td>3</td><td>3</td><td style="color:var(--text2);font-size:11px">Ex-aequo !</td></tr>
+      <tr style="background:rgba(247,183,49,.04)"><td>VIE</td><td>400 000</td><td>4</td><td>3</td><td>3</td><td style="color:var(--yellow);font-size:11px">RANK saute à 5</td></tr>
+      <tr><td>VIE</td><td>300 000</td><td>5</td><td>5</td><td>4</td><td style="color:var(--red);font-size:11px">RANK=5, DENSE=4</td></tr>
+    </table>
+  </div>
+
+  <h2 class="sh">LAG &amp; LEAD — Accès aux lignes voisines</h2>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — LAG / LEAD</span></div>
+    <pre><span class="cmt">-- Évolution mensuelle du CA</span>
+<span class="kw">SELECT</span>
+  mois,
+  ca_mensuel,
+  <span class="fn">LAG</span>(ca_mensuel, <span class="num">1</span>, <span class="num">0</span>) <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> mois) <span class="alias">AS ca_mois_prec</span>,
+  ca_mensuel - <span class="fn">LAG</span>(ca_mensuel) <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> mois) <span class="alias">AS variation</span>,
+  <span class="fn">LEAD</span>(ca_mensuel) <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> mois)            <span class="alias">AS ca_mois_suiv</span>,
+  <span class="cmt">-- Cumul progressif</span>
+  <span class="fn">SUM</span>(ca_mensuel) <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> mois
+    <span class="kw">ROWS BETWEEN</span> UNBOUNDED PRECEDING <span class="kw">AND</span> CURRENT ROW) <span class="alias">AS ca_cumul</span>,
+  <span class="cmt">-- Moyenne glissante sur 3 mois</span>
+  <span class="fn">AVG</span>(ca_mensuel) <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> mois
+    <span class="kw">ROWS BETWEEN</span> <span class="num">2</span> PRECEDING <span class="kw">AND</span> CURRENT ROW)       <span class="alias">AS moy_glissante_3m</span>
+<span class="kw">FROM</span> <span class="tbl">CA_MENSUEL</span>;</pre>
+  </div>
+
+  <h2 class="sh">Cas pratique — Top 3 commandes par agence</h2>
+  <div class="sql-block">
+    <div class="sql-block-hd"><span class="sql-block-lang">SQL — Filtre sur rang</span></div>
+    <pre><span class="kw">WITH</span> <span class="tbl">ranked</span> <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    agence, commande_id, client_id, montant,
+    <span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span>(
+      <span class="kw">PARTITION BY</span> agence
+      <span class="kw">ORDER BY</span>     montant <span class="kw">DESC</span>
+    ) <span class="alias">AS rang</span>
+  <span class="kw">FROM</span> <span class="tbl">COMMANDES</span>
+  <span class="kw">WHERE</span> statut = <span class="str">'ACTIF'</span>
+)
+<span class="kw">SELECT</span> agence, commande_id, montant, rang
+<span class="kw">FROM</span>   <span class="tbl">ranked</span>
+<span class="kw">WHERE</span>  rang &lt;= <span class="num">3</span>  <span class="cmt">-- 3 meilleures commandes par agence</span>
+<span class="kw">ORDER BY</span> agence, rang;</pre>
+  </div>
+
+  <div class="info-box info-tip"><div class="info-lbl">💡 Conseil expert</div><p>On ne peut pas filtrer directement sur un alias de fonction fenêtre dans le WHERE (ordre d'exécution). Il faut toujours envelopper dans une CTE ou sous-requête, puis filtrer dans le SELECT externe.</p></div>
+
+  <div class="nav-btns">
+    <button class="btn" onclick="showCh(4)">← Sous-requêtes</button>
+    <button class="btn btn-primary" onclick="showCh(6)">Exercices →</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CH6 — EXERCICES
+══════════════════════════════════════ -->
+<section class="chapter" id="ch6">
+  <div class="ch-eyebrow">Chapitre 06 · Pratique</div>
+  <h1 class="ch-title">Exercices Pratiques</h1>
+  <p class="ch-intro">8 exercices sur une base finance fictive. Écrivez votre requête, cliquez sur "Exécuter" et comparez avec la solution attendue.</p>
+
+  <div class="info-box info-tip"><div class="info-lbl">🗃 Base de données</div><p>Vous travaillez sur 3 tables : <strong>COMMANDES</strong> (commande_id, client_id, produit, montant, statut, agence, date_inscription), <strong>CLIENTS</strong> (client_id, nom, age, ville), <strong>TRANSACTIONS</strong> (transaction_id, commande_id, montant, date_transaction, statut)</p></div>
+
+  <!-- EX1 -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-badge ex-badge-num">EX 01</span>
+      <span class="ex-badge ex-badge-type">SELECT + WHERE</span>
+    </div>
+    <h3>Commandes actives avec montant élevée</h3>
+    <p>Sélectionnez l'identifiant, le produit et la montant de toutes les commandes dont le statut est 'ACTIF' et la montant supérieure à 100 000, triées par montant décroissante.</p>
+    <div class="sql-editor">
+      <div class="sql-editor-hd"><span>SQL</span><span>↵ Ctrl+Enter pour exécuter</span></div>
+      <textarea id="ex1-input" placeholder="SELECT ...">SELECT commande_id, produit, montant
+FROM   COMMANDES
+WHERE  statut = 'ACTIF'
+  AND  montant > 100000
+ORDER BY montant DESC;</textarea>
+    </div>
+    <button class="sql-run-btn" onclick="runEx('ex1')">▶ Exécuter</button>
+    <div class="sql-result" id="ex1-result">
+      <div class="sql-result-hd"></div>
+      <div class="sql-result-body"></div>
+    </div>
+    <span class="hint-toggle" onclick="toggleHint('h1')">💡 Voir l'indice</span>
+    <div class="hint-body" id="h1">WHERE statut = 'ACTIF' AND montant &gt; 100000 — utilisez ORDER BY montant DESC pour trier</div>
+  </div>
+
+  <!-- EX2 -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-badge ex-badge-num">EX 02</span>
+      <span class="ex-badge ex-badge-type">LEFT JOIN</span>
+    </div>
+    <h3>Clients avec nombre de commandes</h3>
+    <p>Listez tous les clients (nom, ville) avec le nombre de leurs commandes actives. Affichez 0 pour les clients sans commande active. Triez par nombre de commandes décroissant.</p>
+    <div class="sql-editor">
+      <div class="sql-editor-hd"><span>SQL</span><span></span></div>
+      <textarea id="ex2-input" placeholder="SELECT ...">SELECT c.nom, c.ville,
+       COUNT(p.commande_id) AS nb_commandes_actives
+FROM   CLIENTS c
+LEFT JOIN COMMANDES p ON c.client_id = p.client_id
+                   AND p.statut = 'ACTIF'
+GROUP BY c.nom, c.ville
+ORDER BY nb_commandes_actives DESC;</textarea>
+    </div>
+    <button class="sql-run-btn" onclick="runEx('ex2')">▶ Exécuter</button>
+    <div class="sql-result" id="ex2-result"><div class="sql-result-hd"></div><div class="sql-result-body"></div></div>
+    <span class="hint-toggle" onclick="toggleHint('h2')">💡 Voir l'indice</span>
+    <div class="hint-body" id="h2">Le filtre statut = 'ACTIF' doit être dans la condition ON du JOIN (pas dans WHERE), sinon le LEFT JOIN se transforme en INNER JOIN.</div>
+  </div>
+
+  <!-- EX3 -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-badge ex-badge-num">EX 03</span>
+      <span class="ex-badge ex-badge-type">GROUP BY + HAVING</span>
+    </div>
+    <h3>Agences performantes</h3>
+    <p>Trouvez les agences dont le total des montants actives dépasse 500 000 FCFA. Affichez l'agence, le nombre de commandes et le total des montants.</p>
+    <div class="sql-editor">
+      <div class="sql-editor-hd"><span>SQL</span><span></span></div>
+      <textarea id="ex3-input" placeholder="SELECT ...">SELECT agence,
+       COUNT(*) AS nb_commandes,
+       SUM(montant) AS total_montants
+FROM   COMMANDES
+WHERE  statut = 'ACTIF'
+GROUP BY agence
+HAVING SUM(montant) > 500000
+ORDER BY total_montants DESC;</textarea>
+    </div>
+    <button class="sql-run-btn" onclick="runEx('ex3')">▶ Exécuter</button>
+    <div class="sql-result" id="ex3-result"><div class="sql-result-hd"></div><div class="sql-result-body"></div></div>
+    <span class="hint-toggle" onclick="toggleHint('h3')">💡 Voir l'indice</span>
+    <div class="hint-body" id="h3">HAVING filtre après GROUP BY. Le filtre statut = 'ACTIF' va dans WHERE (avant agrégation).</div>
+  </div>
+
+  <!-- EX4 -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-badge ex-badge-num">EX 04</span>
+      <span class="ex-badge ex-badge-type">CTE</span>
+    </div>
+    <h3>Taux de taux de perte par produit</h3>
+    <p>Calculez, pour chaque produit, le taux de taux de perte = total transactions / total montants × 100. Utilisez des CTEs pour la lisibilité.</p>
+    <div class="sql-editor">
+      <div class="sql-editor-hd"><span>SQL</span><span></span></div>
+      <textarea id="ex4-input" placeholder="WITH ...">WITH montants AS (
+  SELECT produit, SUM(montant) AS total_montants
+  FROM   COMMANDES WHERE statut = 'ACTIF'
+  GROUP BY produit
+),
+transactions AS (
+  SELECT p.produit, SUM(s.montant) AS total_sin
+  FROM   TRANSACTIONS s
+  JOIN   COMMANDES p ON s.commande_id = p.commande_id
+  GROUP BY p.produit
+)
+SELECT pr.produit,
+       pr.total_montants,
+       ISNULL(si.total_sin, 0) AS total_sin,
+       ROUND(ISNULL(si.total_sin,0)*100.0/pr.total_montants, 1) AS taux_pct
+FROM   montants pr
+LEFT JOIN transactions si ON pr.produit = si.produit
+ORDER BY taux_pct DESC;</textarea>
+    </div>
+    <button class="sql-run-btn" onclick="runEx('ex4')">▶ Exécuter</button>
+    <div class="sql-result" id="ex4-result"><div class="sql-result-hd"></div><div class="sql-result-body"></div></div>
+    <span class="hint-toggle" onclick="toggleHint('h4')">💡 Voir l'indice</span>
+    <div class="hint-body" id="h4">Deux CTEs séparées : une pour les montants agrégées par produit, une pour les transactions. JOIN final pour calculer le taux.</div>
+  </div>
+
+  <!-- EX5 -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-badge ex-badge-num">EX 05</span>
+      <span class="ex-badge ex-badge-type">Window Function</span>
+    </div>
+    <h3>Classement des commandes par agence</h3>
+    <p>Pour chaque agence, numérotez les commandes actives de la plus chère à la moins chère (ROW_NUMBER). Affichez aussi le rang en tenant compte des ex-aequo (DENSE_RANK).</p>
+    <div class="sql-editor">
+      <div class="sql-editor-hd"><span>SQL</span><span></span></div>
+      <textarea id="ex5-input" placeholder="SELECT ...">SELECT
+  agence, commande_id, produit, montant,
+  ROW_NUMBER() OVER(PARTITION BY agence ORDER BY montant DESC) AS rn,
+  DENSE_RANK() OVER(PARTITION BY agence ORDER BY montant DESC) AS rang
+FROM COMMANDES
+WHERE statut = 'ACTIF'
+ORDER BY agence, rang;</textarea>
+    </div>
+    <button class="sql-run-btn" onclick="runEx('ex5')">▶ Exécuter</button>
+    <div class="sql-result" id="ex5-result"><div class="sql-result-hd"></div><div class="sql-result-body"></div></div>
+    <span class="hint-toggle" onclick="toggleHint('h5')">💡 Voir l'indice</span>
+    <div class="hint-body" id="h5">PARTITION BY agence crée une fenêtre par agence. ORDER BY montant DESC pour classer du plus cher au moins cher.</div>
+  </div>
+
+  <!-- EX6 -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-badge ex-badge-num">EX 06</span>
+      <span class="ex-badge ex-badge-type">LAG / LEAD</span>
+    </div>
+    <h3>Évolution mensuelle du CA</h3>
+    <p>Calculez pour chaque mois : le CA mensuel, le CA du mois précédent (LAG), la variation et le cumul progressif de l'année.</p>
+    <div class="sql-editor">
+      <div class="sql-editor-hd"><span>SQL</span><span></span></div>
+      <textarea id="ex6-input" placeholder="SELECT ...">SELECT
+  mois,
+  ca_mensuel,
+  LAG(ca_mensuel) OVER(ORDER BY mois) AS ca_prec,
+  ca_mensuel - LAG(ca_mensuel) OVER(ORDER BY mois) AS variation,
+  SUM(ca_mensuel) OVER(ORDER BY mois ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumul
+FROM CA_MENSUEL
+ORDER BY mois;</textarea>
+    </div>
+    <button class="sql-run-btn" onclick="runEx('ex6')">▶ Exécuter</button>
+    <div class="sql-result" id="ex6-result"><div class="sql-result-hd"></div><div class="sql-result-body"></div></div>
+  </div>
+
+  <!-- EX7 -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-badge ex-badge-num">EX 07</span>
+      <span class="ex-badge ex-badge-type">EXISTS</span>
+    </div>
+    <h3>Clients à risque transaction</h3>
+    <p>Trouvez tous les clients qui ont au moins un transaction avec un montant supérieur à 200 000 FCFA, en utilisant EXISTS.</p>
+    <div class="sql-editor">
+      <div class="sql-editor-hd"><span>SQL</span><span></span></div>
+      <textarea id="ex7-input" placeholder="SELECT ...">SELECT c.client_id, c.nom, c.ville
+FROM   CLIENTS c
+WHERE EXISTS (
+  SELECT 1
+  FROM   TRANSACTIONS s
+  JOIN   COMMANDES   p ON s.commande_id = p.commande_id
+  WHERE  p.client_id = c.client_id
+    AND  s.montant > 200000
+)
+ORDER BY c.nom;</textarea>
+    </div>
+    <button class="sql-run-btn" onclick="runEx('ex7')">▶ Exécuter</button>
+    <div class="sql-result" id="ex7-result"><div class="sql-result-hd"></div><div class="sql-result-body"></div></div>
+  </div>
+
+  <!-- EX8 -->
+  <div class="ex-card">
+    <div class="ex-hd">
+      <span class="ex-badge ex-badge-num">EX 08</span>
+      <span class="ex-badge ex-badge-type">Synthèse</span>
+    </div>
+    <h3>Tableau de bord complet</h3>
+    <p>Construisez un tableau de bord par agence : nombre de commandes actives, CA total, CA moyen, top montant, nombre de transactions en cours et taux de taux de perte.</p>
+    <div class="sql-editor">
+      <div class="sql-editor-hd"><span>SQL</span><span></span></div>
+      <textarea id="ex8-input" placeholder="WITH ..." style="min-height:120px">WITH stats_commandes AS (
+  SELECT agence,
+    COUNT(*) nb_commandes, SUM(montant) ca_total,
+    AVG(montant) ca_moyen, MAX(montant) top_montant
+  FROM COMMANDES WHERE statut = 'ACTIF'
+  GROUP BY agence
+),
+stats_transactions AS (
+  SELECT p.agence,
+    COUNT(s.transaction_id) AS nb_sin,
+    SUM(s.montant) AS total_sin
+  FROM COMMANDES p
+  LEFT JOIN TRANSACTIONS s ON p.commande_id = s.commande_id
+                       AND s.statut = 'EN_COURS'
+  WHERE p.statut = 'ACTIF'
+  GROUP BY p.agence
+)
+SELECT sp.agence, sp.nb_commandes, sp.ca_total,
+       sp.ca_moyen, sp.top_montant,
+       ss.nb_sin AS transactions_en_cours,
+       ROUND(ISNULL(ss.total_sin,0)*100.0/sp.ca_total,1) AS taux_sin_pct
+FROM stats_commandes sp
+LEFT JOIN stats_transactions ss ON sp.agence = ss.agence
+ORDER BY sp.ca_total DESC;</textarea>
+    </div>
+    <button class="sql-run-btn" onclick="runEx('ex8')">▶ Exécuter</button>
+    <div class="sql-result" id="ex8-result"><div class="sql-result-hd"></div><div class="sql-result-body"></div></div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="btn" onclick="showCh(5)">← Fonctions Fenêtre</button>
+    <button class="btn btn-primary" onclick="showCh(7)">QCM Final →</button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     CH7 — QCM
+══════════════════════════════════════ -->
+<section class="chapter" id="ch7">
+  <div class="ch-eyebrow">Chapitre 07 · Certification</div>
+  <h1 class="ch-title">QCM — Certification SQL</h1>
+  <p class="ch-intro">20 questions pour valider vos acquis. Score ≥ 14/20 = Certificat SQL Professionnel.</p>
+
+  <div class="qcm-wrap" id="qcm-container">
+    <div class="qcm-prog"><div class="qcm-prog-fill" id="qcm-fill" style="width:0%"></div></div>
+    <div class="qcm-ctr" id="qcm-ctr">Question 1 / 20</div>
+    <div id="qcm-q-wrap"></div>
+    <div class="qcm-nav">
+      <button class="btn" id="qcm-prev" onclick="qPrev()" disabled>← Précédent</button>
+      <button class="btn btn-primary" id="qcm-next" onclick="qNext()">Suivant →</button>
+    </div>
+  </div>
+
+  <div id="qcm-result" style="display:none">
+    <div class="result-wrap">
+      <div class="result-score-big" id="res-score"></div>
+      <div class="result-grade" id="res-grade"></div>
+      <div class="result-detail" id="res-detail"></div>
+      <div id="cert-name-form" style="display:none;margin-top:16px">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:8px">Entrez votre nom pour générer votre certificat :</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+          <input id="cert-name-inp" type="text" placeholder="Votre nom complet" style="padding:9px 14px;border:1px solid var(--border);border-radius:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;flex:1;min-width:180px;max-width:280px">
+          <button onclick="genCert()" class="btn btn-primary">Générer le certificat →</button>
+        </div>
+      </div>
+      <div id="cert-wrap" style="display:none">
+        <div class="cert" id="cert-el">
+          <div class="cert-logo">SQLMaîtrise</div>
+          <div class="cert-type">FinMark TEC · Certification</div>
+          <div class="cert-presents">Ce certificat est délivré à</div>
+          <div class="cert-name" id="cert-name-el">—</div>
+          <div class="cert-course-name">SQL Professionnel — Niveau Avancé</div>
+          <div class="cert-sub">SELECT · JOIN · GROUP BY · CTE · Window Functions</div>
+          <div class="cert-score-txt">Score : <span id="cert-score-el"></span> · <span id="cert-grade-el"></span></div>
+          <div class="cert-footer">
+            <div class="cert-sig-block"><div class="cert-line"></div><div class="cert-sig-name">Kouassi F.-N. ZOUZOU</div><div class="cert-sig-role">Formateur · FinMark TEC</div></div>
+            <div class="cert-seal-block">🏆</div>
+            <div class="cert-sig-block"><div class="cert-line"></div><div class="cert-sig-name" id="cert-date-el"></div><div class="cert-sig-role">Date de délivrance</div></div>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="printCert()" style="margin:14px auto;display:block">🖨️ Immontantr / Télécharger</button>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="resetQCM()">🔄 Recommencer</button>
+        <button class="btn" onclick="showCh(0)">← Accueil</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-btns" style="margin-top:16px">
+    <button class="btn" onclick="showCh(6)">← Exercices</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+// ── STATE ──
+let curCh = 0;
+const TOTAL_CH = 8;
+
+function toggleSb(){ document.getElementById('sidebar').classList.toggle('open'); }
+
+function showCh(n){
+  document.querySelectorAll('.chapter').forEach((c,i)=>c.classList.toggle('active',i===n));
+  document.querySelectorAll('.sb-link').forEach((l,i)=>l.classList.toggle('active',i===n));
+  curCh = n;
+  const fill = document.getElementById('sb-fill');
+  if(fill) fill.style.width = Math.round(n/(TOTAL_CH-1)*100)+'%';
+  const m = document.getElementById('main');
+  if(m) m.scrollTo({top:0,behavior:'smooth'});
+  else window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('sidebar').classList.remove('open');
+  if(n===7 && !qcmState.inited) initQCM();
+}
+
+// ── EXERCISE RUNNER (simulated) ──
+const EXPECTED = {
+  ex1: {
+    head:'✅ 12 lignes — commande_id | produit | montant',
+    body:'P001 | VIE    | 500 000\nP008 | VIE    | 480 000\nP003 | AUTO   | 320 000\nP012 | SANTE  | 290 000\n... (12 lignes)'
+  },
+  ex2: {
+    head:'✅ 24 lignes — nom | ville | nb_commandes_actives',
+    body:'Aminata K.  | Abidjan  | 3\nKofi M.     | Accra    | 2\nMarie D.    | Dakar    | 2\nSomé B.     | Lomé     | 0\n... (24 lignes)'
+  },
+  ex3: {
+    head:'✅ 4 agences — agence | nb_commandes | total_montants',
+    body:'Plateau      | 28 | 4 280 000\nCocody       | 22 | 3 150 000\nYopougon     | 19 | 2 890 000\nMarcory      | 15 | 2 540 000'
+  },
+  ex4: {
+    head:'✅ 5 produits — produit | total_montants | total_sin | taux_pct',
+    body:'AUTO   | 8 200 000 | 4 920 000 | 60.0%\nSANTE  | 5 400 000 | 2 700 000 | 50.0%\nVIE    | 12 500 000| 5 000 000 | 40.0%\nHAB    | 3 100 000 |   620 000 | 20.0%\nVOY    | 1 800 000 |   180 000 | 10.0%'
+  },
+  ex5: {
+    head:'✅ Résultat — agence | commande_id | produit | montant | rn | rang',
+    body:'Cocody | P008 | VIE  | 480 000 | 1 | 1\nCocody | P021 | AUTO | 350 000 | 2 | 2\nCocody | P021 | AUTO | 350 000 | 3 | 2\nPlateau| P001 | VIE  | 500 000 | 1 | 1\n...'
+  },
+  ex6: {
+    head:'✅ 12 mois — mois | ca_mensuel | ca_prec | variation | cumul',
+    body:'2024-01 | 680 000 | NULL    | NULL    | 680 000\n2024-02 | 720 000 | 680 000 | +40 000 | 1 400 000\n2024-03 | 695 000 | 720 000 | -25 000 | 2 095 000\n...'
+  },
+  ex7: {
+    head:'✅ Clients à risque — client_id | nom | ville',
+    body:'C004 | Adjoa T.   | Lomé\nC011 | Seydou B.  | Abidjan\nC017 | Fatou D.   | Dakar\n... (8 clients)'
+  },
+  ex8: {
+    head:'✅ Tableau de bord — agence | nb_commandes | ca_total | ca_moyen | top_montant | transactions_en_cours | taux_sin_pct',
+    body:'Plateau  | 28 | 4 280 000 | 152 857 | 500 000 | 4 | 28.5%\nCocody   | 22 | 3 150 000 | 143 181 | 480 000 | 2 | 15.2%\n...'
+  }
+};
+
+function runEx(id){
+  const inp = document.getElementById(id+'-input');
+  const res = document.getElementById(id+'-result');
+  const hd  = res.querySelector('.sql-result-hd');
+  const bd  = res.querySelector('.sql-result-body');
+  const val = inp ? inp.value.trim() : '';
+  if(!val){ return; }
+  res.style.display='block';
+  // Simulate execution
+  if(EXPECTED[id]){
+    res.className='sql-result ok';
+    hd.textContent = EXPECTED[id].head;
+    bd.textContent = EXPECTED[id].body;
+  } else {
+    res.className='sql-result ok';
+    hd.textContent='✅ Requête exécutée';
+    bd.textContent='(Résultat simulé — comparez avec la solution attendue)';
+  }
+}
+
+function toggleHint(id){
+  const el = document.getElementById(id);
+  if(el) el.style.display = el.style.display==='block'?'none':'block';
+}
+
+// ── QCM ──
+const QCM = [
+  {q:"Quel ordre d'exécution SQL est correct ?",opts:["SELECT → FROM → WHERE → GROUP BY","FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY","WHERE → FROM → SELECT → ORDER BY","SELECT → WHERE → GROUP BY → FROM"],correct:1,exp:"L'ordre d'exécution logique est : FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT. L'ordre d'écriture est différent de l'ordre d'exécution."},
+  {q:"Quelle clause utiliser pour filtrer APRÈS une agrégation GROUP BY ?",opts:["WHERE","FILTER","HAVING","QUALIFY"],correct:2,exp:"HAVING s'applique après GROUP BY et peut utiliser des fonctions d'agrégation. WHERE s'applique avant GROUP BY et ne peut pas utiliser d'agrégats."},
+  {q:"Un LEFT JOIN retourne...",opts:["Uniquement les lignes communes aux deux tables","Toutes les lignes de la table de gauche, avec NULL pour les colonnes de droite sans correspondance","Toutes les lignes des deux tables","Le produit cartésien des deux tables"],correct:1,exp:"LEFT JOIN conserve toutes les lignes de la table gauche (FROM). Les lignes sans correspondance dans la table droite ont NULL pour les colonnes de droite."},
+  {q:"Quelle est la différence entre RANK() et DENSE_RANK() ?",opts:["Il n'y a aucune différence","RANK() saute des numéros en cas d'ex-aequo, DENSE_RANK() ne saute pas","DENSE_RANK() saute des numéros, RANK() ne saute pas","RANK() ne fonctionne que sur des entiers"],correct:1,exp:"Si 2 lignes ont le rang 3, RANK() attribue 3,3 puis saute à 5. DENSE_RANK() attribue 3,3 puis continue à 4 — sans trou."},
+  {q:"Que retourne NULL = NULL en SQL ?",opts:["TRUE","FALSE","NULL","Une erreur"],correct:2,exp:"En SQL, toute comparaison avec NULL retourne NULL (inconnu), pas TRUE ni FALSE. Il faut utiliser IS NULL ou IS NOT NULL pour tester les valeurs nulles."},
+  {q:"Quelle est la syntaxe correcte d'une CTE ?",opts:["CREATE TEMP TABLE t AS SELECT...","WITH t AS (SELECT...) SELECT * FROM t","DEFINE t AS (SELECT...) USE t","TEMP t SELECT..."],correct:1,exp:"La syntaxe CTE utilise WITH nom_cte AS (requête) suivi de la requête principale qui référence le nom de la CTE."},
+  {q:"Quelle fonction fenêtre permet d'accéder à la valeur de la ligne précédente ?",opts:["PREV()","BEFORE()","LAG()","OFFSET()"],correct:2,exp:"LAG(col, n) accède à la valeur n lignes avant la ligne courante dans la fenêtre définie par OVER(). LEAD() fait l'inverse (lignes suivantes)."},
+  {q:"Que fait COALESCE(a, b, c) ?",opts:["Retourne la somme de a, b et c","Retourne le maximum entre a, b et c","Retourne le premier argument non-NULL","Concatène a, b et c"],correct:2,exp:"COALESCE retourne le premier argument non-NULL de la liste. Très utile pour remplacer les NULL : COALESCE(colonne, 0) retourne 0 si colonne est NULL."},
+  {q:"Quelle est la différence entre EXISTS et IN pour une sous-requête ?",opts:["Aucune différence de résultat ou performance","EXISTS s'arrête à la première correspondance (plus efficace sur grands volumes), IN charge toutes les valeurs","IN s'arrête à la première correspondance, EXISTS charge tout","EXISTS ne fonctionne qu'avec des sous-requêtes corrélées"],correct:1,exp:"EXISTS est souvent plus efficace car il court-circuite dès la première correspondance trouvée. IN charge toutes les valeurs de la sous-requête en mémoire. Sur de grandes tables, EXISTS est préférable."},
+  {q:"PARTITION BY dans une fonction fenêtre est équivalent à...",opts:["ORDER BY","WHERE","GROUP BY (mais sans réduire les lignes)","DISTINCT"],correct:2,exp:"PARTITION BY divise les données en groupes (comme GROUP BY) mais sans agréger — chaque ligne est conservée avec accès aux calculs de son groupe."},
+  {q:"Quelle requête trouve les clients SANS aucune commande ?",opts:["SELECT * FROM CLIENTS WHERE commande_id IS NULL","SELECT c.* FROM CLIENTS c LEFT JOIN COMMANDES p ON c.id=p.client_id WHERE p.commande_id IS NULL","SELECT * FROM CLIENTS WHERE NOT EXISTS(SELECT 1 FROM COMMANDES WHERE client_id=CLIENTS.id) -- les deux B et C","Réponses B et C sont toutes les deux correctes"],correct:3,exp:"LEFT JOIN + WHERE NULL et NOT EXISTS produisent le même résultat : clients sans correspondance dans COMMANDES. Les deux approches sont valides; NOT EXISTS est souvent plus lisible."},
+  {q:"Quel opérateur permet de rechercher un pattern dans une chaîne ?",opts:["MATCH","CONTAINS","LIKE","REGEXP_ONLY"],correct:2,exp:"LIKE utilise % (n'importe quel nombre de caractères) et _ (exactement un caractère). Ex: LIKE 'A%' = commence par A, LIKE '%KOFFI%' = contient KOFFI."},
+  {q:"Dans quel ordre s'exécutent les clauses suivantes ?",opts:["WHERE puis HAVING","HAVING puis WHERE","Les deux s'exécutent en même temps","L'ordre dépend de l'optimiseur"],correct:0,exp:"WHERE filtre avant GROUP BY (sur les lignes), HAVING filtre après GROUP BY (sur les groupes). WHERE s'exécute toujours avant HAVING."},
+  {q:"ROW_NUMBER() OVER(PARTITION BY agence ORDER BY montant DESC) — que fait cette expression ?",opts:["Calcule la somme des montants par agence","Numérote les commandes de chaque agence de la plus chère à la moins chère, en repartant de 1 pour chaque agence","Classe toutes les commandes globalement","Calcule le rang de l'agence"],correct:1,exp:"PARTITION BY agence crée une fenêtre par agence. ORDER BY montant DESC trie du plus grand au plus petit. ROW_NUMBER() attribue 1, 2, 3... pour chaque agence indépendamment."},
+  {q:"Quelle est l'utilité de NULLIF(a, b) ?",opts:["Retourne NULL si a est nul","Retourne NULL si a = b (pour éviter les divisions par zéro)","Remplace NULL par b","Compare deux valeurs nulles"],correct:1,exp:"NULLIF(a, b) retourne NULL si a = b, sinon retourne a. Très utilisé pour éviter les divisions par zéro : SUM(x) / NULLIF(SUM(y), 0) — si y vaut 0, retourne NULL au lieu d'une erreur."},
+  {q:"Quelle fonction d'agrégation compte uniquement les valeurs non-NULL ?",opts:["COUNT(*) uniquement","COUNT(colonne) — ignore les NULL, COUNT(*) compte tout","Les deux comptent pareil","Aucune des deux ne compte les NULL"],correct:1,exp:"COUNT(*) compte toutes les lignes (y compris celles avec NULL). COUNT(colonne) compte uniquement les lignes où la colonne n'est pas NULL. Différence importante pour les LEFT JOIN."},
+  {q:"Qu'est-ce qu'un SELF JOIN ?",opts:["Une table jointe à une copie d'elle-même","Une jointure sans condition ON","Une jointure entre deux tables identiques","Une jointure circulaire interdite"],correct:0,exp:"Un SELF JOIN joint une table à elle-même (avec deux alias différents). Utile pour les hiérarchies (employé → manager) ou comparer des lignes de la même table."},
+  {q:"ROWS BETWEEN 2 PRECEDING AND CURRENT ROW — que calcule cette fenêtre ?",opts:["Les 2 lignes suivantes","La ligne courante et les 2 lignes précédentes (fenêtre glissante de 3)","Toutes les lignes depuis le début","Les 2 premières lignes du groupe"],correct:1,exp:"Cette clause définit une fenêtre glissante de 3 lignes : la ligne courante + les 2 lignes précédentes. Utile pour des moyennes glissantes ou cumuls partiels."},
+  {q:"Laquelle de ces requêtes retourne une erreur en SQL ?",opts:["SELECT produit, COUNT(*) FROM commandes GROUP BY produit","SELECT produit FROM commandes WHERE COUNT(*) > 5","SELECT produit FROM commandes HAVING COUNT(*) > 5 GROUP BY produit","SELECT COUNT(*) FROM commandes"],correct:1,exp:"WHERE COUNT(*) > 5 est invalide car WHERE ne peut pas contenir de fonctions d'agrégation. Il faut utiliser HAVING. La requête C est aussi incorrecte (HAVING avant GROUP BY) mais génère une erreur de syntaxe."},
+  {q:"Quelle est la meilleure pratique pour améliorer les performances d'une requête sur une grande table ?",opts:["Utiliser SELECT * pour simplifier","Toujours utiliser CROSS JOIN","Créer un INDEX sur les colonnes filtrées (WHERE) et jointes (ON)","Éviter les CTEs car elles sont lentes"],correct:2,exp:"Les INDEX accélèrent considérablement les recherches sur les colonnes de filtrage (WHERE) et de jointure (ON). SELECT * force la lecture de toutes les colonnes. Les CTEs sont généralement optimisées par le moteur."}
+];
+
+let qcmState = {cur:0, answers:Array(20).fill(null), answered:Array(20).fill(false), inited:false};
+
+function initQCM(){
+  qcmState = {cur:0, answers:Array(20).fill(null), answered:Array(20).fill(false), inited:true};
+  renderQ();
+}
+
+function renderQ(){
+  const n=qcmState.cur, q=QCM[n];
+  document.getElementById('qcm-ctr').textContent=`Question ${n+1} / ${QCM.length}`;
+  document.getElementById('qcm-fill').style.width=`${(n/QCM.length)*100}%`;
+  document.getElementById('qcm-prev').disabled=n===0;
+  document.getElementById('qcm-next').textContent=n===QCM.length-1?'Terminer ✓':'Suivant →';
+  document.getElementById('qcm-q-wrap').innerHTML=`
+    <div class="qcm-q-card">
+      <div class="qcm-q-tag">Q${String(n+1).padStart(2,'0')}</div>
+      <div class="qcm-q-text">${q.q}</div>
+      <div class="qcm-opts">
+        ${q.opts.map((o,i)=>`
+          <button class="qcm-opt ${qcmState.answered[n]?(i===q.correct?'correct':(i===qcmState.answers[n]?'wrong':'')):(qcmState.answers[n]===i?'selected':'')}"
+            onclick="qSel(${i})" ${qcmState.answered[n]?'disabled':''}>
+            <span class="qcm-opt-ltr">${'ABCD'[i]}</span>${o}
+          </button>`).join('')}
+      </div>
+      ${qcmState.answered[n]?`<div class="qcm-exp show">${qcmState.answers[n]===q.correct?'✅':'❌'} ${q.exp}</div>`:''}
+    </div>`;
+}
+
+function qSel(i){
+  const n=qcmState.cur;
+  if(qcmState.answered[n]) return;
+  qcmState.answers[n]=i; qcmState.answered[n]=true; renderQ();
+}
+function qNext(){
+  if(qcmState.cur===QCM.length-1){showResult();return;}
+  qcmState.cur++; renderQ();
+}
+function qPrev(){ if(qcmState.cur>0){qcmState.cur--;renderQ();} }
+
+function showResult(){
+  document.getElementById('qcm-container').style.display='none';
+  document.getElementById('qcm-result').style.display='block';
+  const score=qcmState.answers.filter((a,i)=>a===QCM[i].correct).length;
+  document.getElementById('res-score').textContent=`${score}/20`;
+  document.getElementById('qcm-fill').style.width='100%';
+  const[g,d]=score>=18?['🏆 Expert SQL !','Performance exceptionnelle. Vous maîtrisez SQL à un niveau avancé confirmé.']:
+    score>=14?['✅ SQL Professionnel','Vous maîtrisez les fondamentaux et les techniques avancées. Certificat débloqué !']:
+    score>=10?['📚 Intermédiaire confirmé','Bon niveau. Relisez les chapitres 4 et 5 pour progresser.']:
+    ['🔄 À renforcer','Recommencez depuis le chapitre 1. Prenez le temps de pratiquer chaque concept.'];
+  document.getElementById('res-grade').textContent=g;
+  document.getElementById('res-detail').textContent=d;
+  document.getElementById('cert-score-el').textContent=`${score}/20`;
+  document.getElementById('cert-grade-el').textContent=g.replace(/^[^ ]+ /,'');
+  document.getElementById('cert-date-el').textContent=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  if(score>=14) document.getElementById('cert-name-form').style.display='block';
+}
+
+function genCert(){
+  const name=document.getElementById('cert-name-inp').value.trim()||'Participant';
+  document.getElementById('cert-name-el').textContent=name;
+  document.getElementById('cert-wrap').style.display='block';
+  document.getElementById('cert-name-form').style.display='none';
+  document.getElementById('cert-wrap').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function printCert(){
+  const h=document.getElementById('cert-el').outerHTML;
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Certificat SQL</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>*{margin:0;padding:0;box-sizing:border-box}body{background:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:'Plus Jakarta Sans',sans-serif;padding:20px}
+  .cert{background:#fff;border:3px solid #1DBF73;border-radius:16px;padding:40px;text-align:center;max-width:680px;position:relative}
+  .cert::before{content:'';position:absolute;inset:7px;border:1px solid rgba(29,191,115,.2);border-radius:12px;pointer-events:none}
+  .cert-logo{font-size:15px;font-weight:800;color:#1DBF73;font-family:monospace}.cert-type{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#6b7280;margin-top:2px;margin-bottom:24px}
+  .cert-presents{font-size:12px;color:#6b7280;margin-bottom:5px}.cert-name{font-size:30px;font-weight:800;color:#1a1f2e;font-style:italic;margin-bottom:7px;letter-spacing:-.3px}
+  .cert-course-name{font-size:17px;font-weight:700;color:#1DBF73;margin-bottom:5px}.cert-sub{font-size:11px;color:#6b7280;margin-bottom:6px}
+  .cert-score-txt{font-size:12px;color:#1a1f2e;font-weight:600;margin-bottom:26px}
+  .cert-footer{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}.cert-sig-block{flex:1;text-align:center}.cert-seal-block{font-size:40px}
+  .cert-line{width:90px;height:2px;background:#e2e5ea;margin:0 auto 5px}.cert-sig-name{font-size:11px;font-weight:700;color:#1a1f2e}.cert-sig-role{font-size:9px;color:#6b7280}
+  @media print{body{padding:0}@page{margin:1cm}}</style></head><body>${h}</body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),600);
+}
+
+function resetQCM(){
+  document.getElementById('qcm-container').style.display='block';
+  document.getElementById('qcm-result').style.display='none';
+  initQCM();
+}
+
+// ── HERO BUBBLES ──
+(function(){
+  const canvas=document.getElementById('hero-bubbles');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  let W,H,bubs=[];
+  const COLS=['rgba(29,191,115,','rgba(45,107,228,','rgba(255,107,107,','rgba(247,160,114,','rgba(255,255,255,'];
+  function resize(){const r=canvas.parentElement.getBoundingClientRect();W=canvas.width=r.width;H=canvas.height=r.height;}
+  function mkBub(){return{x:Math.random()*W,y:Math.random()*H,r:3+Math.random()*18,dx:(Math.random()-.5)*.35,dy:-(0.1+Math.random()*.3),col:COLS[Math.floor(Math.random()*COLS.length)],a:0.04+Math.random()*.16,ph:Math.random()*Math.PI*2,ps:0.015+Math.random()*.02};}
+  function init(){resize();bubs=Array.from({length:38},mkBub);}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    bubs.forEach(b=>{
+      b.ph+=b.ps;
+      const r=b.r+Math.sin(b.ph)*1.5,a=b.a+Math.sin(b.ph)*.03;
+      const g=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,r*2.2);
+      g.addColorStop(0,b.col+(a*1.4)+')');g.addColorStop(1,b.col+'0)');
+      ctx.beginPath();ctx.arc(b.x,b.y,r*2.2,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+      ctx.beginPath();ctx.arc(b.x,b.y,r,0,Math.PI*2);ctx.strokeStyle=b.col+(a*1.8)+')';ctx.lineWidth=1;ctx.stroke();
+      b.x+=b.dx;b.y+=b.dy;
+      if(b.y+r<0){b.y=H+r;b.x=Math.random()*W;}
+      if(b.x+r<0)b.x=W+r;if(b.x-r>W)b.x=-r;
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);
+  init();draw();
+})();
+
+</script>
+</body>
+</html>

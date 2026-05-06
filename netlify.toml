@@ -1,0 +1,30 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/payment/create"
+  to = "/.netlify/functions/create-payment"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/payment/verify"
+  to = "/.netlify/functions/verify-payment"
+  status = 200
+  force = true
+
+# Les .html dans /courses/ doivent être servis tels quels (pas de fallback SPA).
+[[redirects]]
+  from = "/courses/*"
+  to = "/courses/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
