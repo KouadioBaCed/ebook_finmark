@@ -165,7 +165,7 @@ export function Landing() {
           <div>
             <div className="hero-cards">
               <button className="hpc" onClick={() => setOpenSlug('dataviz')}>
-                <div className="hpc-top"><span className="hpc-tag hpc-tag-g">DataViz</span><div><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></div></div>
+                <div className="hpc-top"><span className="hpc-tag hpc-tag-g">DataViz</span><div><span className="hpc-price">12 500</span> <span className="hpc-cur">FCFA</span></div></div>
                 <div className="hpc-name">Data Visualisation</div>
                 <div className="hpc-desc">35 graphiques · Simulateur live · Certifiant</div>
               </button>
@@ -296,7 +296,7 @@ export function Landing() {
                 "QCM 20 questions + certificat personnalisé",
               ]}
               meta={[['7','Chapitres'],['35+','Graphiques'],['6','Exercices'],['∞','Accès']]}
-              price="12 900" onBuy={() => setOpenSlug('dataviz')}
+              price="12 500" onBuy={() => setOpenSlug('dataviz')}
             />
             <FormationCard
               variant="s" tag="SQL Professionnel" sub="SELECT → JOIN → CTE → Window Functions · Expert"

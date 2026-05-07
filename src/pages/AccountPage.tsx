@@ -25,10 +25,11 @@ export function AccountPage() {
         {COURSES.map(slug => {
           const ok = unlocked.has(slug);
           return (
-            <div key={slug} style={{
+            <div key={slug} className="acc-row" style={{
               border: '1px solid var(--border)', borderRadius: 10, padding: '14px 18px',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
               background: ok ? 'var(--card)' : 'var(--bg)',
+              flexWrap: 'wrap',
             }}>
               <div>
                 <div style={{ fontWeight: 700, color: 'var(--t1)', fontSize: 14 }}>

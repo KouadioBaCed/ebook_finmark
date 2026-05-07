@@ -294,8 +294,8 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:26px 5%
 .fade.vis{opacity:1;transform:translateY(0)}
 
 /* PAYMENT MODAL */
-.pm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:500;padding:16px}
-.pm-card{background:#fff;border-radius:18px;max-width:460px;width:100%;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4);max-height:90vh;display:flex;flex-direction:column}
+.pm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:500;padding:16px;overflow-y:auto}
+.pm-card{background:#fff;border-radius:18px;max-width:460px;width:100%;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4);max-height:calc(100vh - 32px);display:flex;flex-direction:column}
 .pm-head{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:22px 24px;position:relative}
 .pm-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .pm-close:hover{background:rgba(255,255,255,.3)}
@@ -308,7 +308,7 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:26px 5%
 .pm-stat-v{font-size:16px;font-weight:800;color:var(--t1)}
 .pm-field{margin-bottom:14px}
 .pm-label{display:block;font-size:13px;font-weight:600;color:var(--t1);margin-bottom:6px}
-.pm-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;color:var(--t1);background:#fff}
+.pm-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:16px;font-family:inherit;color:var(--t1);background:#fff}
 .pm-input:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(29,191,115,.15)}
 .pm-hint{font-size:11.5px;color:var(--t3);margin-top:5px}
 .pm-info{background:var(--glt);border:1px solid rgba(29,191,115,.25);border-radius:8px;padding:10px 12px;font-size:12px;color:#065f46;line-height:1.55;margin-bottom:14px}
@@ -380,6 +380,7 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:26px 5%
 }
 @media(max-width:540px){
   .hero-ctas{flex-direction:column}
+  .hero-ctas .btn-hero-main,.hero-ctas .btn-hero-ghost{width:100%;text-align:center;justify-content:center}
   .hero-cards{grid-template-columns:1fr 1fr}
   .hpc-bundle{grid-column:span 2}
   .stats-block{grid-template-columns:1fr}
@@ -388,4 +389,64 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:26px 5%
   .how-grid{grid-template-columns:1fr}
   .how-step{border-right:none!important}
   .how-step+.how-step{border-top:1px solid var(--border)!important}
+  /* Sections plus serrées */
+  .section{padding:48px 5%}
+  /* Hero plus compact */
+  .hero-inner{padding:48px 4% 48px;gap:24px}
+  .hero-h1{font-size:30px}
+  .hero-p{font-size:15px}
+  /* Trust bar : éléments centrés et réduits */
+  .trust-inner{justify-content:center;gap:10px}
+  .ti{font-size:12px}
+  .ti-sep{display:none}
+  /* Cards formation : padding réduit */
+  .fc-cover{padding:22px 20px 18px;min-height:170px}
+  .fc-body{padding:18px 20px 20px}
+  .fc-buy{flex-direction:column;align-items:stretch;gap:14px}
+  .fc-btn{justify-content:center}
+  /* Bundle : padding réduit */
+  .bundle-card{padding:24px 18px}
+  .bundle-cta{flex-direction:column;align-items:stretch}
+  .bundle-btn{justify-content:center;width:100%;padding:14px 20px}
+  .bundle-perks{gap:10px}
+  /* eBook recrutement : padding réduit */
+  .ebook-card{padding:24px 18px}
+  /* Final CTA : boutons en colonne pleine largeur */
+  .final-cta{padding:56px 5%}
+  .fcta-btns .btn-hero-main,.fcta-btns .bundle-btn,.fcta-btns .btn-hero-ghost{width:100%;justify-content:center}
+  /* Author card : centré et compact */
+  .author-card{padding:24px 18px}
+  /* FAQ : padding réduit */
+  .faq-q{padding:14px 16px;font-size:13.5px}
+  .faq-a-body{padding:0 16px 16px;font-size:13px}
+  /* Footer : full width */
+  .footer-inner{gap:18px}
+  .footer-links{flex-wrap:wrap;justify-content:center;gap:14px}
+  /* Modal : presque plein écran */
+  .pm-overlay{padding:8px}
+  .pm-head{padding:18px 20px}
+  .pm-body{padding:18px 20px}
+  .pm-actions{padding:0 20px 18px;flex-direction:column-reverse}
+  .pm-actions .pm-btn{width:100%}
+  /* Topbar : padding-right pour la croix */
+  #topbar{padding:8px 36px 8px 12px}
+  #topbar p{font-size:11px;line-height:1.4}
+  /* Course bar : titre tronqué */
+  .course-title{font-size:11.5px;max-width:50vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .course-back{padding:5px 9px;font-size:11px}
+  /* Pages "page" (login/register/account) : padding mobile */
+  .page{margin-top:32px;padding:0 16px}
+  .page-h{font-size:22px}
 }
+
+/* Très petits écrans (320-380px) : certains éléments en colonne */
+@media(max-width:380px){
+  .hero-cards{grid-template-columns:1fr}
+  .hpc-bundle{grid-column:span 1}
+  .nav-r{gap:6px}
+  .nav-cta{padding:8px 12px;font-size:12px}
+  .nav-outline{padding:7px 10px;font-size:12px}
+}
+
+/* Inputs login/register : 16px pour éviter le zoom iOS */
+input.pm-input,.pm-input{font-size:16px}

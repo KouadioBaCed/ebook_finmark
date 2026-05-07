@@ -5,7 +5,7 @@ export type CourseSlug = 'dataviz' | 'sql' | 'kpi' | 'python' | 'scoring' | 'rec
 
 // Doit rester aligné avec COURSE_PRICES dans netlify/functions/create-payment.ts.
 export const COURSE_PRICES: Record<CourseSlug, number> = {
-  dataviz: 200, // ⚠️ TEST PROD — remettre à 12900 après validation
+  dataviz: 12500,
   sql: 12900,
   kpi: 12900,
   python: 12900,
