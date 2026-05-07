@@ -6,6 +6,7 @@ import { PaymentError } from './pages/PaymentError';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { AccountPage } from './pages/AccountPage';
+import { ParcoursPage } from './pages/ParcoursPage';
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
       <Route path="/connexion" element={<LoginPage />} />
       <Route path="/inscription" element={<RegisterPage />} />
       <Route path="/mon-compte" element={<AccountPage />} />
+      <Route path="/parcours" element={<ParcoursPage />} />
       <Route path="/paiement/succes" element={<PaymentSuccess />} />
       <Route path="/paiement/erreur" element={<PaymentError />} />
       <Route path="*" element={<Navigate to="/" replace />} />

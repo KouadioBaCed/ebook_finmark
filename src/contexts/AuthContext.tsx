@@ -11,12 +11,24 @@ import { doc, getDoc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 import type { CourseSlug } from '../services/payment';
 
+export interface CourseProgress {
+  startedAt?: string;
+  lastOpenedAt?: string;
+  /** Liste de chapitres marqués comme terminés (envoyé par l'iframe via postMessage). */
+  chaptersDone?: string[];
+  /** Score du QCM final si passé. */
+  quizScore?: { score: number; total: number; at: string };
+  /** Exercices terminés (slugs/ids libres définis par chaque cours). */
+  exercisesDone?: string[];
+}
+
 export interface AppUser {
   uid: string;
   email: string;
   displayName: string;
   phone?: string;
   unlockedCourses: CourseSlug[];
+  progress?: Record<string, CourseProgress>;
   createdAt: string;
 }
 
@@ -29,6 +41,8 @@ interface AuthContextType {
   logout: () => Promise<void>;
   /** Ajoute un cours débloqué au document user — bundle débloque les 6 cours. */
   addUnlockedCourse: (slug: CourseSlug) => Promise<void>;
+  /** Met à jour le progrès d'un cours (merge avec l'existant). */
+  recordProgress: (slug: CourseSlug, patch: Partial<CourseProgress>) => Promise<void>;
   refresh: () => Promise<void>;
 }
 
@@ -106,6 +120,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setAppUser({ ...appUser, unlockedCourses: updated });
   };
 
+  const recordProgress = async (slug: CourseSlug, patch: Partial<CourseProgress>) => {
+    if (!firebaseUser || !appUser) return;
+    const current: CourseProgress = appUser.progress?.[slug] || {};
+    // Merge intelligent : on cumule chaptersDone et exercisesDone (ne réécrase pas).
+    const merged: CourseProgress = {
+      ...current,
+      ...patch,
+      chaptersDone: Array.from(new Set([...(current.chaptersDone || []), ...(patch.chaptersDone || [])])),
+      exercisesDone: Array.from(new Set([...(current.exercisesDone || []), ...(patch.exercisesDone || [])])),
+    };
+    const ref = doc(db, 'users', firebaseUser.uid);
+    try {
+      await updateDoc(ref, { [`progress.${slug}`]: merged });
+      setAppUser({
+        ...appUser,
+        progress: { ...(appUser.progress || {}), [slug]: merged },
+      });
+    } catch (err) {
+      console.error('[recordProgress] failed', err);
+    }
+  };
+
   const refresh = async () => {
     if (!firebaseUser) return;
     const u = await loadAppUser(firebaseUser);
@@ -113,7 +149,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ firebaseUser, appUser, loading, login, register, logout, addUnlockedCourse, refresh }}>
+    <AuthContext.Provider value={{ firebaseUser, appUser, loading, login, register, logout, addUnlockedCourse, recordProgress, refresh }}>
       {children}
     </AuthContext.Provider>
   );

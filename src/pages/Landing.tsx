@@ -143,6 +143,9 @@ export function Landing() {
           <button className="nav-link" onClick={() => scrollTo('temoignages')}>Témoignages</button>
           <button className="nav-link" onClick={() => scrollTo('about')}>Formateur</button>
           <button className="nav-link" onClick={() => scrollTo('faq')}>FAQ</button>
+          {appUser && (
+            <button className="nav-link" onClick={() => navigate('/parcours')} style={{ color: 'var(--g)', fontWeight: 700 }}>Mon parcours</button>
+          )}
         </div>
         <div className="nav-r">
           {appUser ? (

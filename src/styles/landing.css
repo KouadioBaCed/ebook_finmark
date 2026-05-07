@@ -329,6 +329,33 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:26px 5%
 .course-title{color:rgba(255,255,255,.85);font-size:13px;font-weight:600}
 .course-frame-with-bar{top:42px;height:calc(100vh - 42px)}
 
+/* PARCOURS */
+.parc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:24px 0 32px;text-align:left}
+.parc-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.parc-stat-v{font-size:24px;font-weight:800;color:var(--t1);letter-spacing:-.5px;line-height:1}
+.parc-stat-l{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:6px;font-weight:600}
+.parc-h2{font-size:18px;font-weight:800;color:var(--t1);text-align:left;margin:24px 0 14px}
+.parc-list{display:flex;flex-direction:column;gap:12px;text-align:left}
+.parc-card{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--border);border-radius:10px;padding:16px 18px;transition:box-shadow .15s}
+.parc-card:hover{box-shadow:var(--sh)}
+.parc-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.parc-card-title{font-size:14.5px;font-weight:700;color:var(--t1)}
+.parc-open{padding:7px 14px;border-radius:8px;color:#fff;border:none;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:700;text-decoration:none;display:inline-block;transition:opacity .15s}
+.parc-open:hover{opacity:.88}
+.parc-meta{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.parc-meta-cell{}
+.parc-meta-l{font-size:9.5px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:3px}
+.parc-meta-v{font-size:13px;color:var(--t1);font-weight:600}
+.parc-quiz{margin-top:12px;padding:9px 12px;border-radius:8px;border:1px solid;font-size:12.5px}
+.parc-empty{margin-top:10px;font-size:12.5px;color:var(--t3);font-style:italic}
+@media(max-width:680px){
+  .parc-stats{grid-template-columns:1fr 1fr}
+  .parc-meta{grid-template-columns:1fr 1fr 1fr}
+}
+@media(max-width:420px){
+  .parc-meta{grid-template-columns:1fr 1fr}
+}
+
 /* GENERIC PAGE */
 .page{max-width:560px;margin:80px auto;padding:0 24px;text-align:center;font-family:'Plus Jakarta Sans',sans-serif}
 .page-icon{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 18px;color:#fff}

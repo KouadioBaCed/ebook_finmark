@@ -53,6 +53,7 @@ export function AccountPage() {
 
       <div style={{ marginTop: 28, display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
         <Link to="/" className="page-btn page-btn-outline">← Accueil</Link>
+        <Link to="/parcours" className="page-btn">Mon parcours →</Link>
         <button className="page-btn page-btn-outline" onClick={async () => { await logout(); navigate('/'); }}>Se déconnecter</button>
       </div>
     </div>

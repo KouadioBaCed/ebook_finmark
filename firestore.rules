@@ -44,6 +44,8 @@ service cloud.firestore {
 
       // Mise à jour : champs verrouillés inchangés ET extension de
       // unlockedCourses uniquement (≤ 6 entrées en une fois pour le bundle).
+      // Le champ `progress` (parcours utilisateur, scores QCM, etc.) est
+      // librement modifiable par le titulaire.
       allow update: if isOwner(uid)
         && lockedFieldsUnchanged()
         && unlockedCoursesGrowth() >= 0
