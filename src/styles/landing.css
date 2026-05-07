@@ -348,6 +348,13 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:26px 5%
 .parc-meta-v{font-size:13px;color:var(--t1);font-weight:600}
 .parc-quiz{margin-top:12px;padding:9px 12px;border-radius:8px;border:1px solid;font-size:12.5px}
 .parc-empty{margin-top:10px;font-size:12.5px;color:var(--t3);font-style:italic}
+.parc-history{margin-top:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.parc-history-l{font-size:11px;color:var(--t2);margin-bottom:8px;font-weight:600}
+.parc-history-rows{display:flex;flex-direction:column;gap:5px}
+.parc-history-row{display:grid;grid-template-columns:32px 80px 1fr;gap:8px;align-items:center;font-size:12px;color:var(--t2)}
+.parc-history-n{color:var(--t3);font-family:'JetBrains Mono',monospace;font-size:11px}
+.parc-history-s{font-weight:700;font-family:'JetBrains Mono',monospace}
+.parc-history-d{color:var(--t3);font-size:11px}
 @media(max-width:680px){
   .parc-stats{grid-template-columns:1fr 1fr}
   .parc-meta{grid-template-columns:1fr 1fr 1fr}

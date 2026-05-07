@@ -1546,6 +1546,7 @@ function showResult(){
   document.getElementById('cert-grade-el').textContent=g.replace(/^[^ ]+ /,'');
   document.getElementById('cert-date-el').textContent=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
   if(score>=14) document.getElementById('cert-name-form').style.display='block';
+  try{ if(window.parent && window.parent !== window){ window.parent.postMessage({type:'finmark.progress',quiz:{score:score,total:QCM.length}},'*'); } }catch(_){ }
 }
 
 function genCert(){

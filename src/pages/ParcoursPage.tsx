@@ -102,16 +102,42 @@ export function ParcoursPage() {
                 </div>
               )}
 
-              {ok && p?.quizScore && (
-                <div className="parc-quiz" style={{
-                  background: p.quizScore.score >= Math.ceil(p.quizScore.total * 0.7) ? '#ecfdf5' : '#fef2f2',
-                  borderColor: p.quizScore.score >= Math.ceil(p.quizScore.total * 0.7) ? 'rgba(29,191,115,.3)' : 'rgba(239,68,68,.3)',
-                  color: p.quizScore.score >= Math.ceil(p.quizScore.total * 0.7) ? '#065f46' : '#991b1b',
-                }}>
-                  {p.quizScore.score >= Math.ceil(p.quizScore.total * 0.7) ? '🏆 Réussi' : '📝 Repassez le QCM'} · score : <strong>{p.quizScore.score}/{p.quizScore.total}</strong>
-                  <span style={{ opacity: .6, marginLeft: 8 }}>· {fmtDate(p.quizScore.at)}</span>
-                </div>
-              )}
+              {ok && p?.quizScore && (() => {
+                const ok14 = p.quizScore.score >= Math.ceil(p.quizScore.total * 0.7);
+                const attempts = p.quizAttempts || [p.quizScore];
+                const best = attempts.reduce((b, a) => a.score > b.score ? a : b, attempts[0]);
+                return (
+                  <>
+                    <div className="parc-quiz" style={{
+                      background: ok14 ? '#ecfdf5' : '#fef2f2',
+                      borderColor: ok14 ? 'rgba(29,191,115,.3)' : 'rgba(239,68,68,.3)',
+                      color: ok14 ? '#065f46' : '#991b1b',
+                    }}>
+                      {ok14 ? '🏆 Réussi' : '📝 Repassez le QCM (≥ 14/20 pour le certificat)'} · dernière tentative : <strong>{p.quizScore.score}/{p.quizScore.total}</strong>
+                      <span style={{ opacity: .6, marginLeft: 8 }}>· {fmtDate(p.quizScore.at)}</span>
+                    </div>
+                    {attempts.length > 1 && (
+                      <div className="parc-history">
+                        <div className="parc-history-l">Historique ({attempts.length} tentatives) · meilleur score : <strong>{best.score}/{best.total}</strong></div>
+                        <div className="parc-history-rows">
+                          {[...attempts].reverse().map((a, i) => {
+                            const passed = a.score >= Math.ceil(a.total * 0.7);
+                            return (
+                              <div key={i} className="parc-history-row">
+                                <span className="parc-history-n">#{attempts.length - i}</span>
+                                <span className="parc-history-s" style={{ color: passed ? 'var(--g)' : '#dc2626' }}>
+                                  {passed ? '✓' : '✗'} {a.score}/{a.total}
+                                </span>
+                                <span className="parc-history-d">{fmtDate(a.at)} · {fmtRelative(a.at)}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
 
               {ok && (!p?.chaptersDone?.length && !p?.exercisesDone?.length && !p?.quizScore) && (
                 <div className="parc-empty">

@@ -11,13 +11,21 @@ import { doc, getDoc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 import type { CourseSlug } from '../services/payment';
 
+export interface QuizAttempt {
+  score: number;
+  total: number;
+  at: string;
+}
+
 export interface CourseProgress {
   startedAt?: string;
   lastOpenedAt?: string;
   /** Liste de chapitres marqués comme terminés (envoyé par l'iframe via postMessage). */
   chaptersDone?: string[];
-  /** Score du QCM final si passé. */
-  quizScore?: { score: number; total: number; at: string };
+  /** Dernière tentative QCM (pour affichage rapide). */
+  quizScore?: QuizAttempt;
+  /** Toutes les tentatives QCM (historique complet). */
+  quizAttempts?: QuizAttempt[];
   /** Exercices terminés (slugs/ids libres définis par chaque cours). */
   exercisesDone?: string[];
 }
@@ -123,12 +131,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const recordProgress = async (slug: CourseSlug, patch: Partial<CourseProgress>) => {
     if (!firebaseUser || !appUser) return;
     const current: CourseProgress = appUser.progress?.[slug] || {};
-    // Merge intelligent : on cumule chaptersDone et exercisesDone (ne réécrase pas).
+    // Si patch contient un nouveau quizScore, on l'ajoute aussi à l'historique.
+    const newAttempts = patch.quizScore
+      ? [...(current.quizAttempts || []), patch.quizScore]
+      : current.quizAttempts;
+    // Merge intelligent : on cumule chaptersDone, exercisesDone et quizAttempts (jamais d'écrasement).
     const merged: CourseProgress = {
       ...current,
       ...patch,
       chaptersDone: Array.from(new Set([...(current.chaptersDone || []), ...(patch.chaptersDone || [])])),
       exercisesDone: Array.from(new Set([...(current.exercisesDone || []), ...(patch.exercisesDone || [])])),
+      quizAttempts: newAttempts,
     };
     const ref = doc(db, 'users', firebaseUser.uid);
     try {

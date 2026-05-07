@@ -1553,6 +1553,8 @@ function showR(){
   document.getElementById('cgr').textContent=g;
   document.getElementById('rdetail').textContent=d;
   if(sc>=14) document.getElementById('cform').style.display='block';
+  // Reporte le score au parent (app React) si le cours est ouvert dans un iframe.
+  try{ if(window.parent && window.parent !== window){ window.parent.postMessage({type:'finmark.progress',quiz:{score:sc,total:QD.length}},'*'); } }catch(_){ }
 }
 function genC(){
   const name=document.getElementById('cinp').value.trim()||'Apprenant';
