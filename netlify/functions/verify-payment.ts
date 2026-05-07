@@ -118,12 +118,21 @@ export default async (req: Request) => {
 
   const url = new URL(req.url);
   const urlRef = url.searchParams.get('reference') || '';
+  const merchantRefParam = url.searchParams.get('merchant_ref') || '';
   const cookieRef = getCookie(req, 'gpRef');
-  console.log('[verify-payment] urlRef=', urlRef, 'cookieRef=', cookieRef);
+  console.log('[verify-payment] urlRef=', urlRef, 'merchantRefParam=', merchantRefParam, 'cookieRef=', cookieRef);
 
+  // Ordre de priorité : ref marchand explicite (MTX-…) → ref URL (peut être TXN-…) → cookie.
+  // Le merchant_ref est le plus fiable car GeniusPay redirige souvent avec leur TXN- interne
+  // qui n'est pas reconnu par leur endpoint /payments/{id}.
   const candidates: string[] = [];
-  if (urlRef && REF_RE.test(urlRef)) candidates.push(urlRef);
-  if (cookieRef && REF_RE.test(cookieRef) && cookieRef !== urlRef) candidates.push(cookieRef);
+  const seen = new Set<string>();
+  const tryAdd = (r: string) => {
+    if (r && REF_RE.test(r) && !seen.has(r)) { candidates.push(r); seen.add(r); }
+  };
+  tryAdd(merchantRefParam);
+  tryAdd(urlRef);
+  tryAdd(cookieRef);
 
   if (candidates.length === 0) {
     return json({ success: false, error: { code: 'VALIDATION_ERROR', message: 'A valid reference is required' } }, 422, origin);

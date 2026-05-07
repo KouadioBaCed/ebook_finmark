@@ -42,7 +42,9 @@ export function PaymentSuccess() {
     let cancelled = false;
     (async () => {
       try {
-        const tx = await verifyCoursePayment(ref);
+        // storedRef (MTX-…) est passé comme merchant_ref pour le cas où l'URL ref soit
+        // un TXN-… que GeniusPay ne reconnaît pas sur /payments/{id}.
+        const tx = await verifyCoursePayment(ref, storedRef);
         if (cancelled) return;
         const status = String(tx.status || '').toLowerCase();
         if (status === 'completed' || status === 'succeeded' || status === 'success') {

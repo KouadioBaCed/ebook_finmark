@@ -142,8 +142,12 @@ export async function createCoursePayment(params: CreatePaymentParams): Promise<
   return data.data as CreatePaymentResponse;
 }
 
-export async function verifyCoursePayment(reference: string): Promise<VerifyPaymentResponse> {
-  const res = await fetch(`${VERIFY_URL}?reference=${encodeURIComponent(reference)}`, {
+export async function verifyCoursePayment(reference: string, merchantRef?: string): Promise<VerifyPaymentResponse> {
+  const params = new URLSearchParams({ reference });
+  // GeniusPay redirige avec TXN-… (leur ID), mais leur API /payments/{id} n'accepte
+  // que la ref marchand MTX-…. On l'envoie en plus quand on l'a en localStorage.
+  if (merchantRef && merchantRef !== reference) params.set('merchant_ref', merchantRef);
+  const res = await fetch(`${VERIFY_URL}?${params.toString()}`, {
     credentials: 'same-origin',
   });
   const data = await res.json().catch(() => null);
