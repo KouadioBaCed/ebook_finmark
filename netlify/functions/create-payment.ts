@@ -15,7 +15,7 @@ interface CreatePaymentBody {
 
 // ⚠️ Source de vérité du prix : doit rester aligné avec src/services/payment.ts (COURSE_PRICES).
 const COURSE_PRICES: Record<string, number> = {
-  dataviz: 12900,
+  dataviz: 200, // ⚠️ TEST PROD — remettre à 12900 après validation
   sql: 12900,
   kpi: 12900,
   python: 12900,
