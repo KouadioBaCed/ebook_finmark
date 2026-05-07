@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   COURSE_NAMES,
-  unlockCourse,
   verifyCoursePayment,
   type CourseSlug,
   PaymentApiError,
 } from '../services/payment';
+import { useAuth } from '../contexts/AuthContext';
 
 type State =
   | { kind: 'loading' }
@@ -17,9 +17,12 @@ type State =
 export function PaymentSuccess() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
+  const { appUser, addUnlockedCourse, loading: authLoading } = useAuth();
   const [state, setState] = useState<State>({ kind: 'loading' });
 
   useEffect(() => {
+    if (authLoading) return; // attendre que l'auth soit chargée
+
     const courseParam = params.get('course') as CourseSlug | null;
     const urlRef = params.get('reference') || '';
     let storedRef = '';
@@ -44,7 +47,10 @@ export function PaymentSuccess() {
         const status = String(tx.status || '').toLowerCase();
         if (status === 'completed' || status === 'succeeded' || status === 'success') {
           const finalSlug = (tx.metadata?.course_slug as CourseSlug) || slug || 'dataviz';
-          unlockCourse(finalSlug);
+          // Si l'utilisateur est connecté → on débloque dans Firestore.
+          if (appUser) {
+            try { await addUnlockedCourse(finalSlug); } catch { /* on continue, l'utilisateur peut rafraîchir */ }
+          }
           try {
             localStorage.removeItem('finmark.lastPaymentReference');
             localStorage.removeItem('finmark.lastPaymentSlug');
@@ -62,9 +68,9 @@ export function PaymentSuccess() {
       }
     })();
     return () => { cancelled = true; };
-  }, [params, navigate]);
+  }, [params, navigate, appUser, addUnlockedCourse, authLoading]);
 
-  if (state.kind === 'loading') {
+  if (state.kind === 'loading' || authLoading) {
     return (
       <div className="page">
         <div className="page-icon page-icon-loading">⏳</div>
@@ -80,7 +86,6 @@ export function PaymentSuccess() {
         <h1 className="page-h">Paiement en cours de traitement</h1>
         <p className="page-p">
           Votre paiement n'est pas encore confirmé. Cela peut prendre quelques instants.
-          Rafraîchissez cette page dans un moment.
         </p>
         <button className="page-btn" onClick={() => window.location.reload()}>Rafraîchir</button>
         <button className="page-btn page-btn-outline" onClick={() => navigate('/')}>Accueil</button>
@@ -105,17 +110,14 @@ export function PaymentSuccess() {
       <div className="page-icon page-icon-ok">✓</div>
       <h1 className="page-h">Paiement confirmé !</h1>
       <p className="page-p">
-        Merci pour votre achat. Vous avez maintenant accès {isBundle ? 'aux 3 formations' : `à la formation ${COURSE_NAMES[state.slug]}`}.
+        Merci pour votre achat. Vous avez maintenant accès {isBundle ? 'à toutes les formations' : `à la formation ${COURSE_NAMES[state.slug]}`}.
       </p>
       {isBundle ? (
-        <>
-          <button className="page-btn" onClick={() => navigate('/cours/dataviz')}>Ouvrir DataViz</button>
-          <button className="page-btn" onClick={() => navigate('/cours/sql')}>Ouvrir SQL</button>
-          <button className="page-btn" onClick={() => navigate('/cours/kpi')}>Ouvrir KPI</button>
-        </>
+        <button className="page-btn" onClick={() => navigate('/mon-compte')}>Voir mes formations →</button>
       ) : (
         <button className="page-btn" onClick={() => navigate(`/cours/${state.slug}`)}>Accéder à la formation →</button>
       )}
+      <button className="page-btn page-btn-outline" onClick={() => navigate('/mon-compte')}>Mon compte</button>
     </div>
   );
 }

@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maîtriser le Scoring — FinMark Support</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,700;0,900;1,300;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{
+  --g:#6366f1;--g2:#4f46e5;--glt:#eef2ff;
+  --ink:#0a0a0a;--ink2:#374151;--ink3:#6b7280;
+  --paper:#fafaf9;--card:#ffffff;--border:#e5e7eb;
+  --navy:#0c1421;--navy2:#111e30;
+  --green:#22c55e;--amber:#f59e0b;--red:#ef4444;--blue:#3b82f6;--purple:#8b5cf6;--teal:#14b8a6;
+  --r:10px;--sbw:272px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --sh-lg:0 8px 24px rgba(0,0,0,.10),0 24px 56px rgba(0,0,0,.09);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow-x:hidden;font-family:'Plus Jakarta Sans',sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+/* ── SIDEBAR ── */
+#sb{width:var(--sbw);background:var(--navy);position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column;overflow-y:auto;transition:transform .3s;scrollbar-width:thin}
+.sb-hd{padding:22px 20px 16px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:11px}
+.sb-hd img{height:36px;width:36px;object-fit:contain}
+.sb-brand{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:#fff;letter-spacing:-.2px}
+.sb-brand span{color:var(--g)}
+.sb-sub{font-size:8.5px;color:rgba(255,255,255,.24);text-transform:uppercase;letter-spacing:2px;margin-top:2px}
+.sb-nav{flex:1;padding:8px 0}
+.sb-cat{padding:16px 20px 5px;font-size:8.5px;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:2px;font-weight:700}
+.sb-a{display:flex;align-items:center;gap:10px;padding:9px 20px;color:rgba(255,255,255,.38);font-size:12px;font-weight:500;border-left:3px solid transparent;transition:all .15s;cursor:pointer;user-select:none}
+.sb-a:hover,.sb-a.on{color:#fff;border-left-color:var(--g);background:rgba(99,102,241,.06)}
+.sb-a.on{font-weight:600}
+.sb-nn{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.16);min-width:20px}
+.sb-a.on .sb-nn{color:var(--g)}
+.sb-foot{padding:14px 20px;border-top:1px solid rgba(255,255,255,.05)}
+.sb-pb-lbl{font-size:8.5px;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.sb-pb{height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+#sb-f{height:100%;width:0;background:linear-gradient(90deg,var(--g),#a5b4fc);border-radius:2px;transition:width .4s}
+
+/* ── TOPBAR ── */
+#tb{display:none;background:var(--navy);padding:11px 18px;align-items:center;gap:12px;position:sticky;top:0;z-index:50;border-bottom:1px solid rgba(255,255,255,.05)}
+#burg{background:none;border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.6);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:15px}
+#tb-title{font-size:12px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace}
+
+/* ── MAIN ── */
+#main{margin-left:var(--sbw);min-height:100vh;overflow-x:hidden}
+.ch{display:none;max-width:1060px;margin:0 auto;padding:40px 44px 80px;box-sizing:border-box;width:100%}
+.ch.on{display:block}
+@keyframes fup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.ch.on>*{animation:fup .38s ease both}
+.ch.on>*:nth-child(1){animation-delay:.04s}
+.ch.on>*:nth-child(2){animation-delay:.09s}
+.ch.on>*:nth-child(3){animation-delay:.14s}
+.ch.on>*:nth-child(4){animation-delay:.19s}
+.ch.on>*:nth-child(5){animation-delay:.24s}
+
+/* ── TYPOGRAPHY ── */
+.tag-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;color:var(--g);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.tag-l::before{content:'';width:20px;height:2px;background:var(--g);border-radius:1px;flex-shrink:0}
+.h1{font-family:'Fraunces',serif;font-size:clamp(28px,4vw,44px);font-weight:900;color:var(--ink);letter-spacing:-.8px;line-height:1.08;margin-bottom:14px}
+.h1 em{color:var(--g);font-style:italic}
+.lead{font-size:16px;color:var(--ink2);line-height:1.78;margin-bottom:36px;max-width:660px}
+.sh{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--ink);margin:40px 0 18px;letter-spacing:-.3px;display:flex;align-items:center;gap:12px}
+.sh::after{content:'';flex:1;height:1px;background:var(--border)}
+.sh3{font-size:15px;font-weight:700;color:var(--ink);margin:20px 0 10px}
+.body-txt{font-size:14.5px;color:var(--ink2);line-height:1.8;margin-bottom:14px}
+
+/* ── CALLOUTS ── */
+.callout{border-radius:10px;padding:16px 20px;margin:16px 0;border-left:3px solid;display:flex;gap:15px}
+.c-ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.c-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:5px}
+.c-txt{font-size:13.5px;line-height:1.65;margin:0;color:var(--ink2)}
+.cg{background:#f0fdf4;border-color:#22c55e}.cg .c-lbl{color:#16a34a}
+.ca{background:#fffbeb;border-color:#f59e0b}.ca .c-lbl{color:#d97706}
+.cr{background:#fef2f2;border-color:#ef4444}.cr .c-lbl{color:#dc2626}
+.cb{background:#eff6ff;border-color:#3b82f6}.cb .c-lbl{color:#2563eb}
+.ci{background:#eef2ff;border-color:var(--g)}.ci .c-lbl{color:var(--g2)}
+.cp{background:#faf5ff;border-color:#8b5cf6}.cp .c-lbl{color:#7c3aed}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:18px 0}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;transition:all .18s}
+.card:hover{box-shadow:var(--sh)}
+.card-tag{display:inline-block;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 9px;border-radius:10px;margin-bottom:10px;font-family:'JetBrains Mono',monospace}
+.card-t{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.card-d{font-size:13px;color:var(--ink3);line-height:1.6}
+
+/* ── TABLE ── */
+.dtbl{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px;overflow-x:auto;display:block}
+.dtbl th{background:var(--navy);color:#fff;padding:11px 16px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;font-weight:600}
+.dtbl td{padding:11px 16px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.55}
+.dtbl tr:nth-child(even) td{background:#fafafa}
+.pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px}
+
+/* ── SCORE GAUGE ── */
+.score-demo{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin:20px 0}
+.score-bar-wrap{background:#f3f4f6;border-radius:30px;height:24px;overflow:hidden;position:relative;margin:14px 0}
+.score-bar-fill{height:100%;border-radius:30px;transition:width 1s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:10px}
+.score-bar-val{font-size:11px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace}
+.score-zones{display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--ink3);font-family:'JetBrains Mono',monospace}
+
+/* ── ALGO CARDS ── */
+.algo-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .2s;margin-bottom:16px}
+.algo-card:hover{box-shadow:var(--sh);border-color:#d1d5db}
+.algo-hd{display:grid;grid-template-columns:auto 1fr auto;gap:0;align-items:stretch}
+.algo-accent{width:6px;flex-shrink:0}
+.algo-main{padding:18px 20px}
+.algo-name{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;font-family:'Fraunces',serif}
+.algo-tagline{font-size:12.5px;color:var(--ink3);margin-bottom:10px}
+.algo-tags{display:flex;gap:6px;flex-wrap:wrap}
+.algo-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;background:#f3f4f6;color:var(--ink3)}
+.algo-meta{padding:14px 18px;background:#fafafa;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:6px;min-width:160px;justify-content:center}
+.algo-meta-item{font-size:11px;color:var(--ink3);display:flex;gap:5px;align-items:center}
+.algo-meta-item strong{color:var(--ink);font-weight:600}
+.algo-body{padding:16px 20px;border-top:1px solid var(--border)}
+.algo-desc{font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:12px}
+.algo-formula{background:#1e1e2e;border-radius:8px;padding:14px 18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#e2e8f0;line-height:1.8;overflow-x:auto}
+.algo-formula .kw{color:#a5b4fc}
+.algo-formula .fn{color:#6ee7b7}
+.algo-formula .cm{color:#64748b;font-style:italic}
+.algo-formula .num{color:#fcd34d}
+.algo-formula .str{color:#f9a8d4}
+
+/* ── EXAMPLE CARDS ── */
+.ex15-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+.ex15-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .2s}
+.ex15-card:hover{transform:translateY(-2px);box-shadow:var(--sh-lg)}
+.ex15-hd{padding:16px 18px;position:relative}
+.ex15-num{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:6px;text-transform:uppercase;letter-spacing:2px}
+.ex15-domain{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;display:inline-block;padding:3px 9px;border-radius:10px}
+.ex15-title{font-family:'Fraunces',serif;font-size:16px;font-weight:700;color:#fff;line-height:1.25}
+.ex15-body{padding:16px 18px}
+.ex15-q{font-size:12px;color:var(--ink3);font-style:italic;margin-bottom:12px;line-height:1.5;padding-left:8px;border-left:2px solid var(--g)}
+.ex15-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12.5px}
+.ex15-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ex15-key{font-weight:600;color:var(--ink);min-width:90px;flex-shrink:0}
+.ex15-val{color:var(--ink3);line-height:1.4}
+.ex15-score{margin-top:12px;padding:10px 14px;border-radius:8px;display:flex;align-items:center;justify-content:space-between}
+.ex15-score-lbl{font-size:11px;color:var(--ink3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.8px}
+.ex15-score-val{font-family:'Fraunces',serif;font-size:22px;font-weight:900}
+.ex15-score-action{font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px}
+
+/* ── CODE BLOCK ── */
+.code-block{background:#1e1e2e;border-radius:12px;padding:20px;margin:16px 0;overflow-x:auto;position:relative}
+.code-block pre{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.75;color:#e2e8f0;white-space:pre;margin:0}
+.code-lang{position:absolute;top:10px;right:12px;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1.5px}
+.kw{color:#a5b4fc}
+.fn{color:#6ee7b7}
+.cm{color:#475569;font-style:italic}
+.num{color:#fcd34d}
+.str{color:#f9a8d4}
+.op{color:#94a3b8}
+.cls{color:#7dd3fc}
+.dec{color:#fb923c}
+
+/* ── PIPELINE VIZ ── */
+.pipeline{display:flex;align-items:center;gap:0;margin:20px 0;overflow-x:auto;padding-bottom:4px}
+.pipe-step{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center;min-width:120px;flex-shrink:0;position:relative}
+.pipe-n{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--g);font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:1px}
+.pipe-t{font-size:12px;font-weight:700;color:var(--ink)}
+.pipe-d{font-size:10.5px;color:var(--ink3);margin-top:3px;line-height:1.4}
+.pipe-arr{font-size:18px;color:var(--border);flex-shrink:0;padding:0 6px;font-weight:300}
+
+/* ── HERO ── */
+.hero{background:var(--navy);min-height:460px;position:relative;overflow:hidden;border-radius:20px;margin-bottom:32px;display:flex;align-items:stretch}
+canvas#hc{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 420px;gap:48px;align-items:center;padding:52px 48px;width:100%}
+.hero-ey{display:inline-flex;align-items:center;gap:8px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);color:#a5b4fc;padding:5px 13px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px}
+.hero-dot{width:5px;height:5px;background:var(--g);border-radius:50%;animation:hd 2s infinite;flex-shrink:0}
+@keyframes hd{0%,100%{opacity:1}50%{opacity:.15}}
+.hero-h1{font-family:'Fraunces',serif;font-size:clamp(26px,4vw,50px);font-weight:900;color:#fff;line-height:1.06;letter-spacing:-.8px;margin-bottom:16px}
+.hero-h1 em{color:#a5b4fc;font-style:italic}
+.hero-p{font-size:15.5px;color:rgba(255,255,255,.52);line-height:1.7;margin-bottom:28px}
+.hero-ctas{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+.btn-main{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:14px 28px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .22s;text-decoration:none;display:inline-flex;align-items:center;gap:7px}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(99,102,241,.35)}
+.btn-ghost{background:rgba(255,255,255,.06);color:rgba(255,255,255,.72);padding:14px 20px;border-radius:var(--r);font-size:14px;font-weight:600;border:1.5px solid rgba(255,255,255,.12);cursor:pointer;font-family:inherit;transition:all .2s;text-decoration:none}
+.btn-ghost:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25)}
+.hero-proof{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.h-avs{display:flex}
+.h-av{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;margin-left:-6px}
+.h-av:first-child{margin-left:0}
+.hero-pt{font-size:12px;color:rgba(255,255,255,.4)}
+.hero-pt strong{color:rgba(255,255,255,.75)}
+/* Hero right: score animation */
+.hero-score-panel{display:flex;flex-direction:column;gap:10px}
+.hsp-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px 18px}
+.hsp-label{font-size:8.5px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.28);margin-bottom:10px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.hsp-bar-wrap{background:rgba(255,255,255,.08);border-radius:20px;height:20px;overflow:hidden;position:relative}
+.hsp-bar{height:100%;border-radius:20px;display:flex;align-items:center;justify-content:flex-end;padding-right:9px;transition:width 1.5s cubic-bezier(.34,1.56,.64,1)}
+.hsp-bar-val{font-size:10px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace}
+.hsp-row{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.hsp-name{font-size:11px;color:rgba(255,255,255,.55)}
+.hsp-verdict{font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px}
+.hsp-mini-chart{position:relative;height:60px;margin-top:10px}
+/* Float badge */
+.hfb{position:absolute;font-size:9px;font-weight:700;padding:4px 9px;border-radius:12px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.2);color:#a5b4fc;white-space:nowrap;font-family:'JetBrains Mono',monospace;animation:flt 3s ease-in-out infinite}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.hfb1{top:-8px;right:12px}
+.hfb2{bottom:-7px;left:10px;animation-delay:1.5s}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:24px 0}
+.stat{padding:22px 16px;text-align:center;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-n{font-family:'Fraunces',serif;font-size:34px;font-weight:900;color:var(--g);letter-spacing:-1px;display:block;line-height:1}
+.stat-l{font-size:11px;color:var(--ink3);margin-top:4px}
+
+/* PAIN */
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0}
+.pain-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;display:flex;gap:14px}
+.pain-line{width:3px;border-radius:2px;flex-shrink:0}
+.pain-t{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.pain-d{font-size:12.5px;color:var(--ink2);line-height:1.58}
+
+/* PROG */
+.prog{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:20px 0}
+.prog-item{display:grid;grid-template-columns:52px 1fr;border-bottom:1px solid var(--border);cursor:pointer;background:var(--card);transition:background .15s}
+.prog-item:last-child{border-bottom:none}
+.prog-item:hover{background:var(--glt)}
+.prog-n{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--border);padding:20px 0 20px 20px;align-self:flex-start;padding-top:22px}
+.prog-body{padding:18px 20px}
+.prog-t{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.prog-d{font-size:12px;color:var(--ink2);line-height:1.5;margin-bottom:3px}
+.prog-lk{font-size:11px;color:var(--g);font-weight:600}
+
+/* TESTI */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0}
+.tc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px}
+.tc-stars{color:#f59e0b;font-size:12px;letter-spacing:.5px;margin-bottom:10px}
+.tc-text{font-size:12.5px;color:var(--ink2);line-height:1.75;margin-bottom:16px;font-style:italic}
+.tc-sep{height:1px;background:var(--border);margin-bottom:12px}
+.tc-auth{display:flex;align-items:center;gap:9px}
+.tc-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:12px;flex-shrink:0}
+.tc-nm{font-size:13px;font-weight:700;color:var(--ink)}
+.tc-rl{font-size:10px;color:var(--ink3)}
+
+/* AUTHOR */
+.auth-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:34px 38px;display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center;margin:24px 0}
+.auth-av{width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--green));display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:800;color:#fff;flex-shrink:0}
+.auth-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--g);margin-bottom:4px}
+.auth-nm{font-family:'Fraunces',serif;font-size:21px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.auth-tl{font-size:12px;color:var(--ink3);margin-bottom:12px}
+.auth-bio{font-size:13.5px;color:var(--ink2);line-height:1.78;margin-bottom:14px}
+.auth-bds{display:flex;flex-wrap:wrap;gap:7px}
+.auth-bd{font-size:10.5px;color:var(--ink2);background:var(--paper);padding:4px 11px;border-radius:14px;border:1px solid var(--border)}
+
+/* PRICE */
+.price-card{background:var(--navy);border-radius:18px;padding:32px;color:#fff;position:relative;overflow:hidden;margin:24px 0}
+.pc-glow{position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(99,102,241,.15),transparent 65%);pointer-events:none}
+.pc-tag{display:inline-block;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25);color:#a5b4fc;padding:4px 12px;border-radius:14px;margin-bottom:16px}
+.pc-title{font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:#fff;margin-bottom:8px}
+.pc-price{font-family:'JetBrains Mono',monospace;font-size:46px;font-weight:800;color:#a5b4fc;letter-spacing:-2px;line-height:1;margin-bottom:4px}
+.pc-cur{font-size:14px;color:rgba(165,180,252,.55);font-weight:600}
+.pc-note{font-size:12px;color:rgba(255,255,255,.3);margin-bottom:24px}
+.pc-feats{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:24px}
+.pc-feats li{font-size:13.5px;color:rgba(255,255,255,.65);display:flex;gap:9px;align-items:flex-start;line-height:1.5}
+.pc-feats li span{flex-shrink:0;color:#a5b4fc;font-weight:700;margin-top:1px}
+.pc-btn{display:block;text-align:center;background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:14px 28px;border-radius:var(--r);font-size:15px;font-weight:700;text-decoration:none;transition:all .22s;border:none;cursor:pointer;font-family:inherit;width:100%}
+.pc-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(99,102,241,.38)}
+
+/* EXERCISES / QCM */
+.ex-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px;box-shadow:var(--sh)}
+.ex-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.ex-b{font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:12px;font-family:'JetBrains Mono',monospace}
+.ex-nb{background:var(--glt);color:var(--g2)}.ex-tb{background:#eff6ff;color:#2563eb}
+.ex-card h3{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.ex-card p{font-size:14px;color:var(--ink2);margin-bottom:16px;line-height:1.65}
+.ex-opts{display:flex;flex-direction:column;gap:8px}
+.ex-opt{background:var(--paper);border:1.5px solid var(--border);padding:12px 16px;border-radius:9px;cursor:pointer;font-size:13.5px;display:flex;gap:10px;align-items:flex-start;transition:all .16s;font-family:inherit;text-align:left;width:100%;line-height:1.5}
+.ex-opt:hover:not(:disabled){border-color:var(--g);background:var(--glt)}
+.ex-opt.ok{border-color:#22c55e;background:#f0fdf4;font-weight:600}
+.ex-opt.ko{border-color:#ef4444;background:#fef2f2}
+.ex-ltr{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9.5px;color:var(--ink3);min-width:16px;margin-top:2px;flex-shrink:0}
+.ex-opt.ok .ex-ltr{color:#16a34a}.ex-opt.ko .ex-ltr{color:#dc2626}
+.ex-fb{margin-top:12px;padding:12px 16px;border-radius:8px;font-size:13px;display:none;border-left:2px solid;line-height:1.65}
+.ex-fb.on{display:block}
+.ex-fb.ok{background:#f0fdf4;border-color:#22c55e;color:var(--ink2)}
+.ex-fb.ko{background:#fef2f2;border-color:#ef4444;color:var(--ink2)}
+.qcm-prog{height:3px;background:var(--border);border-radius:2px;margin-bottom:14px;overflow:hidden}
+.qcm-pf{height:100%;background:linear-gradient(90deg,var(--g),#a5b4fc);border-radius:2px;transition:width .4s}
+.qcm-ctr{font-size:10.5px;color:var(--ink3);text-align:center;margin-bottom:18px;font-family:'JetBrains Mono',monospace}
+.qcm-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;box-shadow:var(--sh)}
+.qcm-tag{font-size:9px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;font-family:'JetBrains Mono',monospace}
+.qcm-q{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:18px;line-height:1.45}
+.qcm-opts{display:flex;flex-direction:column;gap:7px}
+.qcm-opt{background:var(--paper);border:1.5px solid var(--border);padding:11px 16px;border-radius:9px;cursor:pointer;font-size:13.5px;display:flex;gap:10px;align-items:flex-start;transition:all .16s;font-family:inherit;text-align:left;width:100%}
+.qcm-opt:hover:not(:disabled){border-color:var(--g);background:var(--glt)}
+.qcm-opt.sel{border-color:var(--g);background:var(--glt)}
+.qcm-opt.ok{border-color:#22c55e;background:#f0fdf4;font-weight:600}
+.qcm-opt.ko{border-color:#ef4444;background:#fef2f2}
+.ql{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9.5px;color:var(--ink3);min-width:14px;margin-top:2px;flex-shrink:0}
+.qcm-opt.ok .ql{color:#16a34a}.qcm-opt.ko .ql{color:#dc2626}
+.qcm-exp{margin-top:10px;padding:11px 15px;background:var(--glt);border-left:2px solid var(--g);border-radius:5px;font-size:13px;color:var(--ink2);line-height:1.65;display:none}
+.qcm-exp.on{display:block}
+.qcm-nav{display:flex;justify-content:space-between;margin-top:14px;gap:8px;flex-wrap:wrap}
+.res-wrap{text-align:center;padding:40px 16px}
+.res-big{font-family:'Fraunces',serif;font-size:74px;font-weight:900;color:var(--g);line-height:1}
+.res-grade{font-size:22px;font-weight:700;color:var(--ink);margin:10px 0 5px}
+.res-detail{font-size:13px;color:var(--ink3);max-width:400px;margin:0 auto 22px}
+.cert{background:var(--card);border:3px solid var(--g);border-radius:18px;padding:38px 44px;text-align:center;max-width:660px;margin:20px auto;position:relative}
+.cert::before{content:'';position:absolute;inset:8px;border:1px solid rgba(99,102,241,.15);border-radius:14px;pointer-events:none}
+.cert-logo{font-family:'Fraunces',serif;font-size:14px;font-weight:700;color:var(--g)}
+.cert-type{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--ink3);margin-top:2px;margin-bottom:24px}
+.cert-presents{font-size:12px;color:var(--ink3);margin-bottom:5px}
+.cert-name{font-family:'Fraunces',serif;font-size:32px;font-weight:900;color:var(--ink);font-style:italic;margin-bottom:7px}
+.cert-course{font-size:17px;font-weight:700;color:var(--g);margin-bottom:4px}
+.cert-sub{font-size:11px;color:var(--ink3);margin-bottom:7px}
+.cert-sc{font-size:12px;color:var(--ink);font-weight:600;margin-bottom:28px}
+.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.cert-sig{flex:1;text-align:center}
+.cert-seal{font-size:40px}
+.cert-line{width:90px;height:1px;background:var(--border);margin:0 auto 5px}
+.cert-sn{font-size:11px;font-weight:700;color:var(--ink)}
+.cert-sr{font-size:9px;color:var(--ink3)}
+.navb{display:flex;gap:10px;margin-top:40px;padding-top:22px;border-top:1px solid var(--border);flex-wrap:wrap}
+.btn{padding:10px 22px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink2);font-family:inherit;transition:all .18s}
+.btn:hover:not(:disabled){border-color:var(--g);color:var(--g)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-p{background:var(--g);color:#fff;border-color:var(--g)}
+.btn-p:hover{background:var(--g2);color:#fff;border-color:var(--g2)}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  #sb{transform:translateX(-100%)}#sb.on{transform:translateX(0)}
+  #main{margin-left:0}#tb{display:flex}
+  .ch{padding:20px 16px 56px}
+  .hero-inner{grid-template-columns:1fr;padding:32px 20px;min-height:auto}
+  .hero-score-panel{display:none}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .pain-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .stat:nth-child(2){border-right:none}
+  .stat:nth-child(3){border-top:1px solid var(--border);border-right:1px solid var(--border)}
+  .stat:nth-child(4){border-top:1px solid var(--border)}
+  .testi-grid{grid-template-columns:1fr}
+  .auth-card{grid-template-columns:1fr;text-align:center;padding:24px 20px}
+  .auth-av{margin:0 auto}.auth-bds{justify-content:center}
+  .ex15-grid{grid-template-columns:1fr}
+  .algo-hd{grid-template-columns:auto 1fr}
+  .algo-meta{display:none}
+  .cert-foot{flex-direction:column;align-items:center}
+  .hero-ctas{flex-direction:column}
+  .navb,.qcm-nav{flex-direction:column}
+  .btn{width:100%;text-align:center}
+  .pipeline{flex-direction:column}
+  .pipe-arr{transform:rotate(90deg)}
+}
+</style>
+</head>
+<body>
+
+<nav id="sb">
+  <div class="sb-hd">
+    <img src="data:image/png;base64,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" alt="FinMark">
+    <div>
+      <div class="sb-brand">FinMark <span>Support</span></div>
+      <div class="sb-sub">Scoring · 7 Chapitres</div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-cat">Accueil</div>
+    <a class="sb-a on" onclick="go(0)"><span class="sb-nn">00</span>Présentation</a>
+    <div class="sb-cat">Fondamentaux</div>
+    <a class="sb-a" onclick="go(1)"><span class="sb-nn">01</span>C'est quoi le scoring ?</a>
+    <a class="sb-a" onclick="go(2)"><span class="sb-nn">02</span>Les types de scoring</a>
+    <a class="sb-a" onclick="go(3)"><span class="sb-nn">03</span>Les algorithmes</a>
+    <div class="sb-cat">Pratique</div>
+    <a class="sb-a" onclick="go(4)"><span class="sb-nn">04</span>15 Exemples concrets</a>
+    <a class="sb-a" onclick="go(5)"><span class="sb-nn">05</span>Coder un modèle</a>
+    <div class="sb-cat">Évaluation</div>
+    <a class="sb-a" onclick="go(6)"><span class="sb-nn">06</span>QCM — Certification</a>
+  </div>
+  <div class="sb-foot">
+    <div class="sb-pb-lbl">Progression</div>
+    <div class="sb-pb"><div id="sb-f"></div></div>
+  </div>
+</nav>
+<div id="tb">
+  <button id="burg" onclick="document.getElementById('sb').classList.toggle('on')">☰</button>
+  <span id="tb-title">Scoring · Maîtrise</span>
+</div>
+<main id="main">
+
+<!-- ══ CH0 ══ -->
+<section class="ch on" id="ch0">
+<div class="hero">
+  <canvas id="hc"></canvas>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-ey"><span class="hero-dot"></span>Formation certifiante · Scoring & Modèles prédictifs</div>
+      <h1 class="hero-h1">Scorer, prédire,<br><em>décider.</em></h1>
+      <p class="hero-p">Le scoring transforme des données brutes en probabilité d'action. Crédit, fraude, churn, lead — derrière chaque décision data-driven se cache un modèle de scoring. Ce cours vous explique tout, du concept au code Python.</p>
+      <div class="hero-ctas">
+        <button class="btn-main" onclick="go(1)">Commencer la formation</button>
+        <button class="btn-ghost" onclick="go(4)">Les 15 exemples →</button>
+      </div>
+      <div class="hero-proof">
+        <div class="h-avs">
+          <div class="h-av" style="background:#6366f1">A</div>
+          <div class="h-av" style="background:#22c55e">K</div>
+          <div class="h-av" style="background:#f59e0b">M</div>
+          <div class="h-av" style="background:#ef4444">S</div>
+        </div>
+        <span class="hero-pt"><strong>190+ professionnels</strong> certifiés</span>
+      </div>
+    </div>
+    <div class="hero-score-panel" style="position:relative">
+      <div class="hfb hfb1">Score calculé en temps réel</div>
+      <div class="hsp-card">
+        <div class="hsp-label">Scoring crédit — Client #4821</div>
+        <div class="hsp-bar-wrap">
+          <div class="hsp-bar" id="hs-bar1" style="width:0%;background:linear-gradient(90deg,#6366f1,#a5b4fc)">
+            <span class="hsp-bar-val">782</span>
+          </div>
+        </div>
+        <div class="hsp-row">
+          <span class="hsp-name">Score FICO</span>
+          <span class="hsp-verdict" style="background:rgba(34,197,94,.12);color:#16a34a">Excellent</span>
+        </div>
+      </div>
+      <div class="hsp-card">
+        <div class="hsp-label">Scoring fraude — Transaction #9934</div>
+        <div class="hsp-bar-wrap">
+          <div class="hsp-bar" id="hs-bar2" style="width:0%;background:linear-gradient(90deg,#22c55e,#86efac)">
+            <span class="hsp-bar-val">12%</span>
+          </div>
+        </div>
+        <div class="hsp-row">
+          <span class="hsp-name">Probabilité fraude</span>
+          <span class="hsp-verdict" style="background:rgba(34,197,94,.12);color:#16a34a">Faible risque</span>
+        </div>
+      </div>
+      <div class="hsp-card">
+        <div class="hsp-label">Lead scoring — Prospect #2201</div>
+        <div class="hsp-bar-wrap">
+          <div class="hsp-bar" id="hs-bar3" style="width:0%;background:linear-gradient(90deg,#f59e0b,#fcd34d)">
+            <span class="hsp-bar-val">68/100</span>
+          </div>
+        </div>
+        <div class="hsp-row">
+          <span class="hsp-name">Score de conversion</span>
+          <span class="hsp-verdict" style="background:rgba(245,158,11,.12);color:#d97706">À relancer</span>
+        </div>
+      </div>
+      <div class="hfb hfb2">Prédiction · ML · Décision</div>
+    </div>
+  </div>
+</div>
+
+<div class="sh">Ce que vous allez maîtriser</div>
+<div class="pain-grid">
+  <div class="pain-card"><div class="pain-line" style="background:#6366f1"></div><div><div class="pain-t">Comprendre ce qu'est vraiment un score</div><div class="pain-d">La différence entre un score, un ranking, une probabilité et une décision — et pourquoi ça change tout dans la pratique.</div></div></div>
+  <div class="pain-card"><div class="pain-line" style="background:#22c55e"></div><div><div class="pain-t">Connaître les 6 types de scoring principaux</div><div class="pain-d">Crédit, fraude, churn, lead, risque opérationnel, scoring RH — chaque type a ses propres métriques, seuils et enjeux business.</div></div></div>
+  <div class="pain-card"><div class="pain-line" style="background:#f59e0b"></div><div><div class="pain-t">Maîtriser les algorithmes derrière</div><div class="pain-d">Régression logistique, arbres de décision, random forest, XGBoost, réseaux de neurones — comprendre lequel choisir et pourquoi.</div></div></div>
+  <div class="pain-card"><div class="pain-line" style="background:#ef4444"></div><div><div class="pain-t">Voir 15 cas concrets et coder un modèle</div><div class="pain-d">Du scoring crédit au scoring churn en passant par la détection de fraude — code Python complet et interprétable.</div></div></div>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><span class="stat-n" id="s1">6</span><div class="stat-l">Types de scoring<br>avec cas d'usage</div></div>
+  <div class="stat"><span class="stat-n" id="s2">8</span><div class="stat-l">Algorithmes expliqués<br>avec formules</div></div>
+  <div class="stat"><span class="stat-n" id="s3">15</span><div class="stat-l">Exemples concrets<br>tous domaines</div></div>
+  <div class="stat"><span class="stat-n" id="s4">3</span><div class="stat-l">Modèles codés<br>en Python complet</div></div>
+</div>
+
+<div class="sh">Programme du cours</div>
+<div class="prog">
+  <div class="prog-item" onclick="go(1)"><div class="prog-n">01</div><div class="prog-body"><div class="prog-t">C'est quoi le scoring — définition, histoire, principes</div><div class="prog-d">Score vs probabilité vs rang vs décision. La logique fondamentale du scoring et pourquoi il est partout dans la data.</div><div class="prog-lk">Accéder →</div></div></div>
+  <div class="prog-item" onclick="go(2)"><div class="prog-n">02</div><div class="prog-body"><div class="prog-t">Les 6 types de scoring — crédit, fraude, churn, lead, risque, RH</div><div class="prog-d">Pour chaque type : ce qu'il prédit, les variables utilisées, la plage de score, le seuil de décision et les enjeux métier.</div><div class="prog-lk">Accéder →</div></div></div>
+  <div class="prog-item" onclick="go(3)"><div class="prog-n">03</div><div class="prog-body"><div class="prog-t">Les 8 algorithmes — de la régression logistique à XGBoost</div><div class="prog-d">Régression logistique · Scorecard · Arbre de décision · Random Forest · XGBoost · SVM · Réseau de neurones · Isolation Forest. Formules, forces, limites.</div><div class="prog-lk">Accéder →</div></div></div>
+  <div class="prog-item" onclick="go(4)"><div class="prog-n">04</div><div class="prog-body"><div class="prog-t">15 exemples concrets dans 10 domaines d'activité</div><div class="prog-d">Finance · E-commerce · Santé · RH · Marketing · Logistique · Immobilier · Télécoms · Assurance · Administration. Chaque exemple avec variables, algorithme et interprétation.</div><div class="prog-lk">Voir les exemples →</div></div></div>
+  <div class="prog-item" onclick="go(5)"><div class="prog-n">05</div><div class="prog-body"><div class="prog-t">Coder un modèle de scoring — Python complet</div><div class="prog-d">Pipeline complet : collecte → nettoyage → features → entraînement → évaluation → interprétation → déploiement. Code prêt à adapter.</div><div class="prog-lk">Voir le code →</div></div></div>
+</div>
+
+<div class="sh">Ce qu'ils en disent</div>
+<div class="testi-grid">
+  <div class="tc"><div class="tc-stars">★★★★★</div><p class="tc-text">"J'avais entendu parler de scoring crédit mais je ne savais pas comment ça fonctionnait vraiment. Après le chapitre 3, j'ai compris que derrière chaque décision d'accord de prêt, il y a une régression logistique. Ça change tout."</p><div class="tc-sep"></div><div class="tc-auth"><div class="tc-av" style="background:#6366f1">A</div><div><div class="tc-nm">Amadou D.</div><div class="tc-rl">Analyste Risque · Dakar</div></div></div></div>
+  <div class="tc"><div class="tc-stars">★★★★★</div><p class="tc-text">"Le code Python du chapitre 5 est directement réutilisable. J'ai adapté le modèle de churn scoring pour mon équipe CRM — en 2 heures j'avais un premier modèle fonctionnel sur nos données."</p><div class="tc-sep"></div><div class="tc-auth"><div class="tc-av" style="background:#22c55e">K</div><div><div class="tc-nm">Koffi A.</div><div class="tc-rl">Data Scientist · Accra</div></div></div></div>
+  <div class="tc"><div class="tc-stars">★★★★☆</div><p class="tc-text">"Les 15 exemples concrets sont ce qui m'a convaincu. Voir le scoring appliqué au scoring RH, à l'immobilier et à la logistique — domaines que je n'aurais pas associés au machine learning de prime abord."</p><div class="tc-sep"></div><div class="tc-auth"><div class="tc-av" style="background:#f59e0b">M</div><div><div class="tc-nm">Marie S.</div><div class="tc-rl">Chef de projet Data · Abidjan</div></div></div></div>
+</div>
+
+<div class="auth-card">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+    <div class="auth-av">FZ</div>
+    <div style="text-align:center"><div style="color:#f59e0b;font-size:14px;letter-spacing:1px">★★★★★</div><div style="font-size:12px;color:var(--ink3);margin-top:2px">4.9 · 190+ certifiés</div></div>
+  </div>
+  <div>
+    <div class="auth-tag">Formateur · FinMark Support</div>
+    <div class="auth-nm">Kouassi Fresh-Nes Rameaux ZOUZOU</div>
+    <div class="auth-tl">Senior Data Analyst · NSIA Vie Assurances · Consultant GoMyCode · Fondateur FinMark Support</div>
+    <p class="auth-bio">J'utilise des modèles de scoring au quotidien pour analyser des données de risque et de performance. Ce cours synthétise 5 ans de pratique terrain — des fondements théoriques jusqu'au code Python prêt à l'emploi, avec des exemples tirés de domaines que vous rencontrez réellement dans votre travail.</p>
+    <div class="auth-bds">
+      <span class="auth-bd">Master 2 Data Science</span>
+      <span class="auth-bd">IBM Data Analyst</span>
+      <span class="auth-bd">NSIA Vie · GoMyCode</span>
+      <span class="auth-bd">Abidjan, CI</span>
+    </div>
+  </div>
+</div>
+
+<div class="price-card">
+  <div class="pc-glow"></div>
+  <div class="pc-tag">Formation certifiante</div>
+  <div class="pc-title">Maîtriser le Scoring</div>
+  <div><span class="pc-price">12 900</span><span class="pc-cur"> FCFA</span></div>
+  <div class="pc-note">Paiement unique · Téléchargement immédiat · Accès à vie</div>
+  <ul class="pc-feats">
+    <li><span>✓</span>7 chapitres complets — définition, types, algos, exemples, code</li>
+    <li><span>✓</span>8 algorithmes expliqués avec formules et cas d'usage</li>
+    <li><span>✓</span>15 exemples concrets dans 10 domaines d'activité</li>
+    <li><span>✓</span>Code Python complet — 3 modèles du pipeline à la décision</li>
+    <li><span>✓</span>QCM 20 questions + certificat à votre nom</li>
+  </ul>
+  <a href="LIEN_PAIEMENT_SCORING" class="pc-btn" target="_blank">Acheter maintenant — 12 900 FCFA</a>
+</div>
+</section>
+
+<!-- ══ CH1 — C'EST QUOI LE SCORING ══ -->
+<section class="ch" id="ch1">
+<div class="tag-l">Chapitre 01 · Fondamentaux</div>
+<h1 class="h1">Le scoring — <em>transformer des données en décision</em></h1>
+<p class="lead">Un score est une valeur numérique qui résume la probabilité qu'un individu, un objet ou une transaction présente une caractéristique précise. C'est la colonne vertébrale de toute décision data-driven.</p>
+
+<div class="sh">Score, probabilité, rang, décision — les 4 concepts</div>
+<table class="dtbl">
+  <thead><tr><th>Concept</th><th>Définition</th><th>Plage typique</th><th>Exemple</th></tr></thead>
+  <tbody>
+    <tr><td><span class="pill" style="background:#eef2ff;color:#4338ca">Score</span></td><td>Valeur numérique qui encode le risque ou la valeur d'un individu selon un modèle.</td><td>0-100, 0-1000, -∞ à +∞</td><td>Score crédit : 720/850</td></tr>
+    <tr><td><span class="pill" style="background:#dcfce7;color:#15803d">Probabilité</span></td><td>Interprétation directe du score en terme de chance qu'un événement se produise.</td><td>0% à 100%</td><td>P(défaut) = 3.2%</td></tr>
+    <tr><td><span class="pill" style="background:#fef3c7;color:#b45309">Rang / Décile</span></td><td>Position relative dans la population scorée (top 10%, 20%...).</td><td>1er à 10ème décile</td><td>Décile 9 = top 10% risque</td></tr>
+    <tr><td><span class="pill" style="background:#fce7f3;color:#be185d">Décision</span></td><td>Règle métier appliquée sur le score pour déclencher une action.</td><td>Binaire ou multi-classes</td><td>Score &gt;700 → Accord. &lt;500 → Refus.</td></tr>
+  </tbody>
+</table>
+
+<div class="callout ci"><div class="c-ico">→</div><div><div class="c-lbl">Définition complète</div><p class="c-txt">Un modèle de scoring est une fonction <strong>f(X) → S</strong> qui transforme un vecteur de variables descriptives X (âge, revenus, historique, comportement) en un score S, lequel est ensuite comparé à un seuil de décision pour déclencher une action métier (accepter, refuser, alerter, prioriser).</p></div></div>
+
+<div class="sh">Le pipeline du scoring — de la donnée à la décision</div>
+<div class="pipeline">
+  <div class="pipe-step"><div class="pipe-n">Étape 1</div><div class="pipe-t">Données brutes</div><div class="pipe-d">Historique, comportement, transactionnel</div></div>
+  <div class="pipe-arr">→</div>
+  <div class="pipe-step"><div class="pipe-n">Étape 2</div><div class="pipe-t">Feature engineering</div><div class="pipe-d">Sélection et transformation des variables</div></div>
+  <div class="pipe-arr">→</div>
+  <div class="pipe-step"><div class="pipe-n">Étape 3</div><div class="pipe-t">Modèle ML</div><div class="pipe-d">Entraînement sur données historiques labellisées</div></div>
+  <div class="pipe-arr">→</div>
+  <div class="pipe-step"><div class="pipe-n">Étape 4</div><div class="pipe-t">Score S ∈ [0,1]</div><div class="pipe-d">Probabilité de l'événement cible</div></div>
+  <div class="pipe-arr">→</div>
+  <div class="pipe-step"><div class="pipe-n">Étape 5</div><div class="pipe-t">Seuil métier</div><div class="pipe-d">Règle de décision calibrée</div></div>
+  <div class="pipe-arr">→</div>
+  <div class="pipe-step"><div class="pipe-n">Étape 6</div><div class="pipe-t">Action</div><div class="pipe-d">Accepter, refuser, alerter, prioriser</div></div>
+</div>
+
+<div class="sh">Pourquoi le scoring est partout</div>
+<div class="g3">
+  <div class="card"><div class="card-tag" style="background:#eef2ff;color:#4338ca">Finance</div><div class="card-t">Décision de crédit en millisecondes</div><div class="card-d">Avant : comité de crédit — 3 à 5 jours. Après scoring : décision automatique en &lt;200ms pour 80% des dossiers. Le modèle "sait" ce que le comité aurait décidé.</div></div>
+  <div class="card"><div class="card-tag" style="background:#dcfce7;color:#15803d">E-commerce</div><div class="card-t">Personnalisation à grande échelle</div><div class="card-d">Sans scoring, chaque utilisateur reçoit le même traitement. Avec scoring churn, on identifie les 5% d'utilisateurs sur le point de partir et on les retient avant qu'il soit trop tard.</div></div>
+  <div class="card"><div class="card-tag" style="background:#fef3c7;color:#b45309">Marketing</div><div class="card-t">Allouer les ressources commerciales</div><div class="card-d">Un commercial a 50 prospects. Lesquels appeler en premier ? Le lead scoring classe les prospects par probabilité de conversion — les ressources vont vers le ROI maximal.</div></div>
+</div>
+
+<div class="sh">Score vs Règle métier — quelle différence ?</div>
+<div class="g2">
+  <div class="callout cr" style="margin:0"><div><div class="c-lbl">Règle métier rigide</div><p class="c-txt"><strong>SI</strong> revenu_mensuel &gt; 300 000 FCFA <strong>ET</strong> ancienneté_emploi &gt; 2 ans <strong>ET</strong> aucun incident &gt; 6 mois <strong>ALORS</strong> accorder le prêt.<br><br>Problème : ne capte pas les interactions entre variables. Un client avec 250K FCFA mais 10 ans d'ancienneté et zéro incident sera rejeté à tort.</p></div></div>
+  <div class="callout cg" style="margin:0"><div><div class="c-lbl">Modèle de scoring</div><p class="c-txt"><strong>Score = f(revenu, ancienneté, incidents, ratio_endettement, ...)</strong><br><br>Le modèle apprend des dizaines de variables et leurs interactions depuis l'historique réel. Il capture les cas complexes que les règles ne peuvent pas anticiper. Plus précis, plus juste, plus évolutif.</p></div></div>
+</div>
+
+<div class="sh">Les métriques d'évaluation d'un modèle de scoring</div>
+<table class="dtbl">
+  <thead><tr><th>Métrique</th><th>Ce qu'elle mesure</th><th>Formule</th><th>Objectif</th></tr></thead>
+  <tbody>
+    <tr><td><strong>AUC-ROC</strong></td><td>Capacité à distinguer les positifs des négatifs</td><td>Aire sous la courbe ROC</td><td>&gt;0.80 = bon · &gt;0.90 = excellent</td></tr>
+    <tr><td><strong>KS (Kolmogorov-Smirnov)</strong></td><td>Séparation max entre distribution bons/mauvais</td><td>max(TPR - FPR)</td><td>&gt;40% = acceptable en crédit</td></tr>
+    <tr><td><strong>Gini</strong></td><td>Pouvoir discriminant du modèle</td><td>2×AUC - 1</td><td>&gt;0.60 = bon modèle</td></tr>
+    <tr><td><strong>Precision / Recall</strong></td><td>Précision sur les positifs détectés</td><td>TP/(TP+FP) · TP/(TP+FN)</td><td>Selon le trade-off métier</td></tr>
+    <tr><td><strong>PSI (Population Stability Index)</strong></td><td>Dérive du modèle dans le temps</td><td>Σ(Pact-Prev)×ln(Pact/Prev)</td><td>&lt;0.10 = stable · &gt;0.25 = revoir</td></tr>
+  </tbody>
+</table>
+
+<div class="navb">
+  <button class="btn" onclick="go(0)">← Accueil</button>
+  <button class="btn btn-p" onclick="go(2)">Les 6 types →</button>
+</div>
+</section>
+
+<!-- ══ CH2 — TYPES ══ -->
+<section class="ch" id="ch2">
+<div class="tag-l">Chapitre 02 · Types de scoring</div>
+<h1 class="h1">Les 6 grands types de scoring</h1>
+<p class="lead">Chaque type de scoring répond à une question métier précise. Les variables, les algorithmes, les seuils et les enjeux sont différents. Voici les 6 familles qui couvrent 95% des cas réels.</p>
+
+<div class="sh">1. Scoring crédit — Qui peut rembourser ?</div>
+<div class="g2">
+  <div>
+    <p class="body-txt">Le plus ancien et le plus répandu. Il prédit la probabilité qu'un emprunteur ne rembourse pas (PD — Probability of Default). Né dans les années 1950 avec les travaux de Fair Isaac (FICO).</p>
+    <div class="callout ci"><div><div class="c-lbl">Variables clés</div><p class="c-txt">Historique de remboursement · Ratio d'endettement (DTI) · Ancienneté du compte · Types de crédit · Nouvelles demandes récentes · Revenus · Stabilité professionnelle</p></div></div>
+    <div class="callout ca"><div><div class="c-lbl">Plage & décision</div><p class="c-txt">FICO : 300-850 · Scorecard interne : 0-1000<br>Excellent (&gt;750) → Accord + taux préférentiel<br>Bon (650-750) → Accord standard<br>Limite (550-650) → Accord conditionnel ou garantie<br>Mauvais (&lt;550) → Refus automatique</p></div></div>
+  </div>
+  <div>
+    <div class="score-demo">
+      <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:14px">Exemple — Profil crédit</div>
+      <div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Historique paiements (35%)</span><span style="font-weight:700;color:#16a34a">+156 pts</span></div><div class="score-bar-wrap"><div class="score-bar-fill" style="width:90%;background:#22c55e"><span class="score-bar-val">90%</span></div></div></div>
+      <div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Utilisation crédit (30%)</span><span style="font-weight:700;color:#16a34a">+112 pts</span></div><div class="score-bar-wrap"><div class="score-bar-fill" style="width:65%;background:#a3e635"><span class="score-bar-val">65%</span></div></div></div>
+      <div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Ancienneté (15%)</span><span style="font-weight:700;color:#d97706">+68 pts</span></div><div class="score-bar-wrap"><div class="score-bar-fill" style="width:45%;background:#f59e0b"><span class="score-bar-val">45%</span></div></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+        <span style="font-size:13px;color:var(--ink3)">Score final</span>
+        <span style="font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:#4338ca">724 / 850</span>
+      </div>
+      <div class="score-zones"><span>300</span><span style="color:#ef4444">Mauvais</span><span style="color:#f59e0b">Limite</span><span style="color:#22c55e">Bon</span><span>850</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="sh">2. Scoring fraude — Quelle transaction est suspecte ?</div>
+<p class="body-txt">Prédit la probabilité qu'une transaction ou un comportement soit frauduleux. Fonctionné en temps réel sur des millions de transactions par jour. La tolérance aux faux positifs est très faible (bloquer une carte légitime = mauvaise expérience client).</p>
+<div class="g3">
+  <div class="callout ci" style="margin:0"><div><div class="c-lbl">Variables comportementales</div><p class="c-txt">Localisation géographique · Heure · Montant vs historique · Vélocité (nb transactions/heure) · Device fingerprint · Distance entre transactions</p></div></div>
+  <div class="callout ca" style="margin:0"><div><div class="c-lbl">Contrainte temps réel</div><p class="c-txt">Décision en &lt;200ms. Le modèle doit être optimisé pour la latence, pas seulement pour la précision. Souvent des règles rapides + scoring ML en cascade.</p></div></div>
+  <div class="callout cg" style="margin:0"><div><div class="c-lbl">Seuils adaptatifs</div><p class="c-txt">Pas un seuil fixe mais des seuils contextuels. Une transaction de 50€ est normale ; la même à 3h du matin dans un pays étranger = risque élevé. Même montant, score différent.</p></div></div>
+</div>
+
+<div class="sh">3. Churn Scoring — Qui va partir ?</div>
+<p class="body-txt">Prédit la probabilité qu'un client résilie son abonnement ou cesse d'acheter dans une fenêtre de temps définie (30, 60, 90 jours). Permet d'intervenir avant le départ.</p>
+<div class="g2">
+  <div class="callout ci"><div><div class="c-lbl">Signaux précurseurs du churn</div><p class="c-txt">Baisse fréquence d'utilisation · Absence de connexion récente · Diminution du panier moyen · Tickets support non résolus · Ouverture d'emails de rétention sans action · Fin d'engagement sur les réseaux sociaux · Changement d'utilisation des features</p></div></div>
+  <div class="callout ca"><div><div class="c-lbl">Fenêtre de prédiction</div><p class="c-txt">On prédit le churn à J+30 pour agir à J+0. Plus la fenêtre est courte, plus le modèle est précis mais la marge d'action est réduite. Plus elle est longue, plus on a de temps pour agir mais le signal est plus faible.</p></div></div>
+</div>
+
+<div class="sh">4. Lead Scoring — Qui convertir en priorité ?</div>
+<p class="body-txt">Classe les prospects par probabilité de conversion en client. Permet aux équipes commerciales de prioriser leurs actions et d'allouer le budget marketing là où le ROI est maximum.</p>
+<table class="dtbl">
+  <thead><tr><th>Variable</th><th>Signification</th><th>Poids typique</th></tr></thead>
+  <tbody>
+    <tr><td>Pages visitées</td><td>Pages tarifs + démo = forte intention</td><td>Élevé</td></tr>
+    <tr><td>Temps passé sur le site</td><td>Engagement = intérêt réel</td><td>Moyen</td></tr>
+    <tr><td>Ouverture emails</td><td>Réactivité aux campagnes</td><td>Moyen</td></tr>
+    <tr><td>Taille entreprise (B2B)</td><td>Potentiel de deal</td><td>Élevé</td></tr>
+    <tr><td>Poste du contact</td><td>Decision maker vs influencer</td><td>Élevé</td></tr>
+    <tr><td>Secteur d'activité</td><td>Adéquation profil ICP</td><td>Variable</td></tr>
+    <tr><td>Délai depuis la première visite</td><td>Urgence d'achat</td><td>Faible-Moyen</td></tr>
+  </tbody>
+</table>
+
+<div class="sh">5. Scoring Risque Opérationnel</div>
+<p class="body-txt">Évalue la probabilité d'un incident opérationnel : panne d'équipement, défaillance de processus, accident de travail, erreur de production. Utilisé en industrie, logistique, maintenance prédictive.</p>
+<div class="callout cp"><div><div class="c-lbl">Maintenance prédictive — exemple</div><p class="c-txt">Variables : température capteur, vibrations, historique de pannes, âge de la machine, heures de fonctionnement depuis dernière maintenance. Score = probabilité de panne dans les 48h. Action : déclencher une maintenance préventive si score &gt; 0.7.</p></div></div>
+
+<div class="sh">6. Scoring RH — Qui recruter, qui promouvoir ?</div>
+<p class="body-txt">Évalue la probabilité de réussite d'un candidat, le risque de départ d'un employé ou le potentiel d'évolution d'un collaborateur. Sujet éthique délicat — la transparence et l'absence de biais sont critiques.</p>
+<div class="g2">
+  <div class="callout cg" style="margin:0"><div><div class="c-lbl">Scoring recrutement</div><p class="c-txt">Prédire si un candidat sera performant après 12 mois. Variables : compétences techniques, culture fit, expériences similaires, soft skills. Risque principal : reproduire les biais historiques.</p></div></div>
+  <div class="callout cr" style="margin:0"><div><div class="c-lbl">Point d'attention éthique</div><p class="c-txt">Un modèle entraîné sur le passé reproduit les biais du passé. Si historiquement certains profils ont été moins promus, le modèle va perpétuer cette inégalité. Audits de biais obligatoires.</p></div></div>
+</div>
+
+<div class="navb">
+  <button class="btn" onclick="go(1)">← C'est quoi</button>
+  <button class="btn btn-p" onclick="go(3)">Les algorithmes →</button>
+</div>
+</section>
+
+<!-- ══ CH3 — ALGORITHMES ══ -->
+<section class="ch" id="ch3">
+<div class="tag-l">Chapitre 03 · Algorithmes</div>
+<h1 class="h1">Les 8 algorithmes derrière les modèles de scoring</h1>
+<p class="lead">Chaque algorithme a ses forces, ses limites et ses cas d'usage privilégiés. Comprendre lequel choisir — et pourquoi — est ce qui sépare un analyste d'un vrai data scientist.</p>
+
+<div class="sh">1. Régression Logistique — Le classique indétrônable</div>
+<div class="algo-card">
+  <div class="algo-hd">
+    <div class="algo-accent" style="background:#6366f1"></div>
+    <div class="algo-main">
+      <div class="algo-name">Régression Logistique</div>
+      <div class="algo-tagline">Modélise la probabilité d'un événement binaire via une fonction sigmoïde</div>
+      <div class="algo-tags"><span class="algo-tag">Interprétable</span><span class="algo-tag">Rapide</span><span class="algo-tag">Régulable</span><span class="algo-tag">Référence réglementaire</span></div>
+    </div>
+    <div class="algo-meta">
+      <div class="algo-meta-item">Sortie : <strong>P ∈ [0,1]</strong></div>
+      <div class="algo-meta-item">Données : <strong>Tabulaires</strong></div>
+      <div class="algo-meta-item">Usage : <strong>Crédit, churn</strong></div>
+      <div class="algo-meta-item">Interprét. : <strong>★★★★★</strong></div>
+    </div>
+  </div>
+  <div class="algo-body">
+    <div class="algo-desc">La régression logistique est le modèle de référence en scoring bancaire depuis 50 ans. Ses coefficients sont directement interprétables : chaque variable a un odds ratio qui dit combien elle multiplie la probabilité de défaut. Les régulateurs (Bâle, RGPD) exigent souvent ce niveau d'explicabilité.</div>
+    <div class="algo-formula"><span class="cm"># Formule mathématique</span>
+<span class="kw">P</span>(Y=1|X) = <span class="fn">σ</span>(β₀ + β₁x₁ + β₂x₂ + ... + βₙxₙ)
+<span class="kw">où</span> σ(z) = 1 / (1 + e<span class="num">⁻ᶻ</span>)     <span class="cm"># fonction sigmoïde</span>
+
+<span class="cm"># Odds ratio d'une variable</span>
+OR(xᵢ) = e<span class="num">^βᵢ</span>  <span class="cm"># si βᵢ=0.5 → chaque unité multiplie l'odds par e^0.5 ≈ 1.65</span></div>
+  </div>
+</div>
+
+<div class="sh">2. Scorecard (WOE/IV) — La méthode bancaire</div>
+<div class="algo-card">
+  <div class="algo-hd">
+    <div class="algo-accent" style="background:#14b8a6"></div>
+    <div class="algo-main">
+      <div class="algo-name">Scorecard (Weight of Evidence)</div>
+      <div class="algo-tagline">Régression logistique avec binning manuel + transformation WOE pour produire un score entier</div>
+      <div class="algo-tags"><span class="algo-tag">Standard bancaire</span><span class="algo-tag">Explicable</span><span class="algo-tag">Score entier (0-1000)</span></div>
+    </div>
+    <div class="algo-meta">
+      <div class="algo-meta-item">Sortie : <strong>Score ∈ ℤ</strong></div>
+      <div class="algo-meta-item">Usage : <strong>Crédit bancaire</strong></div>
+      <div class="algo-meta-item">Interprét. : <strong>★★★★★</strong></div>
+    </div>
+  </div>
+  <div class="algo-body">
+    <div class="algo-desc">La scorecard transforme chaque modalité de chaque variable en points. L'agent de crédit peut calculer le score à la main. Exemple : "Moins de 2 ans d'ancienneté = -20 pts · 2-5 ans = +10 pts · Plus de 5 ans = +30 pts". La somme des points de toutes les variables donne le score final.</div>
+    <div class="algo-formula"><span class="cm"># Weight of Evidence (WOE) pour une modalité</span>
+WOE = <span class="fn">ln</span>( %Bons_dans_modalité / %Mauvais_dans_modalité )
+
+<span class="cm"># Information Value (seuils de sélection variable)</span>
+IV &lt; <span class="num">0.02</span>   → variable non informative (exclure)
+IV <span class="num">0.02</span>-<span class="num">0.1</span>  → faiblement informative
+IV <span class="num">0.1</span>-<span class="num">0.3</span>  → moyennement informative (garder)
+IV &gt; <span class="num">0.3</span>   → très informative (inclure en priorité)</div>
+  </div>
+</div>
+
+<div class="sh">3. Arbre de Décision</div>
+<div class="algo-card">
+  <div class="algo-hd">
+    <div class="algo-accent" style="background:#22c55e"></div>
+    <div class="algo-main">
+      <div class="algo-name">Arbre de Décision (Decision Tree)</div>
+      <div class="algo-tagline">Segmentation récursive de la population en groupes homogènes de risque</div>
+      <div class="algo-tags"><span class="algo-tag">Visuel</span><span class="algo-tag">Interprétable</span><span class="algo-tag">Capture non-linéarités</span></div>
+    </div>
+    <div class="algo-meta">
+      <div class="algo-meta-item">Sortie : <strong>Probabilité + classe</strong></div>
+      <div class="algo-meta-item">Usage : <strong>Fraude, crédit</strong></div>
+      <div class="algo-meta-item">Interprét. : <strong>★★★★☆</strong></div>
+    </div>
+  </div>
+  <div class="algo-body">
+    <div class="algo-desc">L'arbre divise la population en sous-groupes de plus en plus homogènes. Chaque nœud pose une question binaire : "montant &gt; 500€ ?" → si oui, branche droite, sinon branche gauche. La feuille finale donne la probabilité de l'événement pour ce sous-groupe. Avantage : les règles sont directement lisibles.</div>
+    <div class="algo-formula"><span class="cm"># Critère de division (Gini Impurity)</span>
+Gini(t) = <span class="num">1</span> - Σ p(i|t)²   <span class="cm"># = 0 si nœud pur</span>
+
+<span class="cm"># Gain d'information</span>
+Gain = Gini(parent) - Σ [N(enfant)/N(parent) × Gini(enfant)]</div>
+  </div>
+</div>
+
+<div class="sh">4. Random Forest</div>
+<div class="algo-card">
+  <div class="algo-hd">
+    <div class="algo-accent" style="background:#f59e0b"></div>
+    <div class="algo-main">
+      <div class="algo-name">Random Forest</div>
+      <div class="algo-tagline">Ensemble de centaines d'arbres indépendants — vote majoritaire ou moyenne des probabilités</div>
+      <div class="algo-tags"><span class="algo-tag">Robuste</span><span class="algo-tag">Anti-overfitting</span><span class="algo-tag">Feature importance</span></div>
+    </div>
+    <div class="algo-meta">
+      <div class="algo-meta-item">Sortie : <strong>Probabilité moyenne</strong></div>
+      <div class="algo-meta-item">Usage : <strong>Fraude, churn, crédit</strong></div>
+      <div class="algo-meta-item">Interprét. : <strong>★★★☆☆</strong></div>
+    </div>
+  </div>
+  <div class="algo-body">
+    <div class="algo-desc">Le Random Forest construit N arbres sur des échantillons bootstrap différents et des sous-ensembles aléatoires de variables. La prédiction finale est la moyenne des probabilités de tous les arbres. Très robuste au surapprentissage, excellent en pratique pour des données tabulaires. Donne aussi la "feature importance" — quelles variables comptent le plus.</div>
+    <div class="algo-formula"><span class="cm"># Score final = moyenne des arbres</span>
+P(fraude) = <span class="num">1</span>/N × Σᵢ Pᵢ(fraude|X)
+
+<span class="cm"># Feature importance (Gini)</span>
+importance(X_j) = Σ_arbres Σ_noeuds [Gain_splité_sur_Xⱼ / Nb_observations]</div>
+  </div>
+</div>
+
+<div class="sh">5. XGBoost / LightGBM — L'état de l'art</div>
+<div class="algo-card">
+  <div class="algo-hd">
+    <div class="algo-accent" style="background:#ef4444"></div>
+    <div class="algo-main">
+      <div class="algo-name">XGBoost / LightGBM / CatBoost</div>
+      <div class="algo-tagline">Boosting par gradient — arbres construits séquentiellement, chacun corrigeant les erreurs du précédent</div>
+      <div class="algo-tags"><span class="algo-tag">Top performance</span><span class="algo-tag">Compétitions ML</span><span class="algo-tag">Régularisation intégrée</span></div>
+    </div>
+    <div class="algo-meta">
+      <div class="algo-meta-item">Sortie : <strong>Probabilité calibrée</strong></div>
+      <div class="algo-meta-item">Usage : <strong>Tous types</strong></div>
+      <div class="algo-meta-item">Interprét. : <strong>★★☆☆☆ (SHAP)</strong></div>
+    </div>
+  </div>
+  <div class="algo-body">
+    <div class="algo-desc">Les algorithmes de boosting construisent des arbres séquentiellement : chaque nouvel arbre apprend à corriger les erreurs du précédent. XGBoost domine les compétitions Kaggle de classification tabulaire depuis 2014. Très puissant mais nécessite SHAP pour l'interprétation. Standard actuel pour le scoring haute performance.</div>
+    <div class="algo-formula"><span class="cm"># Objectif boosting</span>
+L(θ) = Σᵢ <span class="fn">l</span>(yᵢ, ŷᵢ) + Σₖ <span class="fn">Ω</span>(fₖ)
+<span class="cm"># l = perte (log-loss pour scoring) · Ω = régularisation</span>
+
+<span class="cm"># Ajout séquentiel d'arbres</span>
+ŷᵢ⁽ᵗ⁾ = ŷᵢ⁽ᵗ⁻¹⁾ + η × fₜ(xᵢ)   <span class="cm"># η = learning rate</span></div>
+  </div>
+</div>
+
+<div class="sh">6-8. SVM, Réseaux de Neurones, Isolation Forest</div>
+<div class="g3">
+  <div class="algo-card" style="margin-bottom:0"><div style="height:5px;background:#8b5cf6;border-radius:4px 4px 0 0"></div><div style="padding:16px 18px"><div style="font-size:14px;font-weight:700;font-family:'Fraunces',serif;margin-bottom:6px;color:var(--ink)">SVM (Support Vector Machine)</div><div style="font-size:12.5px;color:var(--ink3);margin-bottom:10px">Trouve l'hyperplan optimal qui sépare les classes avec la marge maximale.</div><div class="algo-formula" style="font-size:11px">min (1/2)‖w‖² + C Σ ξᵢ
+<span class="cm"># w = vecteur normal · ξ = slack</span></div><div style="font-size:12px;color:var(--ink3);margin-top:10px">Bon pour données séparables · Coûteux à l'échelle · Usage : scoring avec peu de données</div></div></div>
+  <div class="algo-card" style="margin-bottom:0"><div style="height:5px;background:#06b6d4;border-radius:4px 4px 0 0"></div><div style="padding:16px 18px"><div style="font-size:14px;font-weight:700;font-family:'Fraunces',serif;margin-bottom:6px;color:var(--ink)">Réseau de Neurones (MLP / Deep)</div><div style="font-size:12.5px;color:var(--ink3);margin-bottom:10px">Couches de neurones qui apprennent des représentations complexes et non linéaires.</div><div class="algo-formula" style="font-size:11px">h = σ(W·X + b)
+P = <span class="fn">softmax</span>(W_out·h + b_out)</div><div style="font-size:12px;color:var(--ink3);margin-top:10px">Excellent sur données texte/image · Moins performant sur tabulaire · Usage : scoring NLP (emails)</div></div></div>
+  <div class="algo-card" style="margin-bottom:0"><div style="height:5px;background:#f97316;border-radius:4px 4px 0 0"></div><div style="padding:16px 18px"><div style="font-size:14px;font-weight:700;font-family:'Fraunces',serif;margin-bottom:6px;color:var(--ink)">Isolation Forest</div><div style="font-size:12.5px;color:var(--ink3);margin-bottom:10px">Détecte les anomalies en isolant les observations rares avec peu de partitions.</div><div class="algo-formula" style="font-size:11px">AnomalyScore(x) = 2^(-E[h(x)]/c(n))
+<span class="cm"># h = profondeur isolation</span></div><div style="font-size:12px;color:var(--ink3);margin-top:10px">Idéal fraude non supervisée · Pas besoin de labels · Score ≈ 1 = très anormal</div></div></div>
+</div>
+
+<div class="sh">Tableau de comparaison — Lequel choisir ?</div>
+<table class="dtbl">
+  <thead><tr><th>Algorithme</th><th>Performance</th><th>Interprétabilité</th><th>Vitesse prédiction</th><th>Idéal pour</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Régression logistique</strong></td><td><span class="pill" style="background:#fef3c7;color:#b45309">Bonne</span></td><td><span class="pill" style="background:#dcfce7;color:#15803d">Maximale</span></td><td><span class="pill" style="background:#dcfce7;color:#15803d">Très rapide</span></td><td>Crédit réglementé, baseline</td></tr>
+    <tr><td><strong>Scorecard WOE</strong></td><td><span class="pill" style="background:#fef3c7;color:#b45309">Correcte</span></td><td><span class="pill" style="background:#dcfce7;color:#15803d">Maximale</span></td><td><span class="pill" style="background:#dcfce7;color:#15803d">Très rapide</span></td><td>Banque, audit, scoring manuel</td></tr>
+    <tr><td><strong>Arbre de décision</strong></td><td><span class="pill" style="background:#fef3c7;color:#b45309">Correcte</span></td><td><span class="pill" style="background:#dcfce7;color:#15803d">Très bonne</span></td><td><span class="pill" style="background:#dcfce7;color:#15803d">Rapide</span></td><td>Règles métier, prototype</td></tr>
+    <tr><td><strong>Random Forest</strong></td><td><span class="pill" style="background:#dcfce7;color:#15803d">Très bonne</span></td><td><span class="pill" style="background:#fef3c7;color:#b45309">Moyenne</span></td><td><span class="pill" style="background:#fef3c7;color:#b45309">Correcte</span></td><td>Fraude, churn, crédit non réglementé</td></tr>
+    <tr><td><strong>XGBoost / LightGBM</strong></td><td><span class="pill" style="background:#dcfce7;color:#15803d">Excellente</span></td><td><span class="pill" style="background:#fee2e2;color:#dc2626">Faible (SHAP)</span></td><td><span class="pill" style="background:#dcfce7;color:#15803d">Rapide</span></td><td>Lead, churn, fraude haute perf.</td></tr>
+    <tr><td><strong>Isolation Forest</strong></td><td><span class="pill" style="background:#dcfce7;color:#15803d">Très bonne</span></td><td><span class="pill" style="background:#fef3c7;color:#b45309">Moyenne</span></td><td><span class="pill" style="background:#dcfce7;color:#15803d">Rapide</span></td><td>Détection anomalie, fraude non supervisée</td></tr>
+  </tbody>
+</table>
+
+<div class="navb">
+  <button class="btn" onclick="go(2)">← Les 6 types</button>
+  <button class="btn btn-p" onclick="go(4)">15 Exemples →</button>
+</div>
+</section>
+
+<!-- ══ CH4 — 15 EXEMPLES ══ -->
+<section class="ch" id="ch4">
+<div class="tag-l">Chapitre 04 · Cas pratiques</div>
+<h1 class="h1">15 exemples concrets <em>dans 10 domaines</em></h1>
+<p class="lead">Pour chaque exemple : le domaine, la question métier, les variables clés, l'algorithme recommandé, la plage de score et l'action déclenchée. Du concret, applicable immédiatement.</p>
+
+<div class="ex15-grid">
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#1e1b4b,#3730a3)">
+      <div class="ex15-num">01 — Finance & Banque</div>
+      <div class="ex15-domain" style="background:rgba(165,180,252,.2);color:#a5b4fc">Crédit</div>
+      <div class="ex15-title">Scoring crédit consommation</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Quelle est la probabilité que ce client ne rembourse pas son prêt ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#6366f1"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">Revenus, DTI, historique, ancienneté emploi, nb incidents</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#22c55e"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">Scorecard WOE / Régression logistique</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#f59e0b"></div><div><span class="ex15-key">Plage score</span><span class="ex15-val">300 – 850 (FICO-like)</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#eef2ff">
+        <div><div class="ex15-score-lbl">Score exemple</div><div class="ex15-score-val" style="color:#4338ca">724</div></div>
+        <span class="ex15-score-action" style="background:#dcfce7;color:#15803d">Accord + taux standard</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#0c4a6e,#0369a1)">
+      <div class="ex15-num">02 — Finance & Banque</div>
+      <div class="ex15-domain" style="background:rgba(125,211,252,.2);color:#7dd3fc">Fraude</div>
+      <div class="ex15-title">Détection fraude carte bancaire</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Cette transaction est-elle frauduleuse ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#0ea5e9"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">Montant, heure, pays, vélocité, device, distance</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#22c55e"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">XGBoost + règles temps réel en cascade</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#f59e0b"></div><div><span class="ex15-key">Contrainte</span><span class="ex15-val">Décision en &lt;200ms</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#dcfce7">
+        <div><div class="ex15-score-lbl">P(fraude)</div><div class="ex15-score-val" style="color:#15803d">4.2%</div></div>
+        <span class="ex15-score-action" style="background:#dcfce7;color:#15803d">Autoriser</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#064e3b,#065f46)">
+      <div class="ex15-num">03 — E-commerce & SaaS</div>
+      <div class="ex15-domain" style="background:rgba(110,231,183,.2);color:#6ee7b7">Churn</div>
+      <div class="ex15-title">Scoring churn SaaS B2B</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Ce client va-t-il résilier dans les 30 prochains jours ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#22c55e"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">Login fréquency, feature usage, tickets, NPS, contract age</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#6366f1"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">Random Forest / LightGBM</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#f59e0b"></div><div><span class="ex15-key">Fenêtre</span><span class="ex15-val">Prédiction J+30, relance si score &gt;60%</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#fef3c7">
+        <div><div class="ex15-score-lbl">P(churn J+30)</div><div class="ex15-score-val" style="color:#d97706">74%</div></div>
+        <span class="ex15-score-action" style="background:#fef3c7;color:#d97706">Alerte CSM urgent</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#701a75,#86198f)">
+      <div class="ex15-num">04 — Marketing</div>
+      <div class="ex15-domain" style="background:rgba(240,171,252,.2);color:#f0abfc">Lead</div>
+      <div class="ex15-title">Lead scoring B2B — priorisation commerciale</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Quel prospect a le plus de chances de signer dans les 60 jours ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#a855f7"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">Pages vues, taille entreprise, poste, emails ouverts, démo demandée</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#22c55e"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">Régression logistique + scoring démographique</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#f59e0b"></div><div><span class="ex15-key">Plage</span><span class="ex15-val">0 – 100 pts · Hot si &gt;70</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#faf5ff">
+        <div><div class="ex15-score-lbl">Lead score</div><div class="ex15-score-val" style="color:#7c3aed">82/100</div></div>
+        <span class="ex15-score-action" style="background:#ede9fe;color:#7c3aed">Appel commercial J+1</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#7c2d12,#c2410c)">
+      <div class="ex15-num">05 — E-commerce</div>
+      <div class="ex15-domain" style="background:rgba(253,186,116,.2);color:#fdba74">Retour</div>
+      <div class="ex15-title">Scoring risque retour produit</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Quelle probabilité que cette commande soit retournée ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#f97316"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">Historique retours client, catégorie produit, canal acquisition, taille commande</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#22c55e"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">XGBoost</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#6366f1"></div><div><span class="ex15-key">Action</span><span class="ex15-val">Si P(retour)&gt;40% : ajout frais de retour ou restriction</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#fff7ed">
+        <div><div class="ex15-score-lbl">P(retour)</div><div class="ex15-score-val" style="color:#ea580c">38%</div></div>
+        <span class="ex15-score-action" style="background:#fff7ed;color:#ea580c">Surveiller</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#0f172a,#1e3a5f)">
+      <div class="ex15-num">06 — Santé</div>
+      <div class="ex15-domain" style="background:rgba(147,197,253,.2);color:#93c5fd">Médical</div>
+      <div class="ex15-title">Scoring risque de réadmission</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Ce patient sera-t-il réadmis à l'hôpital dans les 30 jours suivant sa sortie ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#3b82f6"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">Diagnostics, durée séjour, âge, comorbidités, nb hospitalisations précédentes</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#22c55e"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">Random Forest / Score LACE établi</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#f59e0b"></div><div><span class="ex15-key">Enjeu</span><span class="ex15-val">Prévenir réadmission = économie &amp; qualité soins</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#eff6ff">
+        <div><div class="ex15-score-lbl">P(réadmission 30j)</div><div class="ex15-score-val" style="color:#2563eb">61%</div></div>
+        <span class="ex15-score-action" style="background:#fef3c7;color:#d97706">Plan suivi renforcé</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#1c1917,#44403c)">
+      <div class="ex15-num">07 — RH</div>
+      <div class="ex15-domain" style="background:rgba(214,211,209,.2);color:#d6d3d1">Talent</div>
+      <div class="ex15-title">Scoring risque de départ — rétention RH</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Quel employé risque de démissionner dans les 6 prochains mois ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#78716c"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">Ancienneté, promotions, évaluation, engagement enquête, absences, heures supp.</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#22c55e"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">Régression logistique (explicable au manager)</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#ef4444"></div><div><span class="ex15-key">Enjeu éthique</span><span class="ex15-val">Résultat partagé avec RH uniquement — anonymisé</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#fafaf9">
+        <div><div class="ex15-score-lbl">P(départ 6 mois)</div><div class="ex15-score-val" style="color:#57534e">45%</div></div>
+        <span class="ex15-score-action" style="background:#fef3c7;color:#d97706">Entretien RH proactif</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#0a2e1a,#14532d)">
+      <div class="ex15-num">08 — Logistique</div>
+      <div class="ex15-domain" style="background:rgba(134,239,172,.2);color:#86efac">Prédictif</div>
+      <div class="ex15-title">Scoring maintenance prédictive</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Quelle machine est susceptible de tomber en panne dans les 48 prochaines heures ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#22c55e"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">Température, vibrations, heures de marche, historique pannes, âge équipement</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#6366f1"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">Isolation Forest + LSTM sur séries temporelles</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#f59e0b"></div><div><span class="ex15-key">Gain</span><span class="ex15-val">Réduction pannes imprévues de 40-60%</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#f0fdf4">
+        <div><div class="ex15-score-lbl">Score anomalie</div><div class="ex15-score-val" style="color:#15803d">0.82</div></div>
+        <span class="ex15-score-action" style="background:#fee2e2;color:#dc2626">Maintenance urgente</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#1a1207,#713f12)">
+      <div class="ex15-num">09 — Immobilier</div>
+      <div class="ex15-domain" style="background:rgba(253,230,138,.2);color:#fde68a">Risque</div>
+      <div class="ex15-title">Scoring locataire — risque impayé</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Ce candidat locataire va-t-il payer son loyer régulièrement ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#d97706"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">Revenu / loyer ratio, stabilité emploi, historique locatif, ancienneté travail</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#22c55e"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">Scorecard réglementée (législation RGPD)</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#6366f1"></div><div><span class="ex15-key">Ratio clé</span><span class="ex15-val">Revenu / loyer &gt; 3x = condition de base</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#fffbeb">
+        <div><div class="ex15-score-lbl">Score locataire</div><div class="ex15-score-val" style="color:#d97706">C+</div></div>
+        <span class="ex15-score-action" style="background:#fef3c7;color:#d97706">Garant requis</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#0c0a1e,#1e1b4b)">
+      <div class="ex15-num">10 — Télécoms</div>
+      <div class="ex15-domain" style="background:rgba(165,180,252,.2);color:#a5b4fc">Usage</div>
+      <div class="ex15-title">Scoring upsell — upgrade de forfait</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Quel abonné est prêt à upgrader vers un forfait supérieur ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#818cf8"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">Consommation data/mois vs limite forfait, nb dépassements, ancienneté</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#22c55e"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">Régression logistique segmentée par type de forfait</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#f59e0b"></div><div><span class="ex15-key">ROI</span><span class="ex15-val">+35% taux de conversion vs campagnes non ciblées</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#eef2ff">
+        <div><div class="ex15-score-lbl">P(upgrade)</div><div class="ex15-score-val" style="color:#4338ca">79%</div></div>
+        <span class="ex15-score-action" style="background:#eef2ff;color:#4338ca">Offre upgrade ciblée</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#0f2027,#203a43)">
+      <div class="ex15-num">11 — Administration publique</div>
+      <div class="ex15-domain" style="background:rgba(147,197,253,.2);color:#93c5fd">Contrôle</div>
+      <div class="ex15-title">Scoring fiscal — ciblage contrôles</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Quelles déclarations fiscales présenter le risque le plus élevé d'erreur ou de fraude ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#38bdf8"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">Écart vs secteur, variation N/N-1, anomalies ratios, déclarations tardives</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#22c55e"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">Isolation Forest + Régression logistique supervisée</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#f59e0b"></div><div><span class="ex15-key">Impact</span><span class="ex15-val">Efficacité contrôles ×3 vs sélection aléatoire</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#eff6ff">
+        <div><div class="ex15-score-lbl">Score risque fiscal</div><div class="ex15-score-val" style="color:#2563eb">87</div></div>
+        <span class="ex15-score-action" style="background:#fee2e2;color:#dc2626">Audit prioritaire</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#0d1b2a,#1b4332)">
+      <div class="ex15-num">12 — Agriculture</div>
+      <div class="ex15-domain" style="background:rgba(134,239,172,.2);color:#86efac">Crédit</div>
+      <div class="ex15-title">Scoring crédit agricole</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Ce producteur peut-il rembourser un crédit de campagne ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#16a34a"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">Superficie, rendements historiques, météo historique, accès marché, type culture</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#6366f1"></div><div><span class="ex15-key">Spécificité</span><span class="ex15-val">Données géo-spatiales (satellite) comme variables</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#f59e0b"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">Random Forest + données NDVI (indice végétation)</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#f0fdf4">
+        <div><div class="ex15-score-lbl">Score solvabilité</div><div class="ex15-score-val" style="color:#15803d">B+</div></div>
+        <span class="ex15-score-action" style="background:#dcfce7;color:#15803d">Crédit accordé · suivi mensuel</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#18181b,#3f3f46)">
+      <div class="ex15-num">13 — Cybersécurité</div>
+      <div class="ex15-domain" style="background:rgba(244,114,182,.2);color:#f472b6">Sécurité</div>
+      <div class="ex15-title">Scoring menace cybersécurité</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Quel utilisateur interne présente un risque de fuite de données ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#a1a1aa"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">Accès inhabituels, horaires connexion, volumes téléchargés, changements config</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#22c55e"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">Isolation Forest (non supervisé) + UEBA</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#f59e0b"></div><div><span class="ex15-key">Contrainte</span><span class="ex15-val">Très faible taux de faux positifs (coût humain)</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#fafafa">
+        <div><div class="ex15-score-lbl">Score risque</div><div class="ex15-score-val" style="color:#71717a">0.34</div></div>
+        <span class="ex15-score-action" style="background:#dcfce7;color:#15803d">Normal — surveillance standard</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#1a0533,#4c1d95)">
+      <div class="ex15-num">14 — Éducation</div>
+      <div class="ex15-domain" style="background:rgba(196,181,253,.2);color:#c4b5fd">Pédagogie</div>
+      <div class="ex15-title">Scoring décrochage scolaire</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Quel étudiant risque d'abandonner sa formation avant la fin du semestre ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#8b5cf6"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">Taux présence, notes, connexions plateforme LMS, engagement forums, délais rendus</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#22c55e"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">Régression logistique (interprétable par les enseignants)</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#f59e0b"></div><div><span class="ex15-key">Action</span><span class="ex15-val">Si P(décrochage)&gt;60% → intervention tuteur dès J+3</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#faf5ff">
+        <div><div class="ex15-score-lbl">P(décrochage)</div><div class="ex15-score-val" style="color:#7c3aed">66%</div></div>
+        <span class="ex15-score-action" style="background:#ede9fe;color:#7c3aed">Tuteur alerté</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex15-card">
+    <div class="ex15-hd" style="background:linear-gradient(135deg,#0c1a2e,#1e3a5f)">
+      <div class="ex15-num">15 — Santé publique</div>
+      <div class="ex15-domain" style="background:rgba(147,197,253,.2);color:#93c5fd">Prévention</div>
+      <div class="ex15-title">Scoring risque diabète de type 2</div>
+    </div>
+    <div class="ex15-body">
+      <div class="ex15-q">"Quel patient asymptomatique a le risque le plus élevé de développer un diabète ?"</div>
+      <div class="kpi-items" style="margin:0 0 12px 0">
+        <div class="ex15-row"><div class="ex15-dot" style="background:#3b82f6"></div><div><span class="ex15-key">Variables</span><span class="ex15-val">IMC, glycémie à jeun, âge, antécédents familiaux, activité physique, pression artérielle</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#22c55e"></div><div><span class="ex15-key">Algorithme</span><span class="ex15-val">Score FINDRISC (règle clinique) + ML en validation</span></div></div>
+        <div class="ex15-row"><div class="ex15-dot" style="background:#f59e0b"></div><div><span class="ex15-key">Enjeu</span><span class="ex15-val">Prévention &gt;&gt; traitement (coût et qualité de vie)</span></div></div>
+      </div>
+      <div class="ex15-score" style="background:#eff6ff">
+        <div><div class="ex15-score-lbl">Score FINDRISC</div><div class="ex15-score-val" style="color:#2563eb">15/26</div></div>
+        <span class="ex15-score-action" style="background:#fef3c7;color:#d97706">Risque modéré · bilan approfondi</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="callout ci"><div><div class="c-lbl">Le point commun des 15 exemples</div><p class="c-txt">Dans tous les cas : <strong>(1)</strong> une question métier précise avec une variable cible définie · <strong>(2)</strong> des données historiques labellisées (sauf cas non supervisés) · <strong>(3)</strong> un algorithme adapté aux contraintes (temps réel, explicabilité, volume) · <strong>(4)</strong> un seuil de décision calibré sur les coûts métier · <strong>(5)</strong> une action concrète déclenchée par le score.</p></div></div>
+
+<div class="navb">
+  <button class="btn" onclick="go(3)">← Algorithmes</button>
+  <button class="btn btn-p" onclick="go(5)">Coder un modèle →</button>
+</div>
+</section>
+
+<!-- ══ CH5 — CODE ══ -->
+<section class="ch" id="ch5">
+<div class="tag-l">Chapitre 05 · Code Python</div>
+<h1 class="h1">Coder un modèle de scoring — <em>du pipeline à la décision</em></h1>
+<p class="lead">3 modèles complets en Python : scoring crédit avec régression logistique, scoring churn avec XGBoost, et scoring fraude avec Isolation Forest. Chaque pipeline est réutilisable et adapté à vos données.</p>
+
+<div class="sh">Pipeline universel — les 7 étapes</div>
+<div class="pipeline">
+  <div class="pipe-step"><div class="pipe-n">01</div><div class="pipe-t">Collecte</div><div class="pipe-d">CSV, SQL, API</div></div>
+  <div class="pipe-arr">→</div>
+  <div class="pipe-step"><div class="pipe-n">02</div><div class="pipe-t">Nettoyage</div><div class="pipe-d">Valeurs manquantes, outliers</div></div>
+  <div class="pipe-arr">→</div>
+  <div class="pipe-step"><div class="pipe-n">03</div><div class="pipe-t">Features</div><div class="pipe-d">Sélection, encodage, normalisation</div></div>
+  <div class="pipe-arr">→</div>
+  <div class="pipe-step"><div class="pipe-n">04</div><div class="pipe-t">Train / Test</div><div class="pipe-d">Split stratifié</div></div>
+  <div class="pipe-arr">→</div>
+  <div class="pipe-step"><div class="pipe-n">05</div><div class="pipe-t">Modèle</div><div class="pipe-d">Entraînement + tuning</div></div>
+  <div class="pipe-arr">→</div>
+  <div class="pipe-step"><div class="pipe-n">06</div><div class="pipe-t">Évaluation</div><div class="pipe-d">AUC, KS, Gini, PSI</div></div>
+  <div class="pipe-arr">→</div>
+  <div class="pipe-step"><div class="pipe-n">07</div><div class="pipe-t">Décision</div><div class="pipe-d">Seuil + interprétation SHAP</div></div>
+</div>
+
+<div class="sh">Modèle 1 — Scoring crédit avec Régression Logistique</div>
+<div class="code-block">
+  <span class="code-lang">Python</span>
+  <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> roc_auc_score, classification_report
+<span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+
+<span class="cm"># ── 1. CHARGER LES DONNÉES ──</span>
+df = pd.<span class="fn">read_csv</span>(<span class="str">'credit_data.csv'</span>)
+<span class="cm"># Variable cible : 1 = défaut, 0 = bon payeur</span>
+X = df.<span class="fn">drop</span>(<span class="str">'defaut'</span>, axis=<span class="num">1</span>)
+y = df[<span class="str">'defaut'</span>]
+
+<span class="cm"># ── 2. NETTOYAGE ──</span>
+X.<span class="fn">fillna</span>(X.<span class="fn">median</span>(), inplace=<span class="dec">True</span>)          <span class="cm"># valeurs manquantes → médiane</span>
+X = pd.<span class="fn">get_dummies</span>(X, drop_first=<span class="dec">True</span>)     <span class="cm"># encodage variables catégorielles</span>
+
+<span class="cm"># ── 3. SPLIT TRAIN / TEST (stratifié) ──</span>
+X_train, X_test, y_train, y_test = <span class="fn">train_test_split</span>(
+    X, y, test_size=<span class="num">0.2</span>, random_state=<span class="num">42</span>, stratify=y
+)
+
+<span class="cm"># ── 4. PIPELINE : Normalisation + Modèle ──</span>
+pipeline = <span class="cls">Pipeline</span>([
+    (<span class="str">'scaler'</span>, <span class="cls">StandardScaler</span>()),
+    (<span class="str">'model'</span>,  <span class="cls">LogisticRegression</span>(
+        C=<span class="num">0.1</span>,         <span class="cm"># régularisation L2</span>
+        max_iter=<span class="num">1000</span>,
+        class_weight=<span class="str">'balanced'</span>  <span class="cm"># gère le déséquilibre des classes</span>
+    ))
+])
+
+pipeline.<span class="fn">fit</span>(X_train, y_train)
+
+<span class="cm"># ── 5. ÉVALUATION ──</span>
+proba = pipeline.<span class="fn">predict_proba</span>(X_test)[:, <span class="num">1</span>]  <span class="cm"># P(défaut)</span>
+auc   = <span class="fn">roc_auc_score</span>(y_test, proba)
+gini  = <span class="num">2</span> * auc - <span class="num">1</span>
+<span class="fn">print</span>(<span class="str">f"AUC : {auc:.3f} | Gini : {gini:.3f}"</span>)
+
+<span class="cm"># ── 6. TRANSFORMER EN SCORE 300-850 (FICO-like) ──</span>
+<span class="kw">def</span> <span class="fn">proba_to_score</span>(p, score_min=<span class="num">300</span>, score_max=<span class="num">850</span>):
+    <span class="cm"># Plus la probabilité de défaut est haute → plus le score est bas</span>
+    <span class="kw">return</span> <span class="fn">int</span>(score_max - p * (score_max - score_min))
+
+df_test = X_test.<span class="fn">copy</span>()
+df_test[<span class="str">'proba_defaut'</span>] = proba
+df_test[<span class="str">'score'</span>]        = df_test[<span class="str">'proba_defaut'</span>].<span class="fn">apply</span>(proba_to_score)
+
+<span class="cm"># ── 7. DÉCISION MÉTIER ──</span>
+<span class="kw">def</span> <span class="fn">decision_credit</span>(score):
+    <span class="kw">if</span>   score &gt;= <span class="num">700</span>: <span class="kw">return</span> <span class="str">"Accord · Taux préférentiel"</span>
+    <span class="kw">elif</span> score &gt;= <span class="num">600</span>: <span class="kw">return</span> <span class="str">"Accord · Taux standard"</span>
+    <span class="kw">elif</span> score &gt;= <span class="num">500</span>: <span class="kw">return</span> <span class="str">"Accord conditionnel · Garantie requise"</span>
+    <span class="kw">else</span>:              <span class="kw">return</span> <span class="str">"Refus automatique"</span>
+
+df_test[<span class="str">'decision'</span>] = df_test[<span class="str">'score'</span>].<span class="fn">apply</span>(decision_credit)
+<span class="fn">print</span>(df_test[[<span class="str">'score'</span>, <span class="str">'decision'</span>]].<span class="fn">head</span>(<span class="num">10</span>))</pre>
+</div>
+
+<div class="sh">Modèle 2 — Scoring Churn avec XGBoost + SHAP</div>
+<div class="code-block">
+  <span class="code-lang">Python</span>
+  <pre><span class="kw">import</span> xgboost <span class="kw">as</span> xgb
+<span class="kw">import</span> shap
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> cross_val_score, StratifiedKFold
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> roc_auc_score
+
+<span class="cm"># ── ENTRAÎNEMENT XGBoost ──</span>
+model = xgb.<span class="cls">XGBClassifier</span>(
+    n_estimators    = <span class="num">300</span>,
+    max_depth       = <span class="num">4</span>,         <span class="cm"># profondeur limitée → évite surapprentissage</span>
+    learning_rate   = <span class="num">0.05</span>,
+    subsample       = <span class="num">0.8</span>,
+    colsample_bytree= <span class="num">0.8</span>,
+    scale_pos_weight= <span class="num">9</span>,          <span class="cm"># si 10% de churners : 9/1 ratio</span>
+    eval_metric     = <span class="str">'auc'</span>,
+    early_stopping_rounds = <span class="num">20</span>,
+    random_state    = <span class="num">42</span>
+)
+
+model.<span class="fn">fit</span>(
+    X_train, y_train,
+    eval_set=[(X_test, y_test)],
+    verbose=<span class="num">50</span>
+)
+
+<span class="cm"># ── VALIDATION CROISÉE ──</span>
+cv = <span class="cls">StratifiedKFold</span>(n_splits=<span class="num">5</span>, shuffle=<span class="dec">True</span>, random_state=<span class="num">42</span>)
+scores = <span class="fn">cross_val_score</span>(model, X, y, cv=cv, scoring=<span class="str">'roc_auc'</span>)
+<span class="fn">print</span>(<span class="str">f"AUC moyen : {scores.mean():.3f} ± {scores.std():.3f}"</span>)
+
+<span class="cm"># ── INTERPRÉTATION AVEC SHAP ──</span>
+<span class="cm"># SHAP = combien chaque variable contribue au score de chaque client</span>
+explainer   = shap.<span class="cls">TreeExplainer</span>(model)
+shap_values = explainer.<span class="fn">shap_values</span>(X_test)
+
+<span class="cm"># Top variables qui poussent un client vers le churn</span>
+shap.<span class="fn">summary_plot</span>(shap_values, X_test, plot_type=<span class="str">"bar"</span>)
+
+<span class="cm"># ── SEGMENTATION PAR DÉCILE ──</span>
+df_result = X_test.<span class="fn">copy</span>()
+df_result[<span class="str">'proba_churn'</span>] = model.<span class="fn">predict_proba</span>(X_test)[:, <span class="num">1</span>]
+df_result[<span class="str">'decile'</span>] = pd.<span class="fn">qcut</span>(
+    df_result[<span class="str">'proba_churn'</span>], q=<span class="num">10</span>,
+    labels=[<span class="str">'D1'</span>,<span class="str">'D2'</span>,<span class="str">'D3'</span>,<span class="str">'D4'</span>,<span class="str">'D5'</span>,<span class="str">'D6'</span>,<span class="str">'D7'</span>,<span class="str">'D8'</span>,<span class="str">'D9'</span>,<span class="str">'D10'</span>]
+)
+
+<span class="cm"># Stratégie : D10 → contact J+1, D9 → email urgence, D8 → offre de rétention</span>
+action_map = {
+    <span class="str">'D10'</span>: <span class="str">'Appel commercial J+1'</span>,
+    <span class="str">'D9'</span> : <span class="str">'Email rétention urgent'</span>,
+    <span class="str">'D8'</span> : <span class="str">'Offre spéciale promo'</span>,
+}
+df_result[<span class="str">'action'</span>] = df_result[<span class="str">'decile'</span>].<span class="fn">map</span>(action_map).<span class="fn">fillna</span>(<span class="str">'Standard'</span>)</pre>
+</div>
+
+<div class="sh">Modèle 3 — Détection fraude avec Isolation Forest (non supervisé)</div>
+<div class="code-block">
+  <span class="code-lang">Python</span>
+  <pre><span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> IsolationForest
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> RobustScaler
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── CONTEXTE : pas de labels → apprentissage non supervisé ──</span>
+<span class="cm"># L'Isolation Forest isole les anomalies car elles nécessitent moins de partitions</span>
+
+<span class="cm"># ── PREPROCESSING ──</span>
+<span class="cm"># RobustScaler : résistant aux outliers (meilleur que StandardScaler ici)</span>
+scaler = <span class="cls">RobustScaler</span>()
+X_scaled = scaler.<span class="fn">fit_transform</span>(X_transactions)
+
+<span class="cm"># ── MODÈLE ──</span>
+iso_forest = <span class="cls">IsolationForest</span>(
+    n_estimators      = <span class="num">200</span>,
+    contamination     = <span class="num">0.01</span>,    <span class="cm"># on suppose 1% de transactions frauduleuses</span>
+    max_samples       = <span class="str">'auto'</span>,
+    random_state      = <span class="num">42</span>,
+    n_jobs            = -<span class="num">1</span>       <span class="cm"># tous les CPU disponibles</span>
+)
+iso_forest.<span class="fn">fit</span>(X_scaled)
+
+<span class="cm"># ── SCORE D'ANOMALIE ──</span>
+<span class="cm"># score_samples : plus négatif = plus anormal</span>
+raw_scores = iso_forest.<span class="fn">score_samples</span>(X_scaled)
+
+<span class="cm"># Normaliser entre 0 (normal) et 1 (très suspect)</span>
+anomaly_scores = <span class="num">1</span> - (<span class="num">1</span> + raw_scores) / <span class="num">2</span>
+
+df_transactions[<span class="str">'fraud_score'</span>] = anomaly_scores
+df_transactions[<span class="str">'alerte'</span>]      = anomaly_scores > <span class="num">0.7</span>
+
+<span class="cm"># ── DÉCISION EN TEMPS RÉEL ──</span>
+<span class="kw">def</span> <span class="fn">score_transaction</span>(transaction_features):
+    <span class="fn">"""Score une transaction en moins de 10ms"""</span>
+    scaled = scaler.<span class="fn">transform</span>([transaction_features])
+    raw    = iso_forest.<span class="fn">score_samples</span>(scaled)[<span class="num">0</span>]
+    score  = <span class="num">1</span> - (<span class="num">1</span> + raw) / <span class="num">2</span>
+
+    <span class="kw">if</span>   score > <span class="num">0.85</span>: <span class="kw">return</span> score, <span class="str">"BLOQUER"</span>
+    <span class="kw">elif</span> score > <span class="num">0.70</span>: <span class="kw">return</span> score, <span class="str">"CHALLENGE 3D-SECURE"</span>
+    <span class="kw">elif</span> score > <span class="num">0.50</span>: <span class="kw">return</span> score, <span class="str">"SURVEILLER"</span>
+    <span class="kw">else</span>:             <span class="kw">return</span> score, <span class="str">"AUTORISER"</span></pre>
+</div>
+
+<div class="sh">Évaluer et monitorer un modèle en production</div>
+<div class="code-block">
+  <span class="code-lang">Python</span>
+  <pre><span class="kw">from</span> scipy.stats <span class="kw">import</span> ks_2samp
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── KS STATISTIC (séparation bons/mauvais) ──</span>
+<span class="kw">def</span> <span class="fn">calcul_ks</span>(y_true, y_proba):
+    bons    = y_proba[y_true == <span class="num">0</span>]
+    mauvais = y_proba[y_true == <span class="num">1</span>]
+    ks_stat, _ = <span class="fn">ks_2samp</span>(bons, mauvais)
+    <span class="kw">return</span> ks_stat
+
+<span class="cm"># ── PSI (Population Stability Index) — dérive du modèle ──</span>
+<span class="kw">def</span> <span class="fn">calcul_psi</span>(ref_scores, new_scores, bins=<span class="num">10</span>):
+    <span class="fn">"""Mesure si la distribution des scores a dérivé"""</span>
+    breakpoints = np.<span class="fn">linspace</span>(<span class="num">0</span>, <span class="num">1</span>, bins+<span class="num">1</span>)
+    ref_pct = np.<span class="fn">histogram</span>(ref_scores, bins=breakpoints)[<span class="num">0</span>] / <span class="fn">len</span>(ref_scores)
+    new_pct = np.<span class="fn">histogram</span>(new_scores, bins=breakpoints)[<span class="num">0</span>] / <span class="fn">len</span>(new_scores)
+
+    <span class="cm"># Éviter la division par zéro</span>
+    ref_pct = np.<span class="fn">clip</span>(ref_pct, <span class="num">1e-10</span>, <span class="dec">None</span>)
+    new_pct = np.<span class="fn">clip</span>(new_pct, <span class="num">1e-10</span>, <span class="dec">None</span>)
+
+    psi = np.<span class="fn">sum</span>((new_pct - ref_pct) * np.<span class="fn">log</span>(new_pct / ref_pct))
+    <span class="kw">return</span> psi
+
+psi = <span class="fn">calcul_psi</span>(scores_reference, scores_nouveaux)
+<span class="kw">if</span>   psi &lt;  <span class="num">0.10</span>: <span class="fn">print</span>(<span class="str">"Modèle stable ✓"</span>)
+<span class="kw">elif</span> psi &lt;  <span class="num">0.25</span>: <span class="fn">print</span>(<span class="str">"Dérive légère — surveiller"</span>)
+<span class="kw">else</span>:             <span class="fn">print</span>(<span class="str">"Dérive significative — réentraîner le modèle"</span>)</pre>
+</div>
+
+<div class="callout cg"><div><div class="c-lbl">Librairies Python essentielles pour le scoring</div><p class="c-txt"><strong>scikit-learn</strong> — régression logistique, random forest, pipelines, métriques · <strong>xgboost / lightgbm</strong> — gradient boosting · <strong>shap</strong> — interprétation des modèles complexes · <strong>optuna</strong> — optimisation des hyperparamètres · <strong>imbalanced-learn</strong> — SMOTE et gestion du déséquilibre · <strong>scorecardpy</strong> — construction de scorecard WOE/IV bancaire · <strong>mlflow</strong> — tracking expériences et déploiement</p></div></div>
+
+<div class="navb">
+  <button class="btn" onclick="go(4)">← 15 Exemples</button>
+  <button class="btn btn-p" onclick="go(6)">QCM Final →</button>
+</div>
+</section>
+
+<!-- ══ CH6 QCM ══ -->
+<section class="ch" id="ch6">
+<div class="tag-l">Chapitre 06 · Certification</div>
+<h1 class="h1">QCM — Certification Scoring</h1>
+<p class="lead">20 questions pour valider votre maîtrise des modèles de scoring. Score ≥ 14/20 = certificat.</p>
+<div id="qwrap">
+  <div class="qcm-prog"><div class="qcm-pf" id="qpf" style="width:0%"></div></div>
+  <div class="qcm-ctr" id="qctr">Question 1 / 20</div>
+  <div id="qq"></div>
+  <div class="qcm-nav">
+    <button class="btn" id="qprv" onclick="qP()" disabled>← Précédent</button>
+    <button class="btn btn-p" id="qnxt" onclick="qN()">Suivant →</button>
+  </div>
+</div>
+<div id="qres" style="display:none">
+  <div class="res-wrap">
+    <div class="res-big" id="rscore"></div>
+    <div class="res-grade" id="rgrade"></div>
+    <div class="res-detail" id="rdetail"></div>
+    <div id="cform" style="display:none;margin:16px 0;text-align:center">
+      <p style="font-size:13px;color:var(--ink3);margin-bottom:10px">Entrez votre nom pour générer votre certificat :</p>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <input id="cinp" type="text" placeholder="Votre nom complet" style="padding:10px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-family:inherit;font-size:13px;flex:1;min-width:200px;max-width:300px;outline:none;background:var(--card)">
+        <button onclick="genC()" class="btn btn-p" style="white-space:nowrap">Générer →</button>
+      </div>
+    </div>
+    <div id="cwrap" style="display:none">
+      <div class="cert" id="cel">
+        <div class="cert-logo">Scoring · Maîtrise</div>
+        <div class="cert-type">FinMark Support · Certification</div>
+        <div class="cert-presents">Ce certificat est délivré à</div>
+        <div class="cert-name" id="cname">—</div>
+        <div class="cert-course">Maîtriser le Scoring — Modèles prédictifs</div>
+        <div class="cert-sub">Types · Algorithmes · 15 Exemples · Code Python</div>
+        <div class="cert-sc">Score : <span id="csc"></span> · <span id="cgr"></span></div>
+        <div class="cert-foot">
+          <div class="cert-sig"><div class="cert-line"></div><div class="cert-sn">Kouassi F.-N. ZOUZOU</div><div class="cert-sr">Formateur · FinMark Support</div></div>
+          <div class="cert-seal">★</div>
+          <div class="cert-sig"><div class="cert-line"></div><div class="cert-sn" id="cdt"></div><div class="cert-sr">Date de délivrance</div></div>
+        </div>
+      </div>
+      <button class="btn btn-p" onclick="pC()" style="margin:16px auto;display:block">Imprimer / Enregistrer en PDF</button>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap">
+      <button class="btn btn-p" onclick="rQ()">Recommencer</button>
+      <button class="btn" onclick="go(0)">← Accueil</button>
+    </div>
+  </div>
+</div>
+<div class="navb"><button class="btn" onclick="go(5)">← Code Python</button></div>
+</section>
+
+</main>
+<script>
+let cur=0;
+const INITS={0:initHero,1:null,2:null,3:null,4:null,5:null,6:null};
+function go(n){
+  document.querySelectorAll('.ch').forEach((c,i)=>c.classList.toggle('on',i===n));
+  document.querySelectorAll('.sb-a').forEach((a,i)=>a.classList.toggle('on',i===n));
+  cur=n;
+  const f=document.getElementById('sb-f');
+  if(f) f.style.width=Math.round(n/6*100)+'%';
+  const m=document.getElementById('main');
+  if(m) m.scrollTo({top:0,behavior:'smooth'});
+  else window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('sb').classList.remove('on');
+  if(n===6&&!qS.init) initQ();
+  if(INITS[n]) setTimeout(INITS[n],150);
+}
+document.getElementById('burg').onclick=()=>document.getElementById('sb').classList.toggle('on');
+
+// ── PARTICLES ──
+(function(){
+  const c=document.getElementById('hc');if(!c)return;
+  const ctx=c.getContext('2d');let W,H,pts=[];
+  function resize(){const r=c.parentElement.getBoundingClientRect();W=c.width=r.width;H=c.height=r.height;}
+  function mk(){return{x:Math.random()*W,y:Math.random()*H,r:.5+Math.random()*1.1,dx:(Math.random()-.5)*.15,dy:(Math.random()-.5)*.15,a:.04+Math.random()*.13,col:Math.random()>.5?'rgba(99,102,241,':'rgba(165,180,252,'};}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<pts.length;i++){
+      const p=pts[i];ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.col+p.a+')';ctx.fill();
+      p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>W)p.dx*=-1;if(p.y<0||p.y>H)p.dy*=-1;
+      for(let j=i+1;j<pts.length;j++){const q=pts[j],dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<75){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle='rgba(99,102,241,'+(0.03*(1-d/75))+')';ctx.lineWidth=.5;ctx.stroke();}}
+    }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);resize();pts=Array.from({length:36},mk);draw();
+})();
+
+// ── HERO SCORE BARS ──
+let heroInited=false;
+function initHero(){
+  if(heroInited)return;heroInited=true;
+  setTimeout(()=>{
+    const b1=document.getElementById('hs-bar1');
+    const b2=document.getElementById('hs-bar2');
+    const b3=document.getElementById('hs-bar3');
+    if(b1) b1.style.width=Math.round(782/1000*100)+'%';  // credit score 782/1000
+    if(b2) b2.style.width='12%';                          // fraud 12%
+    if(b3) b3.style.width='68%';                          // lead 68/100
+  },300);
+}
+setTimeout(initHero,200);
+
+// ── COUNTERS ──
+const co=new IntersectionObserver(e=>{if(e[0].isIntersecting){
+  function cu(id,end,s){const el=document.getElementById(id);if(!el)return;let n=0;const t=setInterval(()=>{n=Math.min(n+Math.ceil(end/28),end);el.textContent=n+s;if(n>=end)clearInterval(t);},24);}
+  cu('s1',6,'');cu('s2',8,'');cu('s3',15,'');cu('s4',3,'');co.disconnect();
+}},{threshold:.4});
+const sb2=document.querySelector('.stats-row');if(sb2)co.observe(sb2);
+
+// ── QCM DATA ──
+const QD=[
+  {q:'Un modèle de scoring est une fonction f(X) → S qui transforme :',opts:['Des scores en données brutes','Un vecteur de variables X en un score S utilisé pour prendre une décision','Des probabilités en catégories discrètes','Des règles métier en algorithmes automatiques'],c:1,exp:'f(X) → S transforme des variables descriptives (âge, revenus, comportement) en un score numérique, qui est ensuite comparé à un seuil de décision pour déclencher une action métier.'},
+  {q:'La métrique AUC-ROC mesure :',opts:['La vitesse d\'exécution du modèle','La capacité du modèle à distinguer les positifs (défaut) des négatifs (bon payeur)','Le nombre de variables utilisées','La stabilité du modèle dans le temps'],c:1,exp:'AUC-ROC = aire sous la courbe ROC. Elle mesure la capacité discriminante : 0.5 = modèle aléatoire, 1.0 = modèle parfait. En scoring crédit, AUC > 0.80 est considéré bon.'},
+  {q:'Le PSI (Population Stability Index) sert à :',opts:['Mesurer la précision du modèle sur le jeu de test','Détecter la dérive du modèle — si la distribution des scores a changé dans le temps','Calculer le score FICO d\'un client','Sélectionner les variables les plus informatives'],c:1,exp:'PSI mesure si la population scorée aujourd\'hui ressemble à la population d\'entraînement. PSI < 0.10 = stable. > 0.25 = dérive significative → réentraîner le modèle.'},
+  {q:'Pourquoi la régression logistique est-elle préférée pour le scoring crédit réglementé ?',opts:['Elle donne les meilleures performances de toutes les méthodes','Elle est la seule méthode supportée par scikit-learn','Ses coefficients sont interprétables : chaque variable a un odds ratio explicable au régulateur','Elle ne nécessite aucun nettoyage de données'],c:2,exp:'Les régulateurs (Bâle III, RGPD) exigent que les décisions de crédit soient explicables. La régression logistique fournit des coefficients directement interprétables : si β_age = 0.03, chaque année supplémentaire multiplie l\'odds de défaut par e^0.03 ≈ 1.03.'},
+  {q:'Dans une scorecard WOE, l\'Information Value (IV) d\'une variable < 0.02 signifie :',opts:['La variable est très informative et doit être incluse en priorité','La variable est non informative et doit être exclue du modèle','La variable est catégorielle et doit être encodée différemment','La variable a trop de valeurs manquantes'],c:1,exp:'Seuils IV : < 0.02 = non informative (exclure) · 0.02-0.1 = faiblement informative · 0.1-0.3 = moyennement informative · > 0.3 = très informative. L\'IV mesure la capacité de la variable à discriminer bons et mauvais payeurs.'},
+  {q:'Le churn scoring prédit :',opts:['Le montant total que dépensera un client dans sa vie','La probabilité qu\'un client résilie ou cesse d\'acheter dans une fenêtre de temps définie','La prochaine commande qu\'un client va passer','Le score de satisfaction d\'un client'],c:1,exp:'Le churn scoring prédit P(départ dans les X prochains jours). La fenêtre de prédiction est critique : trop courte → peu de marge d\'action. Trop longue → signal faible. 30-90 jours est typique selon le secteur.'},
+  {q:'XGBoost (eXtreme Gradient Boosting) construit ses arbres :',opts:['En parallèle, de façon indépendante, sur des sous-échantillons bootstrap','Séquentiellement, chaque arbre corrigeant les erreurs du précédent','En utilisant uniquement les variables les plus importantes','Aléatoirement, sans optimisation de critère'],c:1,exp:'Le boosting est séquentiel : arbre 1 fait ses prédictions, arbre 2 apprend à corriger les erreurs de 1, arbre 3 corrige les erreurs résiduelles de 1+2, etc. Différent du Random Forest qui est parallèle (bagging).'},
+  {q:'L\'Isolation Forest est particulièrement adapté pour la détection de fraude car :',opts:['Il est le plus rapide de tous les algorithmes','Il détecte les anomalies sans labels (non supervisé) — isolant les observations rares','Il peut traiter les données textuelles directement','Il génère automatiquement des règles métier interprétables'],c:1,exp:'En fraude, les labels historiques sont souvent rares ou bruités. L\'Isolation Forest fonctionne sans supervision : il isole les transactions anormales avec peu de partitions — plus une observation est facile à isoler, plus elle est anormale.'},
+  {q:'Le paramètre class_weight=balanced dans sklearn LogisticRegression sert à :',opts:['Équilibrer les poids des features dans le modèle','Compenser le déséquilibre des classes — si 5% de fraude, les fraudeurs ont un poids 19x plus élevé','Normaliser les coefficients du modèle','Accélérer la convergence de l\'algorithme'],c:1,exp:'En scoring fraude ou crédit, les événements négatifs sont rares (1-5%). Sans rééquilibrage, le modèle apprend à tout prédire comme "normal". class_weight=balanced multiplie le poids des exemples rares pour les rendre aussi importants que les exemples fréquents.'},
+  {q:'SHAP (SHapley Additive exPlanations) permet de :',opts:['Accélérer l\'entraînement des modèles XGBoost','Interpréter la contribution de chaque variable à chaque prédiction individuelle','Calculer automatiquement les seuils de décision optimaux','Détecter les données aberrantes dans le jeu d\'entraînement'],c:1,exp:'SHAP décompose chaque prédiction en somme de contributions des variables : Score = score_base + SHAP_revenu + SHAP_ancienneté + ... Permet de dire "Ce client est refusé principalement à cause de son ratio d\'endettement élevé."'},
+  {q:'Dans le lead scoring B2B, un prospect visitant la page de tarifs a généralement :',opts:['Un signal négatif — il cherche le prix le plus bas','Un signal neutre — tous les visiteurs voient les prix','Un signal positif fort — intention d\'achat élevée','Aucun impact sur le score'],c:2,exp:'Les pages à haute intention (tarifs, démo, comparatif) signalent qu\'un prospect est en phase de décision. Elles sont parmi les variables les plus prédictives en lead scoring B2B et ont un poids élevé dans les modèles.'},
+  {q:'Le WOE (Weight of Evidence) d\'une modalité est calculé comme :',opts:['Le ratio de la proportion de bons payeurs sur mauvais payeurs dans la modalité','Le logarithme du ratio entre la proportion de bons et mauvais dans la modalité','La moyenne des probabilités de défaut dans la modalité','L\'écart-type de la variable dans la modalité'],c:1,exp:'WOE = ln(%bons dans modalité / %mauvais dans modalité). WOE > 0 : la modalité est sur-représentée chez les bons payeurs. WOE < 0 : sur-représentée chez les mauvais. WOE = 0 : modalité non discriminante.'},
+  {q:'Un modèle de scoring crédit avec AUC = 0.62 est :',opts:['Excellent — proche du modèle parfait','Acceptable — au-dessus du hasard mais à améliorer','Inutilisable — en dessous du seuil minimum acceptable','Parfait — la valeur maximale possible est 1.0'],c:1,exp:'AUC 0.62 est légèrement au-dessus du hasard (0.5) mais insuffisant. En pratique : < 0.65 = faible, 0.65-0.75 = acceptable, 0.75-0.85 = bon, > 0.85 = excellent. Un modèle de crédit en production exige généralement > 0.70.'},
+  {q:'Le RobustScaler est préféré au StandardScaler pour les données de transactions financières car :',opts:['Il est plus rapide à calculer','Il utilise la médiane et l\'IQR — résistant aux outliers extrêmes présents dans les transactions','Il normalise entre 0 et 1 obligatoirement','Il fonctionne uniquement avec des variables binaires'],c:1,exp:'Les transactions financières contiennent des outliers extrêmes (transactions de millions vs achats de quelques euros). StandardScaler est sensible à ces outliers. RobustScaler utilise la médiane et le quartile interquartile — beaucoup plus robuste.'},
+  {q:'La "fenêtre de prédiction" en churn scoring désigne :',opts:['La durée d\'entraînement du modèle','L\'horizon de temps sur lequel on prédit le churn (ex: churn dans les 30 prochains jours)','Le nombre de features utilisées dans le modèle','La période d\'observation des comportements passés'],c:1,exp:'La fenêtre de prédiction définit la question précise : "Le client va-t-il churner dans les J prochains jours ?". J=30 : précis mais peu de temps pour agir. J=90 : plus de temps pour intervenir mais signal plus faible et moins précis.'},
+  {q:'Dans la validation croisée stratifiée (StratifiedKFold), le "stratified" signifie :',opts:['Les folds sont créés dans l\'ordre chronologique des données','Chaque fold conserve la même proportion de positifs/négatifs que le dataset original','Les features sont normalisées dans chaque fold','Les hyperparamètres sont optimisés à chaque fold'],c:1,exp:'Stratifié = chaque fold maintient la même distribution de la variable cible que le dataset complet. Critique pour les données déséquilibrées : sans stratification, certains folds pourraient ne contenir que des négatifs, biaisant l\'évaluation.'},
+  {q:'Le scale_pos_weight dans XGBoost est typiquement réglé à :',opts:['Toujours 1 — pour un entraînement non biaisé','Le ratio négatifs/positifs — pour compenser le déséquilibre des classes','Le nombre total d\'arbres dans le modèle','La learning rate divisée par le nombre de features'],c:1,exp:'Si le dataset contient 90% de bons payeurs et 10% de défauts : scale_pos_weight = 90/10 = 9. Les exemples de la classe minoritaire (défauts) auront un poids 9x plus élevé lors de l\'entraînement. Équivalent à class_weight=balanced de sklearn.'},
+  {q:'Le scoring de maintenance prédictive (exemple 08 du cours) utilise Isolation Forest + LSTM car :',opts:['Ce sont les seuls algorithmes compatibles avec les données industrielles','Isolation Forest détecte les anomalies, LSTM modélise les tendances temporelles des séries de capteurs','LSTM génère automatiquement les features depuis les capteurs','Isolation Forest remplace les LSTM quand les données sont insuffisantes'],c:1,exp:'Double approche complémentaire : Isolation Forest détecte les états anormaux dans les séries de capteurs (pression, température). LSTM (Long Short-Term Memory) modélise l\'évolution temporelle et prédit la progression vers la panne dans les 48h.'},
+  {q:'En scoring fraude temps réel, la "vélocité" comme variable désigne :',opts:['La vitesse de traitement du modèle','Le nombre de transactions effectuées sur une courte période (ex: 5 transactions en 1 heure)','La distance géographique entre deux transactions','Le délai depuis la dernière connexion au compte'],c:1,exp:'La vélocité = nombre d\'actions dans une fenêtre temporelle glissante. Une fraude typique implique des transactions en rafale rapide (le fraudeur veut dépenser avant blocage). 10 transactions en 5 minutes = signal d\'alerte fort.'},
+  {q:'Quelle librairie Python est spécifiquement conçue pour construire des scorecards bancaires WOE/IV ?',opts:['tensorflow — pour les modèles de scoring complexes','scorecardpy — construction scorecard WOE/IV conformément aux standards bancaires','statsmodels — pour la régression logistique expliquée','imbalanced-learn — pour gérer le déséquilibre des classes'],c:1,exp:'scorecardpy est la librairie Python dédiée à la construction de scorecards bancaires : calcul WOE/IV, binning automatique des variables, transformation en points, assemblage de la scorecard finale avec score entier lisible par un agent de crédit.'},
+];
+
+let qS={cur:0,ans:Array(20).fill(null),done:Array(20).fill(false),init:false};
+function initQ(){qS={cur:0,ans:Array(20).fill(null),done:Array(20).fill(false),init:true};rQ2();}
+function rQ2(){
+  const n=qS.cur,q=QD[n];
+  document.getElementById('qctr').textContent='Question '+(n+1)+' / '+QD.length;
+  document.getElementById('qpf').style.width=(n/QD.length*100)+'%';
+  document.getElementById('qprv').disabled=n===0;
+  document.getElementById('qnxt').textContent=n===QD.length-1?'Terminer ✓':'Suivant →';
+  document.getElementById('qq').innerHTML=
+    '<div class="qcm-card">'
+    +'<div class="qcm-tag">Q'+String(n+1).padStart(2,'0')+'</div>'
+    +'<div class="qcm-q">'+q.q+'</div>'
+    +'<div class="qcm-opts">'
+    +q.opts.map((o,i)=>'<button class="qcm-opt '+(qS.done[n]?(i===q.c?'ok':(i===qS.ans[n]?'ko':'')):(qS.ans[n]===i?'sel':''))+'" onclick="qSel('+i+')" '+(qS.done[n]?'disabled':'')+'>'+
+      '<span class="ql">'+['A','B','C','D'][i]+'</span>'+o+'</button>').join('')
+    +'</div>'
+    +(qS.done[n]?'<div class="qcm-exp on">'+(qS.ans[n]===q.c?'✓ ':'✗ ')+q.exp+'</div>':'')
+    +'</div>';
+}
+function qSel(i){const n=qS.cur;if(qS.done[n])return;qS.ans[n]=i;qS.done[n]=true;rQ2();}
+function qN(){if(qS.cur===QD.length-1){showR();return;}qS.cur++;rQ2();}
+function qP(){if(qS.cur>0){qS.cur--;rQ2();}}
+function showR(){
+  document.getElementById('qwrap').style.display='none';
+  document.getElementById('qres').style.display='block';
+  const sc=qS.ans.filter((a,i)=>a===QD[i].c).length;
+  document.getElementById('rscore').textContent=sc+'/20';
+  document.getElementById('csc').textContent=sc+'/20';
+  document.getElementById('cdt').textContent=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  let g,d;
+  if(sc>=18){g='Expert Scoring';d='Maîtrise avancée. Vous pouvez concevoir et déployer des modèles de scoring en production.';}
+  else if(sc>=14){g='Scoring Certifié';d='Solide compréhension des fondamentaux et de la mise en pratique.';}
+  else if(sc>=10){g='En progression';d='Relisez les chapitres 3 et 5 pour consolider.';}
+  else{g='À revoir';d='Reprenez depuis le chapitre 1. Chaque algorithme mérite d\'être approfondi.';}
+  document.getElementById('rgrade').textContent=g;
+  document.getElementById('cgr').textContent=g;
+  document.getElementById('rdetail').textContent=d;
+  if(sc>=14) document.getElementById('cform').style.display='block';
+}
+function genC(){
+  const name=document.getElementById('cinp').value.trim()||'Apprenant';
+  document.getElementById('cname').textContent=name;
+  document.getElementById('cwrap').style.display='block';
+  document.getElementById('cform').style.display='none';
+  document.getElementById('cwrap').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function pC(){
+  const h=document.getElementById('cel').outerHTML;
+  const w=window.open('','_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Certificat Scoring</title>'
+    +'<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">'
+    +'<style>*{margin:0;padding:0;box-sizing:border-box}body{background:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:"Plus Jakarta Sans",sans-serif;padding:20px}'
+    +'.cert{background:#fff;border:3px solid #6366f1;border-radius:18px;padding:40px;text-align:center;max-width:680px;position:relative}'
+    +'.cert::before{content:"";position:absolute;inset:8px;border:1px solid rgba(99,102,241,.15);border-radius:14px;pointer-events:none}'
+    +'.cert-logo{font-family:"Fraunces",serif;font-size:14px;font-weight:700;color:#6366f1}'
+    +'.cert-type{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#9ca3af;margin-top:2px;margin-bottom:24px}'
+    +'.cert-presents{font-size:12px;color:#6b7280;margin-bottom:5px}'
+    +'.cert-name{font-family:"Fraunces",serif;font-size:32px;font-weight:900;color:#0a0a0a;font-style:italic;margin-bottom:7px}'
+    +'.cert-course{font-size:17px;font-weight:700;color:#6366f1;margin-bottom:5px}'
+    +'.cert-sub{font-size:11px;color:#6b7280;margin-bottom:7px}'
+    +'.cert-sc{font-size:12px;color:#0a0a0a;font-weight:600;margin-bottom:28px}'
+    +'.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}'
+    +'.cert-sig{flex:1;text-align:center}.cert-seal{font-size:40px}'
+    +'.cert-line{width:90px;height:1px;background:#e5e7eb;margin:0 auto 5px}'
+    +'.cert-sn{font-size:11px;font-weight:700;color:#0a0a0a}.cert-sr{font-size:9px;color:#9ca3af}'
+    +'@media print{body{padding:0}@page{margin:1cm}}</style></head><body>'+h+'</body></html>');
+  w.document.close();setTimeout(()=>w.print(),600);
+}
+function rQ(){document.getElementById('qwrap').style.display='block';document.getElementById('qres').style.display='none';initQ();}
+</script>
+</body>
+</html>

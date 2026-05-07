@@ -1,0 +1,59 @@
+rules_version = '2';
+
+// Sécurité Firestore — sans ces règles, n'importe qui ayant la apiKey publique
+// (donc n'importe quel visiteur du site) peut lire / écrire toute la base.
+//
+// Modèle :
+//  - Lecture : un utilisateur ne lit que son propre doc /users/{uid}.
+//  - Création initiale : juste après createUserWithEmailAndPassword, le user
+//    crée son propre doc avec unlockedCourses = [] (vide, pas de cours pré-débloqué).
+//  - Mise à jour : la plupart des champs sont verrouillés (uid, email, createdAt).
+//    unlockedCourses peut être étendue (jamais réduite). Limite : +6 entrées max
+//    en une fois (cas du bundle qui débloque les 6 cours en une seule update).
+//
+// LIMITATION CONNUE : ces règles ne valident pas que l'extension de
+// unlockedCourses correspond bien à un paiement vérifié — un utilisateur
+// authentifié pourrait s'auto-débloquer un cours depuis la console
+// navigateur. Pour un blindage total, il faut migrer le grant vers une
+// Netlify Function utilisant firebase-admin (Admin SDK qui bypass les rules).
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
+
+    function lockedFields() {
+      return ['uid', 'email', 'createdAt'];
+    }
+    function lockedFieldsUnchanged() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(lockedFields());
+    }
+    function unlockedCoursesGrowth() {
+      return request.resource.data.unlockedCourses.size() - resource.data.unlockedCourses.size();
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+
+      // Création initiale.
+      allow create: if isOwner(uid)
+        && request.resource.data.uid == uid
+        && (!('unlockedCourses' in request.resource.data)
+            || request.resource.data.unlockedCourses.size() == 0);
+
+      // Mise à jour : champs verrouillés inchangés ET extension de
+      // unlockedCourses uniquement (≤ 6 entrées en une fois pour le bundle).
+      allow update: if isOwner(uid)
+        && lockedFieldsUnchanged()
+        && unlockedCoursesGrowth() >= 0
+        && unlockedCoursesGrowth() <= 6;
+
+      allow delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

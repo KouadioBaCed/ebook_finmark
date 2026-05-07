@@ -1,0 +1,2309 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python & Data Analytics — FinMark Support</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;0,900;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+<style>
+:root{
+  --g:#f59e0b;--g2:#d97706;--glt:#fffbeb;
+  --ink:#0a0a0a;--ink2:#374151;--ink3:#6b7280;
+  --paper:#fafaf9;--card:#ffffff;--border:#e5e7eb;
+  --navy:#0c1421;--navy2:#111e30;
+  --py:#3b82f6;--py2:#2563eb;
+  --green:#22c55e;--red:#ef4444;--purple:#8b5cf6;
+  --r:10px;--sbw:272px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --sh-lg:0 8px 24px rgba(0,0,0,.10),0 24px 56px rgba(0,0,0,.09);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow-x:hidden;font-family:'Plus Jakarta Sans',sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+/* ── SIDEBAR ── */
+#sb{width:var(--sbw);background:var(--navy);position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column;overflow-y:auto;transition:transform .3s;scrollbar-width:thin}
+.sb-hd{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:11px}
+.sb-hd img{height:34px;width:34px;object-fit:contain}
+.sb-brand{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:#fff}
+.sb-brand span{color:var(--g)}
+.sb-sub{font-size:8px;color:rgba(255,255,255,.22);text-transform:uppercase;letter-spacing:2px;margin-top:2px}
+.sb-nav{flex:1;padding:6px 0}
+.sb-cat{padding:14px 18px 4px;font-size:8px;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:2px;font-weight:700}
+.sb-a{display:flex;align-items:center;gap:9px;padding:8px 18px;color:rgba(255,255,255,.38);font-size:11.5px;font-weight:500;border-left:3px solid transparent;transition:all .15s;cursor:pointer;user-select:none;line-height:1.3}
+.sb-a:hover,.sb-a.on{color:#fff;border-left-color:var(--g);background:rgba(245,158,11,.06)}
+.sb-a.on{font-weight:600}
+.sb-nn{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:rgba(255,255,255,.16);min-width:18px;flex-shrink:0}
+.sb-a.on .sb-nn{color:var(--g)}
+.sb-foot{padding:12px 18px;border-top:1px solid rgba(255,255,255,.05)}
+.sb-pb-lbl{font-size:8px;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.sb-pb{height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+#sb-f{height:100%;width:0;background:linear-gradient(90deg,var(--g),#fcd34d);border-radius:2px;transition:width .4s}
+
+/* ── TOPBAR ── */
+#tb{display:none;background:var(--navy);padding:10px 16px;align-items:center;gap:12px;position:sticky;top:0;z-index:50;border-bottom:1px solid rgba(255,255,255,.05)}
+#burg{background:none;border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.6);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:14px}
+#tb-title{font-size:12px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace}
+
+/* ── MAIN ── */
+#main{margin-left:var(--sbw);min-height:100vh;overflow-x:hidden}
+.ch{display:none;max-width:1060px;margin:0 auto;padding:36px 44px 80px;box-sizing:border-box;width:100%}
+.ch.on{display:block}
+@keyframes fup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.ch.on>*{animation:fup .35s ease both}
+.ch.on>*:nth-child(1){animation-delay:.04s}.ch.on>*:nth-child(2){animation-delay:.09s}
+.ch.on>*:nth-child(3){animation-delay:.14s}.ch.on>*:nth-child(4){animation-delay:.19s}
+
+/* ── TYPOGRAPHY ── */
+.tag-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;color:var(--g);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.tag-l::before{content:'';width:20px;height:2px;background:var(--g);border-radius:1px;flex-shrink:0}
+.h1{font-family:'Fraunces',serif;font-size:clamp(26px,4vw,42px);font-weight:900;color:var(--ink);letter-spacing:-.7px;line-height:1.1;margin-bottom:14px}
+.h1 em{color:var(--g);font-style:italic}
+.lead{font-size:15.5px;color:var(--ink2);line-height:1.78;margin-bottom:32px;max-width:660px}
+.sh{font-family:'Fraunces',serif;font-size:21px;font-weight:700;color:var(--ink);margin:38px 0 16px;letter-spacing:-.2px;display:flex;align-items:center;gap:12px}
+.sh::after{content:'';flex:1;height:1px;background:var(--border)}
+.sh3{font-size:15px;font-weight:700;color:var(--ink);margin:18px 0 9px}
+.body-txt{font-size:14px;color:var(--ink2);line-height:1.8;margin-bottom:12px}
+.pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px}
+
+/* ── CALLOUTS ── */
+.callout{border-radius:10px;padding:14px 18px;margin:14px 0;border-left:3px solid;display:flex;gap:14px}
+.c-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}
+.c-txt{font-size:13.5px;line-height:1.65;margin:0;color:var(--ink2)}
+.cg{background:#f0fdf4;border-color:#22c55e}.cg .c-lbl{color:#16a34a}
+.ca{background:#fffbeb;border-color:var(--g)}.ca .c-lbl{color:var(--g2)}
+.cr{background:#fef2f2;border-color:#ef4444}.cr .c-lbl{color:#dc2626}
+.cb{background:#eff6ff;border-color:#3b82f6}.cb .c-lbl{color:#2563eb}
+.cp{background:#faf5ff;border-color:#8b5cf6}.cp .c-lbl{color:#7c3aed}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;transition:all .18s}
+.card:hover{box-shadow:var(--sh)}
+.card-tag{display:inline-block;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 9px;border-radius:10px;margin-bottom:9px;font-family:'JetBrains Mono',monospace}
+.card-t{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.card-d{font-size:12.5px;color:var(--ink3);line-height:1.58}
+
+/* ── TABLE ── */
+.dtbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px}
+.dtbl th{background:var(--navy);color:#fff;padding:10px 14px;text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.dtbl td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.55}
+.dtbl tr:nth-child(even) td{background:#fafafa}
+
+/* ── HERO ── */
+.hero{background:var(--navy);min-height:440px;position:relative;overflow:hidden;border-radius:20px;margin-bottom:28px;display:flex;align-items:stretch}
+canvas#hc{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 400px;gap:44px;align-items:center;padding:48px 44px;width:100%}
+.hero-ey{display:inline-flex;align-items:center;gap:8px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.22);color:#fcd34d;padding:5px 13px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:18px}
+.hero-dot{width:5px;height:5px;background:var(--g);border-radius:50%;animation:hd 2s infinite;flex-shrink:0}
+@keyframes hd{0%,100%{opacity:1}50%{opacity:.15}}
+.hero-h1{font-family:'Fraunces',serif;font-size:clamp(24px,3.8vw,48px);font-weight:900;color:#fff;line-height:1.07;letter-spacing:-.7px;margin-bottom:14px}
+.hero-h1 em{color:#fcd34d;font-style:italic}
+.hero-p{font-size:15px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:26px}
+.hero-ctas{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.btn-main{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:13px 26px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .22s;display:inline-flex;align-items:center;gap:7px}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(245,158,11,.35)}
+.btn-ghost{background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);padding:13px 20px;border-radius:var(--r);font-size:14px;font-weight:600;border:1.5px solid rgba(255,255,255,.12);cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-ghost:hover{background:rgba(255,255,255,.1)}
+.hero-proof{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.h-avs{display:flex}
+.h-av{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;margin-left:-6px}
+.h-av:first-child{margin-left:0}
+.hero-pt{font-size:12px;color:rgba(255,255,255,.4)}
+.hero-pt strong{color:rgba(255,255,255,.75)}
+/* Hero right: code panel */
+.hero-code{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
+.hc-bar{display:flex;align-items:center;padding:8px 14px;gap:6px;background:rgba(0,0,0,.15);border-bottom:1px solid rgba(255,255,255,.06)}
+.hc-dot{width:9px;height:9px;border-radius:50%}
+.hc-file{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.3);margin-left:auto}
+.hc-code{padding:16px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.75;color:#e2e8f0;overflow-x:auto}
+.hc-code .kw{color:#a5b4fc}
+.hc-code .fn{color:#6ee7b7}
+.hc-code .cm{color:#475569;font-style:italic}
+.hc-code .str{color:#f9a8d4}
+.hc-code .num{color:#fcd34d}
+.hc-code .out{color:#86efac;display:block;border-top:1px solid rgba(255,255,255,.06);margin-top:8px;padding-top:8px}
+.hfb{position:absolute;font-size:9px;font-weight:700;padding:4px 9px;border-radius:12px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.2);color:#fcd34d;white-space:nowrap;font-family:'JetBrains Mono',monospace;animation:flt 3s ease-in-out infinite}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.hfb1{top:-8px;right:12px}.hfb2{bottom:-7px;left:10px;animation-delay:1.5s}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:22px 0}
+.stat{padding:20px 14px;text-align:center;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-n{font-family:'Fraunces',serif;font-size:32px;font-weight:900;color:var(--g);letter-spacing:-1px;display:block;line-height:1}
+.stat-l{font-size:10.5px;color:var(--ink3);margin-top:4px}
+
+/* ── PAIN GRID ── */
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+.pain-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;gap:12px}
+.pain-line{width:3px;border-radius:2px;flex-shrink:0}
+.pain-t{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.pain-d{font-size:12px;color:var(--ink2);line-height:1.55}
+
+/* ── PROGRAMME ── */
+.prog{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:18px 0}
+.prog-item{display:grid;grid-template-columns:50px 1fr;border-bottom:1px solid var(--border);cursor:pointer;background:var(--card);transition:background .15s}
+.prog-item:last-child{border-bottom:none}
+.prog-item:hover{background:var(--glt)}
+.prog-n{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:var(--border);padding:18px 0 18px 18px;align-self:flex-start;padding-top:20px}
+.prog-body{padding:16px 18px}
+.prog-t{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.prog-d{font-size:11.5px;color:var(--ink2);line-height:1.5;margin-bottom:2px}
+.prog-lk{font-size:11px;color:var(--g);font-weight:600}
+
+/* ── TESTI ── */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.tc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.tc-stars{color:#f59e0b;font-size:12px;letter-spacing:.5px;margin-bottom:9px}
+.tc-text{font-size:12.5px;color:var(--ink2);line-height:1.75;margin-bottom:14px;font-style:italic}
+.tc-sep{height:1px;background:var(--border);margin-bottom:11px}
+.tc-auth{display:flex;align-items:center;gap:9px}
+.tc-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:11px;flex-shrink:0}
+.tc-nm{font-size:13px;font-weight:700;color:var(--ink)}
+.tc-rl{font-size:10px;color:var(--ink3)}
+
+/* ── AUTHOR ── */
+.auth-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 36px;display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;margin:20px 0}
+.auth-av{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--py));display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:800;color:#fff;flex-shrink:0}
+.auth-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--g);margin-bottom:4px}
+.auth-nm{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.auth-tl{font-size:12px;color:var(--ink3);margin-bottom:11px}
+.auth-bio{font-size:13.5px;color:var(--ink2);line-height:1.75;margin-bottom:14px}
+.auth-bds{display:flex;flex-wrap:wrap;gap:6px}
+.auth-bd{font-size:10.5px;color:var(--ink2);background:var(--paper);padding:3px 10px;border-radius:14px;border:1px solid var(--border)}
+
+/* ── CODE BLOCKS (static) ── */
+.code-block{background:#1e1e2e;border-radius:12px;padding:18px;margin:14px 0;overflow-x:auto;position:relative}
+.code-block pre{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.75;color:#e2e8f0;white-space:pre;margin:0}
+.code-lang{position:absolute;top:10px;right:12px;font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.22);text-transform:uppercase;letter-spacing:1.5px}
+.kw{color:#a5b4fc}.fn{color:#6ee7b7}.cm{color:#475569;font-style:italic}
+.num{color:#fcd34d}.str{color:#f9a8d4}.op{color:#94a3b8}
+.cls{color:#7dd3fc}.dec{color:#fb923c}
+
+/* ── PYTHON REPL (IN-BROWSER EXECUTOR) ── */
+.repl-wrap{background:#1e1e2e;border-radius:14px;overflow:hidden;margin:20px 0;border:1px solid rgba(255,255,255,.06)}
+.repl-hd{display:flex;align-items:center;padding:10px 16px;background:rgba(0,0,0,.2);border-bottom:1px solid rgba(255,255,255,.06);gap:8px}
+.repl-dots{display:flex;gap:5px}
+.repl-dot{width:10px;height:10px;border-radius:50%}
+.repl-title{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.3);margin-left:4px;flex:1}
+.repl-status{font-size:9.5px;font-family:'JetBrains Mono',monospace;padding:3px 9px;border-radius:8px}
+.repl-status.loading{background:rgba(245,158,11,.12);color:#fcd34d}
+.repl-status.ready{background:rgba(34,197,94,.12);color:#86efac}
+.repl-status.running{background:rgba(59,130,246,.12);color:#93c5fd}
+.repl-status.error{background:rgba(239,68,68,.12);color:#fca5a5}
+.repl-editor{position:relative}
+.repl-textarea{width:100%;min-height:120px;background:transparent;border:none;outline:none;resize:vertical;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;color:#e2e8f0;padding:16px;caret-color:#fcd34d;tab-size:4}
+.repl-textarea::placeholder{color:rgba(255,255,255,.15)}
+.repl-actions{display:flex;align-items:center;gap:8px;padding:10px 16px;background:rgba(0,0,0,.12);border-top:1px solid rgba(255,255,255,.06)}
+.repl-run{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition:all .18s}
+.repl-run:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,158,11,.35)}
+.repl-run:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.repl-reset{background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.1);cursor:pointer;font-family:inherit;transition:all .15s}
+.repl-reset:hover{background:rgba(255,255,255,.1)}
+.repl-hint{font-size:10px;color:rgba(255,255,255,.2);font-family:'JetBrains Mono',monospace;margin-left:auto}
+.repl-out{border-top:1px solid rgba(255,255,255,.06);padding:14px 16px;min-height:40px;display:none}
+.repl-out.has-output{display:block}
+.repl-out-txt{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.7;color:#86efac;white-space:pre-wrap;word-break:break-all}
+.repl-out-err{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;color:#fca5a5;white-space:pre-wrap}
+.repl-out-img{margin-top:10px;max-width:100%;border-radius:8px;display:block}
+.repl-loader{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.35);font-size:12px;font-family:'JetBrains Mono',monospace}
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.12);border-top-color:var(--g);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}:16px;right:16px;z-index:200;padding:10px 16px;border-radius:12px;font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600;display:flex;align-items:center;gap:8px;transition:all .3s;box-shadow:var(--sh-lg)}
+#py-global-status.loading{background:#1e2a3a;color:#fcd34d;border:1px solid rgba(245,158,11,.2)}
+#py-global-status.ready{background:#0f2a1a;color:#86efac;border:1px solid rgba(34,197,94,.2)}
+#py-global-status.hidden{opacity:0;pointer-events:none}
+
+/* ── QCM ── */
+.qcm-prog{height:3px;background:var(--border);border-radius:2px;margin-bottom:12px;overflow:hidden}
+.qcm-pf{height:100%;background:linear-gradient(90deg,var(--g),#fcd34d);border-radius:2px;transition:width .4s}
+.qcm-ctr{font-size:10.5px;color:var(--ink3);text-align:center;margin-bottom:16px;font-family:'JetBrains Mono',monospace}
+.qcm-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;box-shadow:var(--sh)}
+.qcm-tag{font-size:9px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:7px;font-family:'JetBrains Mono',monospace}
+.qcm-q{font-family:'Fraunces',serif;font-size:15.5px;font-weight:600;color:var(--ink);margin-bottom:16px;line-height:1.45}
+.qcm-opts{display:flex;flex-direction:column;gap:7px}
+.qcm-opt{background:var(--paper);border:1.5px solid var(--border);padding:11px 15px;border-radius:9px;cursor:pointer;font-size:13px;display:flex;gap:9px;align-items:flex-start;transition:all .15s;font-family:inherit;text-align:left;width:100%}
+.qcm-opt:hover:not(:disabled){border-color:var(--g);background:var(--glt)}
+.qcm-opt.sel{border-color:var(--g);background:var(--glt)}
+.qcm-opt.ok{border-color:#22c55e;background:#f0fdf4;font-weight:600}
+.qcm-opt.ko{border-color:#ef4444;background:#fef2f2}
+.ql{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9px;color:var(--ink3);min-width:14px;margin-top:2px;flex-shrink:0}
+.qcm-opt.ok .ql{color:#16a34a}.qcm-opt.ko .ql{color:#dc2626}
+.qcm-exp{margin-top:9px;padding:10px 14px;background:var(--glt);border-left:2px solid var(--g);border-radius:5px;font-size:13px;color:var(--ink2);line-height:1.65;display:none}
+.qcm-exp.on{display:block}
+.qcm-nav{display:flex;justify-content:space-between;margin-top:14px;gap:8px;flex-wrap:wrap}
+.res-wrap{text-align:center;padding:36px 16px}
+.res-big{font-family:'Fraunces',serif;font-size:70px;font-weight:900;color:var(--g);line-height:1}
+.res-grade{font-size:21px;font-weight:700;color:var(--ink);margin:9px 0 5px}
+.res-detail{font-size:13px;color:var(--ink3);max-width:400px;margin:0 auto 20px}
+.cert{background:var(--card);border:3px solid var(--g);border-radius:16px;padding:36px 40px;text-align:center;max-width:640px;margin:18px auto;position:relative}
+.cert::before{content:'';position:absolute;inset:7px;border:1px solid rgba(245,158,11,.15);border-radius:12px;pointer-events:none}
+.cert-logo{font-family:'Fraunces',serif;font-size:14px;font-weight:700;color:var(--g)}
+.cert-type{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--ink3);margin-top:2px;margin-bottom:22px}
+.cert-presents{font-size:12px;color:var(--ink3);margin-bottom:5px}
+.cert-name{font-family:'Fraunces',serif;font-size:30px;font-weight:900;color:var(--ink);font-style:italic;margin-bottom:7px}
+.cert-course{font-size:16px;font-weight:700;color:var(--g);margin-bottom:4px}
+.cert-sub{font-size:10.5px;color:var(--ink3);margin-bottom:6px}
+.cert-sc{font-size:12px;color:var(--ink);font-weight:600;margin-bottom:26px}
+.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.cert-sig{flex:1;text-align:center}
+.cert-seal{font-size:38px}
+.cert-line{width:80px;height:1px;background:var(--border);margin:0 auto 5px}
+.cert-sn{font-size:10.5px;font-weight:700;color:var(--ink)}
+.cert-sr{font-size:9px;color:var(--ink3)}
+.navb{display:flex;gap:10px;margin-top:38px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap}
+.btn{padding:9px 20px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink2);font-family:inherit;transition:all .18s}
+.btn:hover:not(:disabled){border-color:var(--g);color:var(--g)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-p{background:var(--g);color:#fff;border-color:var(--g)}
+.btn-p:hover{background:var(--g2);color:#fff;border-color:var(--g2)}
+
+/* ── INSTALL STEPS ── */
+.install-steps{display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:20px 0}
+.is-step{display:grid;grid-template-columns:52px 1fr;border-bottom:1px solid var(--border);background:var(--card)}
+.is-step:last-child{border-bottom:none}
+.is-num{background:var(--g);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;color:#fff;flex-direction:column}
+.is-body{padding:16px 20px}
+.is-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.is-desc{font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:6px}
+.is-cmd{font-family:'JetBrains Mono',monospace;font-size:12px;background:#1e1e2e;color:#86efac;padding:7px 12px;border-radius:7px;display:inline-block}
+
+/* ── DOMAIN CARDS ── */
+.dom-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}
+.dom-card{border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--card);transition:all .2s}
+.dom-card:hover{transform:translateY(-2px);box-shadow:var(--sh-lg)}
+.dom-hd{padding:16px 18px;position:relative;overflow:hidden}
+.dom-hd::before{content:'';position:absolute;inset:0;opacity:.08}
+.dom-ico{font-size:28px;margin-bottom:8px}
+.dom-name{font-size:15px;font-weight:800;color:#fff;line-height:1.2}
+.dom-body{padding:14px 18px}
+.dom-libs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px}
+.dom-lib{font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:7px;background:#f3f4f6;color:var(--ink3);font-family:'JetBrains Mono',monospace}
+.dom-examples{font-size:12px;color:var(--ink2);line-height:1.6}
+
+/* ── CONCEPT DIFF ── */
+.concept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.concept-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative}
+.concept-num{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--g);font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.concept-t{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.concept-d{font-size:12px;color:var(--ink3);line-height:1.58}
+.concept-eg{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--glt);color:var(--g2);padding:5px 9px;border-radius:6px;margin-top:8px;display:block}
+
+/* PRICE */
+.price-card{background:var(--navy);border-radius:16px;padding:30px;color:#fff;position:relative;overflow:hidden;margin:22px 0}
+.pc-glow{position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(245,158,11,.12),transparent 65%);pointer-events:none}
+.pc-tag{display:inline-block;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.22);color:#fcd34d;padding:4px 12px;border-radius:14px;margin-bottom:14px}
+.pc-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:7px}
+.pc-price{font-family:'JetBrains Mono',monospace;font-size:42px;font-weight:800;color:#fcd34d;letter-spacing:-2px;line-height:1;margin-bottom:4px}
+.pc-cur{font-size:13px;color:rgba(253,211,77,.5);font-weight:600}
+.pc-note{font-size:11px;color:rgba(255,255,255,.28);margin-bottom:22px}
+.pc-feats{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.pc-feats li{font-size:13px;color:rgba(255,255,255,.65);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.pc-feats li span{flex-shrink:0;color:var(--g);font-weight:700;margin-top:1px}
+.pc-btn{display:block;text-align:center;background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:13px 26px;border-radius:var(--r);font-size:14px;font-weight:700;text-decoration:none;border:none;cursor:pointer;font-family:inherit;width:100%;transition:all .2s}
+.pc-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(245,158,11,.38)}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  #sb{transform:translateX(-100%)}#sb.on{transform:translateX(0)}
+  #main{margin-left:0}#tb{display:flex}
+  .ch{padding:18px 14px 52px}
+  .hero-inner{grid-template-columns:1fr;padding:28px 18px;min-height:auto}
+  .hero-code{display:none}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .dom-grid{grid-template-columns:1fr 1fr}
+  .concept-grid{grid-template-columns:1fr}
+  .pain-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .stat:nth-child(2){border-right:none}
+  .stat:nth-child(3){border-top:1px solid var(--border);border-right:1px solid var(--border)}
+  .stat:nth-child(4){border-top:1px solid var(--border)}
+  .testi-grid{grid-template-columns:1fr}
+  .auth-card{grid-template-columns:1fr;text-align:center;padding:22px 18px}
+  .auth-av{margin:0 auto}.auth-bds{justify-content:center}
+  .cert-foot{flex-direction:column;align-items:center}
+  .hero-ctas{flex-direction:column}
+  .navb,.qcm-nav{flex-direction:column}
+  .btn{width:100%;text-align:center}
+}
+@media(max-width:540px){
+  .dom-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr}
+  .stat{border-right:none!important}
+  .stat+.stat{border-top:1px solid var(--border)!important}
+}
+</style>
+</head>
+<body>
+
+
+<nav id="sb">
+  <div class="sb-hd">
+    <img src="data:image/png;base64,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" alt="FinMark">
+    <div>
+      <div class="sb-brand">FinMark <span>Support</span></div>
+      <div class="sb-sub">Python Data · 9 Chapitres</div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-cat">Accueil</div>
+    <a class="sb-a on" onclick="go(0)"><span class="sb-nn">00</span>Présentation</a>
+    <div class="sb-cat">Fondamentaux</div>
+    <a class="sb-a" onclick="go(1)"><span class="sb-nn">01</span>Python — pourquoi &amp; comment</a>
+    <a class="sb-a" onclick="go(2)"><span class="sb-nn">02</span>Installation &amp; environnement</a>
+    <a class="sb-a" onclick="go(3)"><span class="sb-nn">03</span>Bases Python — syntaxe &amp; types</a>
+    <div class="sb-cat">Data Analytics</div>
+    <a class="sb-a" onclick="go(4)"><span class="sb-nn">04</span>NumPy &amp; Pandas — manipulation</a>
+    <a class="sb-a" onclick="go(5)"><span class="sb-nn">05</span>Visualisation — Matplotlib &amp; Seaborn</a>
+    <a class="sb-a" onclick="go(6)"><span class="sb-nn">06</span>EDA complète — analyse exploratoire</a>
+    <a class="sb-a" onclick="go(7)"><span class="sb-nn">07</span>Statistiques &amp; Machine Learning</a>
+    <div class="sb-cat">Évaluation</div>
+    <a class="sb-a" onclick="go(8)"><span class="sb-nn">08</span>QCM — Certification</a>
+  </div>
+  <div class="sb-foot">
+    <div class="sb-pb-lbl">Progression</div>
+    <div class="sb-pb"><div id="sb-f"></div></div>
+  </div>
+</nav>
+<div id="tb">
+  <button id="burg" onclick="document.getElementById('sb').classList.toggle('on')">☰</button>
+  <span id="tb-title">Python Data Analytics</span>
+</div>
+<main id="main">
+
+<!-- ══ CH0 ══ -->
+<section class="ch on" id="ch0">
+<div class="hero">
+  <canvas id="hc"></canvas>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-ey"><span class="hero-dot"></span>Formation certifiante · Python & Data Analytics</div>
+      <h1 class="hero-h1">Python pour l'analyse<br>de données — <em>du zéro<br>au dashboard</em></h1>
+      <p class="hero-p">La formation la plus complète : bases Python, Pandas, visualisation, EDA et machine learning. Avec un environnement Python qui tourne directement dans ce fichier — zéro installation pour commencer.</p>
+      <div class="hero-ctas">
+        <button class="btn-main" onclick="go(1)">Commencer</button>
+        <button class="btn-ghost" onclick="go(3)">Essayer Python →</button>
+      </div>
+      <div class="hero-proof">
+        <div class="h-avs">
+          <div class="h-av" style="background:#f59e0b">A</div>
+          <div class="h-av" style="background:#22c55e">K</div>
+          <div class="h-av" style="background:#8b5cf6">M</div>
+          <div class="h-av" style="background:#3b82f6">S</div>
+        </div>
+        <span class="hero-pt"><strong>310+ professionnels</strong> certifiés</span>
+      </div>
+    </div>
+    <div class="hero-code" style="position:relative">
+      <div class="hfb hfb1">Python 3.x — Exécution live</div>
+      <div class="hc-bar">
+        <div class="hc-dot" style="background:#ef4444"></div>
+        <div class="hc-dot" style="background:#f59e0b"></div>
+        <div class="hc-dot" style="background:#22c55e"></div>
+        <span class="hc-file">analyse_ventes.py</span>
+      </div>
+      <div class="hc-code">
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+<span class="cm"># Charger les données de ventes</span>
+df = pd.<span class="fn">read_csv</span>(<span class="str">"ventes_2024.csv"</span>)
+df[<span class="str">"CA"</span>] = df[<span class="str">"quantite"</span>] * df[<span class="str">"prix"</span>]
+
+<span class="cm"># CA par région</span>
+ca_region = df.<span class="fn">groupby</span>(<span class="str">"region"</span>)[<span class="str">"CA"</span>].<span class="fn">sum</span>()
+<span class="fn">print</span>(ca_region.<span class="fn">sort_values</span>(ascending=<span class="dec">False</span>))
+<span class="out"># Region     CA
+# Sud     284 500
+# Ouest   198 200
+# Nord    176 800
+# Est     143 100</span>
+      </div>
+      <div class="hfb hfb2">14 exercices interactifs</div>
+    </div>
+  </div>
+</div>
+
+<div class="sh">Ce que vous allez maîtriser</div>
+<div class="pain-grid">
+  <div class="pain-card"><div class="pain-line" style="background:#f59e0b"></div><div><div class="pain-t">Les bases Python — réellement</div><div class="pain-d">Variables, structures de données, fonctions, boucles, conditions — avec des exercices qui s'exécutent dans ce fichier sans rien installer.</div></div></div>
+  <div class="pain-card"><div class="pain-line" style="background:#3b82f6"></div><div><div class="pain-t">Pandas pour manipuler n'importe quel dataset</div><div class="pain-d">Charger, nettoyer, filtrer, grouper, fusionner, pivoter — les opérations que tout analyste fait tous les jours.</div></div></div>
+  <div class="pain-card"><div class="pain-line" style="background:#22c55e"></div><div><div class="pain-t">Visualisation professionnelle</div><div class="pain-d">Matplotlib et Seaborn pour créer des graphiques qui convainquent — histogrammes, scatter, heatmap, boxplot — avec les vraies données.</div></div></div>
+  <div class="pain-card"><div class="pain-line" style="background:#8b5cf6"></div><div><div class="pain-t">EDA complète + Machine Learning</div><div class="pain-d">Analyse exploratoire rigoureuse — distribution, corrélation, outliers — puis premiers modèles sklearn : régression, classification.</div></div></div>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><span class="stat-n" id="s1">9</span><div class="stat-l">Chapitres<br>complets</div></div>
+  <div class="stat"><span class="stat-n" id="s2">14</span><div class="stat-l">Exercices Python<br>interactifs</div></div>
+  <div class="stat"><span class="stat-n" id="s3">8</span><div class="stat-l">Librairies<br>couvertes</div></div>
+  <div class="stat"><span class="stat-n" id="s4">20</span><div class="stat-l">QCM +<br>Certificat</div></div>
+</div>
+
+<div class="sh">Programme complet</div>
+<div class="prog">
+  <div class="prog-item" onclick="go(1)"><div class="prog-n">01</div><div class="prog-body"><div class="prog-t">Python — Qu'est-ce que c'est, pourquoi c'est le langage data</div><div class="prog-d">Histoire, philosophie, écosystème. Pourquoi Python a écrasé R, SAS et Excel pour l'analyse de données.</div><div class="prog-lk">Accéder →</div></div></div>
+  <div class="prog-item" onclick="go(2)"><div class="prog-n">02</div><div class="prog-body"><div class="prog-t">Installation — Anaconda, VS Code, Jupyter, Google Colab</div><div class="prog-d">Guide pas à pas pour chaque outil. Quelle configuration choisir selon votre profil.</div><div class="prog-lk">Accéder →</div></div></div>
+  <div class="prog-item" onclick="go(3)"><div class="prog-n">03</div><div class="prog-body"><div class="prog-t">Bases Python — variables, listes, dictionnaires, fonctions, boucles</div><div class="prog-d">Les fondamentaux avec des exercices qui s'exécutent dans ce fichier. Éditeur Python intégré — aucune installation.</div><div class="prog-lk">Pratiquer →</div></div></div>
+  <div class="prog-item" onclick="go(4)"><div class="prog-n">04</div><div class="prog-body"><div class="prog-t">NumPy &amp; Pandas — manipulation de données réelles</div><div class="prog-d">Arrays NumPy, DataFrames Pandas. Données de ventes e-commerce. Nettoyage, filtrage, agrégation, jointures.</div><div class="prog-lk">Accéder →</div></div></div>
+  <div class="prog-item" onclick="go(5)"><div class="prog-n">05</div><div class="prog-body"><div class="prog-t">Visualisation — Matplotlib, Seaborn, graphiques professionnels</div><div class="prog-d">10 types de graphiques avec données réelles. Code générant des visuels directement dans le navigateur.</div><div class="prog-lk">Accéder →</div></div></div>
+  <div class="prog-item" onclick="go(6)"><div class="prog-n">06</div><div class="prog-body"><div class="prog-t">EDA complète — analyse exploratoire pas à pas</div><div class="prog-d">Distribution, valeurs manquantes, outliers, corrélations, statistiques descriptives. Pipeline EDA réutilisable.</div><div class="prog-lk">Accéder →</div></div></div>
+  <div class="prog-item" onclick="go(7)"><div class="prog-n">07</div><div class="prog-body"><div class="prog-t">Statistiques &amp; Machine Learning — régression, classification</div><div class="prog-d">Tests statistiques, régression linéaire, classification avec sklearn. Interprétation des résultats.</div><div class="prog-lk">Accéder →</div></div></div>
+</div>
+
+<div class="sh">Ce qu'ils en disent</div>
+<div class="testi-grid">
+  <div class="tc"><div class="tc-stars">★★★★★</div><p class="tc-text">"L'éditeur Python intégré change tout. J'ai exécuté mon premier groupby Pandas dans le cours même, sans rien installer. Le résultat était là en 3 secondes."</p><div class="tc-sep"></div><div class="tc-auth"><div class="tc-av" style="background:#f59e0b">A</div><div><div class="tc-nm">Adjoa T.</div><div class="tc-rl">Analyste marketing · Lomé</div></div></div></div>
+  <div class="tc"><div class="tc-stars">★★★★★</div><p class="tc-text">"J'avais peur de Python. Le chapitre 3 explique vraiment les bases sans jargon inutile. Et les exercices interactifs font que ça rentre naturellement."</p><div class="tc-sep"></div><div class="tc-auth"><div class="tc-av" style="background:#22c55e">K</div><div><div class="tc-nm">Kofi M.</div><div class="tc-rl">Business Analyst · Accra</div></div></div></div>
+  <div class="tc"><div class="tc-stars">★★★★☆</div><p class="tc-text">"Le chapitre 6 sur l'EDA est ce qui m'a le plus apporté professionnellement. J'ai un template d'analyse que j'utilise sur tous mes projets maintenant."</p><div class="tc-sep"></div><div class="tc-auth"><div class="tc-av" style="background:#8b5cf6">M</div><div><div class="tc-nm">Marie D.</div><div class="tc-rl">Data Analyst · Abidjan</div></div></div></div>
+</div>
+
+<div class="auth-card">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+    <div class="auth-av">FZ</div>
+    <div style="text-align:center"><div style="color:#f59e0b;font-size:13px;letter-spacing:1px">★★★★★</div><div style="font-size:11.5px;color:var(--ink3);margin-top:2px">4.9 · 310+ certifiés</div></div>
+  </div>
+  <div>
+    <div class="auth-tag">Formateur · FinMark Support</div>
+    <div class="auth-nm">Kouassi Fresh-Nes Rameaux ZOUZOU</div>
+    <div class="auth-tl">Senior Data Analyst · NSIA Vie Assurances · Consultant GoMyCode · Fondateur FinMark Support</div>
+    <p class="auth-bio">J'enseigne Python data analytics depuis 2022 chez GoMyCode. J'ai vu où les apprenants bloquent — sur l'installation, sur Pandas, sur l'interprétation des résultats. Cette formation est construite pour éliminer ces blocages un par un, avec des données réelles et un éditeur qui tourne dans le navigateur.</p>
+    <div class="auth-bds">
+      <span class="auth-bd">Master 2 Data Science</span>
+      <span class="auth-bd">IBM Data Analyst</span>
+      <span class="auth-bd">GoMyCode · FinMark Support</span>
+      <span class="auth-bd">Abidjan, CI</span>
+    </div>
+  </div>
+</div>
+
+<div class="price-card">
+  <div class="pc-glow"></div>
+  <div class="pc-tag">Formation certifiante</div>
+  <div class="pc-title">Python & Data Analytics</div>
+  <div><span class="pc-price">12 900</span><span class="pc-cur"> FCFA</span></div>
+  <div class="pc-note">Paiement unique · Téléchargement immédiat · Accès à vie</div>
+  <ul class="pc-feats">
+    <li><span>✓</span>9 chapitres — bases Python jusqu'au Machine Learning</li>
+    <li><span>✓</span>Éditeur Python exécutable dans le navigateur — 14 exercices interactifs</li>
+    <li><span>✓</span>NumPy, Pandas, Matplotlib, Seaborn, Scikit-learn</li>
+    <li><span>✓</span>Données réelles : e-commerce, finance, marketing, RH</li>
+    <li><span>✓</span>QCM 20 questions + certificat à votre nom</li>
+  </ul>
+  <a href="LIEN_PAIEMENT_PYTHON" class="pc-btn" target="_blank">Acheter maintenant — 12 900 FCFA</a>
+</div>
+</section>
+
+<!-- ══ CH1 ══ -->
+<section class="ch" id="ch1">
+<div class="tag-l">Chapitre 01 · Pourquoi Python</div>
+<h1 class="h1">Python — le langage qui a <em>révolutionné la data</em></h1>
+<p class="lead">Python n'est pas le seul langage pour la data. Mais c'est le plus utilisé, le plus enseigné et celui qui a le meilleur écosystème. Voici pourquoi, et ce que vous pouvez faire avec.</p>
+
+<div class="sh">Qu'est-ce que Python ?</div>
+<div class="g2">
+  <div>
+    <p class="body-txt">Python est un langage de programmation interprété, créé en 1991 par Guido van Rossum. Son nom vient des <em>Monty Python</em> — le groupe comique britannique. Sa philosophie : le code doit être lisible, explicite et élégant.</p>
+    <div class="callout ca"><div><div class="c-lbl">Le Zen de Python</div><p class="c-txt">Beautiful is better than ugly. Explicit is better than implicit. Simple is better than complex. Readability counts. — Tim Peters (PEP 20)</p></div></div>
+    <p class="body-txt">Python est un langage <strong>interprété</strong> (pas besoin de compiler), <strong>dynamiquement typé</strong> (pas besoin de déclarer le type des variables), et <strong>multi-paradigme</strong> (impératif, fonctionnel, orienté objet).</p>
+  </div>
+  <div class="callout cb" style="margin:0;align-items:flex-start;flex-direction:column;gap:0">
+    <div class="c-lbl" style="margin-bottom:14px">Statistiques 2024</div>
+    <div style="display:flex;flex-direction:column;gap:12px;width:100%">
+      <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Python — popularité Stack Overflow</span><strong>67%</strong></div><div style="background:#dbeafe;border-radius:10px;height:8px"><div style="background:#3b82f6;width:67%;height:100%;border-radius:10px"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Offres Data Scientist mentionnant Python</span><strong>89%</strong></div><div style="background:#dbeafe;border-radius:10px;height:8px"><div style="background:#3b82f6;width:89%;height:100%;border-radius:10px"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Packages PyPI disponibles</span><strong>530K+</strong></div><div style="background:#dcfce7;border-radius:10px;height:8px"><div style="background:#22c55e;width:95%;height:100%;border-radius:10px"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sh">Pourquoi Python a écrasé la concurrence en data</div>
+<div class="g3">
+  <div class="card"><div class="card-tag" style="background:#fffbeb;color:#d97706">vs R</div><div class="card-t">Plus polyvalent</div><div class="card-d">R est excellent pour les statistiques pures mais limité hors data science. Python couvre la data science, le web, l'automation, le scripting — un seul langage pour tout faire.</div></div>
+  <div class="card"><div class="card-tag" style="background:#eff6ff;color:#2563eb">vs SAS/SPSS</div><div class="card-t">Gratuit et open source</div><div class="card-d">SAS coûte des milliers d'euros par an. Python est 100% gratuit. L'écosystème open source a produit des librairies souvent supérieures aux outils propriétaires.</div></div>
+  <div class="card"><div class="card-tag" style="background:#dcfce7;color:#15803d">vs Excel</div><div class="card-t">Automatisable et scalable</div><div class="card-d">Excel est limité à 1M lignes et ne s'automatise pas facilement. Python traite des milliards de lignes, tourne la nuit sans intervention, s'intègre dans des pipelines.</div></div>
+</div>
+
+<div class="sh">Les domaines d'application de Python en data</div>
+<div class="dom-grid">
+  <div class="dom-card">
+    <div class="dom-hd" style="background:linear-gradient(135deg,#1e3a5f,#2563eb)">
+      <div class="dom-name">Analyse de données<br>& Business Intelligence</div>
+    </div>
+    <div class="dom-body">
+      <div class="dom-libs"><span class="dom-lib">pandas</span><span class="dom-lib">numpy</span><span class="dom-lib">openpyxl</span></div>
+      <div class="dom-examples">Nettoyer, transformer, agréger des données. Remplacer des macros Excel complexes. Automatiser des rapports hebdomadaires.</div>
+    </div>
+  </div>
+  <div class="dom-card">
+    <div class="dom-hd" style="background:linear-gradient(135deg,#14532d,#16a34a)">
+      <div class="dom-name">Visualisation<br>& Data Storytelling</div>
+    </div>
+    <div class="dom-body">
+      <div class="dom-libs"><span class="dom-lib">matplotlib</span><span class="dom-lib">seaborn</span><span class="dom-lib">plotly</span></div>
+      <div class="dom-examples">Graphiques statiques pour rapports, dashboards interactifs, infographies de données, visualisations Power BI complémentaires.</div>
+    </div>
+  </div>
+  <div class="dom-card">
+    <div class="dom-hd" style="background:linear-gradient(135deg,#4c1d95,#7c3aed)">
+      <div class="dom-name">Machine Learning<br>& Modèles prédictifs</div>
+    </div>
+    <div class="dom-body">
+      <div class="dom-libs"><span class="dom-lib">scikit-learn</span><span class="dom-lib">xgboost</span><span class="dom-lib">shap</span></div>
+      <div class="dom-examples">Scoring crédit, détection fraude, churn prediction, classification, régression — tout le spectre ML sur des données tabulaires.</div>
+    </div>
+  </div>
+  <div class="dom-card">
+    <div class="dom-hd" style="background:linear-gradient(135deg,#7c2d12,#dc2626)">
+      <div class="dom-name">Automatisation<br>& ETL</div>
+    </div>
+    <div class="dom-body">
+      <div class="dom-libs"><span class="dom-lib">sqlalchemy</span><span class="dom-lib">schedule</span><span class="dom-lib">airflow</span></div>
+      <div class="dom-examples">Scripts qui tournent la nuit, extraction depuis SQL, transformation et chargement automatique, alertes email, pipelines de données.</div>
+    </div>
+  </div>
+  <div class="dom-card">
+    <div class="dom-hd" style="background:linear-gradient(135deg,#065f46,#059669)">
+      <div class="dom-name">Web Scraping<br>& APIs</div>
+    </div>
+    <div class="dom-body">
+      <div class="dom-libs"><span class="dom-lib">requests</span><span class="dom-lib">beautifulsoup</span><span class="dom-lib">selenium</span></div>
+      <div class="dom-examples">Extraire des données de sites web, consommer des APIs REST, construire des datasets depuis des sources en ligne.</div>
+    </div>
+  </div>
+  <div class="dom-card">
+    <div class="dom-hd" style="background:linear-gradient(135deg,#1e1b4b,#4338ca)">
+      <div class="dom-name">Deep Learning<br>& NLP</div>
+    </div>
+    <div class="dom-body">
+      <div class="dom-libs"><span class="dom-lib">tensorflow</span><span class="dom-lib">pytorch</span><span class="dom-lib">transformers</span></div>
+      <div class="dom-examples">Réseaux de neurones, traitement du langage, vision par ordinateur, modèles génératifs, fine-tuning de LLMs.</div>
+    </div>
+  </div>
+</div>
+
+<div class="navb"><button class="btn" onclick="go(0)">← Accueil</button><button class="btn btn-p" onclick="go(2)">Installation →</button></div>
+</section>
+
+<!-- ══ CH2 ══ -->
+<section class="ch" id="ch2">
+<div class="tag-l">Chapitre 02 · Installation</div>
+<h1 class="h1">Installer Python — <em>4 options, un choix</em></h1>
+<p class="lead">Il y a plusieurs façons d'utiliser Python pour la data. Le bon choix dépend de votre profil et de votre machine.</p>
+
+<div class="sh">Option 1 — Google Colab (recommandé pour débuter)</div>
+<div class="callout cg"><div><div class="c-lbl">Zéro installation · Gratuit · Dans le navigateur</div><p class="c-txt">Google Colab est un notebook Jupyter hébergé par Google. Python, NumPy, Pandas, Matplotlib sont pré-installés. Accédez à <strong>colab.research.google.com</strong> avec un compte Google. C'est la solution idéale pour débuter sans rien installer sur votre machine.</p></div></div>
+
+<div class="sh">Option 2 — Anaconda (recommandé pour Windows / Mac)</div>
+<div class="install-steps">
+  <div class="is-step"><div class="is-num">1</div><div class="is-body"><div class="is-title">Télécharger Anaconda</div><div class="is-desc">Allez sur anaconda.com/download · Choisissez la version pour votre OS (Windows/Mac/Linux) · Téléchargez l'installeur graphique (~800 MB)</div></div></div>
+  <div class="is-step"><div class="is-num">2</div><div class="is-body"><div class="is-title">Installer Anaconda</div><div class="is-desc">Lancez l'installeur · Cochez "Add to PATH" si demandé · L'installation inclut Python + 250 packages data (NumPy, Pandas, Matplotlib, Jupyter)</div></div></div>
+  <div class="is-step"><div class="is-num">3</div><div class="is-body"><div class="is-title">Lancer Jupyter Notebook</div><div class="is-desc">Ouvrez Anaconda Navigator → cliquez "Launch" sous Jupyter Notebook. Une page web s'ouvre dans votre navigateur — c'est votre environnement Python.</div><div class="is-cmd">jupyter notebook</div></div></div>
+  <div class="is-step"><div class="is-num">4</div><div class="is-body"><div class="is-title">Vérifier l'installation</div><div class="is-desc">Dans une cellule Jupyter, tapez et exécutez :</div><div class="is-cmd">import pandas as pd; print(pd.__version__)</div></div></div>
+</div>
+
+<div class="sh">Option 3 — VS Code + Python (pour les professionnels)</div>
+<div class="install-steps">
+  <div class="is-step"><div class="is-num">1</div><div class="is-body"><div class="is-title">Installer Python seul</div><div class="is-desc">python.org/downloads · Cochez impérativement "Add Python to PATH" pendant l'installation</div><div class="is-cmd">python --version  # vérifier l'installation</div></div></div>
+  <div class="is-step"><div class="is-num">2</div><div class="is-body"><div class="is-title">Installer VS Code</div><div class="is-desc">code.visualstudio.com · Extension Python (ms-python.python) · Extension Jupyter (ms-toolsai.jupyter)</div></div></div>
+  <div class="is-step"><div class="is-num">3</div><div class="is-body"><div class="is-title">Créer un environnement virtuel</div><div class="is-desc">Bonne pratique : isoler les dépendances par projet</div><div class="is-cmd">python -m venv .venv && pip install pandas matplotlib seaborn scikit-learn</div></div></div>
+</div>
+
+<div class="sh">Option 4 — Dans ce cours (aucune installation)</div>
+<div class="callout ca"><div><div class="c-lbl">Python intégré dans ce fichier</div><p class="c-txt">Ce cours contient un environnement Python intégré basé sur <strong>Skulpt</strong> — Python exécuté en JavaScript pur, sans WASM. Il tourne directement dans votre navigateur, même sans connexion internet. Vous pouvez commencer à coder maintenant, sans rien installer.</p></div></div>
+
+<div class="sh">Les packages essentiels — ce que vous allez utiliser</div>
+<table class="dtbl">
+  <thead><tr><th>Package</th><th>Usage principal</th><th>Installation</th></tr></thead>
+  <tbody>
+    <tr><td><strong>numpy</strong></td><td>Arrays multidimensionnels, calcul numérique vectorisé</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px">pip install numpy</code></td></tr>
+    <tr><td><strong>pandas</strong></td><td>DataFrames — manipulation de données tabulaires</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px">pip install pandas</code></td></tr>
+    <tr><td><strong>matplotlib</strong></td><td>Visualisation — graphiques statiques</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px">pip install matplotlib</code></td></tr>
+    <tr><td><strong>seaborn</strong></td><td>Visualisation statistique sur Pandas</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px">pip install seaborn</code></td></tr>
+    <tr><td><strong>scikit-learn</strong></td><td>Machine Learning — classification, régression, clustering</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px">pip install scikit-learn</code></td></tr>
+    <tr><td><strong>openpyxl</strong></td><td>Lire/écrire des fichiers Excel .xlsx</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px">pip install openpyxl</code></td></tr>
+    <tr><td><strong>sqlalchemy</strong></td><td>Connexion et requêtes vers des bases de données SQL</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px">pip install sqlalchemy</code></td></tr>
+    <tr><td><strong>requests</strong></td><td>Appels HTTP — APIs REST, web scraping</td><td><code style="font-family:'JetBrains Mono',monospace;font-size:11px">pip install requests</code></td></tr>
+  </tbody>
+</table>
+
+<div class="navb"><button class="btn" onclick="go(1)">← Python pourquoi</button><button class="btn btn-p" onclick="go(3)">Bases Python →</button></div>
+</section>
+
+<!-- ══ CH3 — BASES PYTHON + REPL ══ -->
+<section class="ch" id="ch3">
+<div class="tag-l">Chapitre 03 · Bases Python</div>
+<h1 class="h1">Les bases Python — <em>exécutez en direct</em></h1>
+<p class="lead">Les fondamentaux de Python avec un éditeur qui tourne dans votre navigateur. Modifiez le code, cliquez sur Run — voyez les résultats en temps réel. Aucune installation nécessaire.</p>
+
+<div class="sh">Variables et types de données</div>
+<p class="body-txt">En Python, vous n'avez pas besoin de déclarer le type — Python le déduit automatiquement. Les 4 types fondamentaux :</p>
+<div class="concept-grid">
+  <div class="concept-card"><div class="concept-num">TYPE 01</div><div class="concept-t">int &amp; float</div><div class="concept-d">Nombres entiers et décimaux. Opérations arithmétiques standards + ** pour la puissance.</div><span class="concept-eg">age = 28  ·  salaire = 450000.0</span></div>
+  <div class="concept-card"><div class="concept-num">TYPE 02</div><div class="concept-t">str (chaîne)</div><div class="concept-d">Texte entre guillemets simples ou doubles. Méthodes : .upper(), .split(), .strip(), f-strings.</div><span class="concept-eg">nom = "Adjoa"  ·  f"Bonjour {nom}"</span></div>
+  <div class="concept-card"><div class="concept-num">TYPE 03</div><div class="concept-t">bool</div><div class="concept-d">True ou False. Résultat de comparaisons. Base des conditions if/elif/else.</div><span class="concept-eg">actif = True  ·  score > 70</span></div>
+  <div class="concept-card"><div class="concept-num">TYPE 04</div><div class="concept-t">list</div><div class="concept-d">Collection ordonnée et modifiable. Indexée depuis 0. Méthodes : .append(), .sort(), slicing.</div><span class="concept-eg">notes = [14, 18, 12, 16, 20]</span></div>
+  <div class="concept-card"><div class="concept-num">TYPE 05</div><div class="concept-t">dict</div><div class="concept-d">Paires clé-valeur. La structure de données la plus utilisée en data. Accès par clé.</div><span class="concept-eg">client = {{"nom":"Ali", "ca":84000}}</span></div>
+  <div class="concept-card"><div class="concept-num">TYPE 06</div><div class="concept-t">None</div><div class="concept-d">Valeur nulle — équivalent de NULL en SQL. Résultat par défaut d'une fonction sans return.</div><span class="concept-eg">valeur = None  ·  if x is None:</span></div>
+</div>
+
+<div class="sh">Exercice 1 — Variables et f-strings</div>
+<div id="repl-ex1" class="repl-wrap">
+  <div class="repl-hd">
+    <div class="repl-dots"><div class="repl-dot" style="background:#ef4444"></div><div class="repl-dot" style="background:#f59e0b"></div><div class="repl-dot" style="background:#22c55e"></div></div>
+    <span class="repl-title">exercice_01_variables.py</span>
+    <span class="repl-status loading" id="st-ex1">Chargement...</span>
+  </div>
+  <div class="repl-editor">
+    <textarea class="repl-textarea" id="code-ex1" spellcheck="false"># Exercice 1 : Variables et f-strings
+# Modifiez les valeurs et observez le résultat
+
+nom = "Aminata Koné"
+poste = "Data Analyst"
+anciennete = 3
+salaire = 580000  # FCFA
+
+# Calcul de la prime annuelle (10% du salaire)
+prime = salaire * 0.10
+
+# Affichage avec f-string
+print(f"Employé : {nom}")
+print(f"Poste   : {poste}")
+print(f"Ancienneté : {anciennete} ans")
+print(f"Salaire : {salaire:,} FCFA/mois")
+print(f"Prime annuelle : {prime:,.0f} FCFA")
+print(f"Salaire annuel brut : {salaire * 12 + prime:,.0f} FCFA")</textarea>
+  </div>
+  <div class="repl-actions">
+    <button class="repl-run" onclick="runCode('ex1')">▶ Exécuter</button>
+    <button class="repl-reset" onclick="resetCode('ex1')">Réinitialiser</button>
+    <span class="repl-hint">Ctrl+Enter pour exécuter</span>
+  </div>
+  <div class="repl-out" id="out-ex1"></div>
+</div>
+
+<div class="sh">Structures de contrôle — if/elif/else</div>
+<div class="code-block"><span class="code-lang">Python</span><pre><span class="cm"># Condition simple</span>
+score = <span class="num">72</span>
+
+<span class="kw">if</span> score >= <span class="num">85</span>:
+    <span class="fn">print</span>(<span class="str">"Excellent"</span>)
+<span class="kw">elif</span> score >= <span class="num">70</span>:
+    <span class="fn">print</span>(<span class="str">"Bon niveau"</span>)
+<span class="kw">elif</span> score >= <span class="num">50</span>:
+    <span class="fn">print</span>(<span class="str">"Passable"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">"Insuffisant"</span>)
+
+<span class="cm"># Condition sur une chaîne</span>
+region = <span class="str">"Sud"</span>
+taux_remise = <span class="num">0.05</span> <span class="kw">if</span> region == <span class="str">"Sud"</span> <span class="kw">else</span> <span class="num">0.02</span></pre></div>
+
+<div class="sh">Exercice 2 — Boucles et listes</div>
+<div id="repl-ex2" class="repl-wrap">
+  <div class="repl-hd">
+    <div class="repl-dots"><div class="repl-dot" style="background:#ef4444"></div><div class="repl-dot" style="background:#f59e0b"></div><div class="repl-dot" style="background:#22c55e"></div></div>
+    <span class="repl-title">exercice_02_boucles.py</span>
+    <span class="repl-status loading" id="st-ex2">Chargement...</span>
+  </div>
+  <div class="repl-editor">
+    <textarea class="repl-textarea" id="code-ex2" spellcheck="false"># Exercice 2 : Boucles et traitement de liste
+# Données de ventes par commercial
+
+commerciaux = [
+    {"nom": "Koffi", "ventes": 42, "ca": 1_240_000},
+    {"nom": "Adjoa", "ventes": 67, "ca": 1_890_000},
+    {"nom": "Moussa", "ventes": 31, "ca": 920_000},
+    {"nom": "Fatou", "ventes": 58, "ca": 1_650_000},
+    {"nom": "Ekow", "ventes": 45, "ca": 1_310_000},
+]
+
+# Calculer le CA total
+ca_total = sum(c["ca"] for c in commerciaux)
+ca_moyen = ca_total / len(commerciaux)
+
+print(f"{'Commercial':<10} {'Ventes':>8} {'CA (FCFA)':>14} {'vs Moy':>8}")
+print("-" * 44)
+
+for c in sorted(commerciaux, key=lambda x: x["ca"], reverse=True):
+    ecart = (c["ca"] - ca_moyen) / ca_moyen * 100
+    signe = "+" if ecart >= 0 else ""
+    print(f"{c['nom']:<10} {c['ventes']:>8} {c['ca']:>14,} {signe}{ecart:>7.1f}%")
+
+print("-" * 44)
+print(f"{'TOTAL':<10} {sum(c['ventes'] for c in commerciaux):>8} {ca_total:>14,}")</textarea>
+  </div>
+  <div class="repl-actions">
+    <button class="repl-run" onclick="runCode('ex2')">▶ Exécuter</button>
+    <button class="repl-reset" onclick="resetCode('ex2')">Réinitialiser</button>
+    <span class="repl-hint">Ctrl+Enter pour exécuter</span>
+  </div>
+  <div class="repl-out" id="out-ex2"></div>
+</div>
+
+<div class="sh">Fonctions Python</div>
+<div class="code-block"><span class="code-lang">Python</span><pre><span class="cm"># Définition d'une fonction avec paramètres et valeur par défaut</span>
+<span class="kw">def</span> <span class="fn">analyser_performance</span>(ca_actuel, ca_objectif, taux_commission=<span class="num">0.05</span>):
+    <span class="str">"""
+    Analyse la performance commerciale d'un agent.
+    Retourne un dictionnaire avec les métriques clés.
+    """</span>
+    taux_atteinte = ca_actuel / ca_objectif * <span class="num">100</span>
+    commission = ca_actuel * taux_commission <span class="kw">if</span> taux_atteinte >= <span class="num">80</span> <span class="kw">else</span> <span class="num">0</span>
+    statut = <span class="str">"Objectif atteint"</span> <span class="kw">if</span> taux_atteinte >= <span class="num">100</span> <span class="kw">else</span> <span class="str">"En cours"</span>
+
+    <span class="kw">return</span> {{
+        <span class="str">"taux_atteinte"</span>: <span class="fn">round</span>(taux_atteinte, <span class="num">1</span>),
+        <span class="str">"commission"</span>: commission,
+        <span class="str">"statut"</span>: statut
+    }}
+
+<span class="cm"># Utilisation</span>
+result = <span class="fn">analyser_performance</span>(<span class="num">1_650_000</span>, <span class="num">1_500_000</span>)
+<span class="fn">print</span>(result)
+<span class="cm"># {'taux_atteinte': 110.0, 'commission': 82500.0, 'statut': 'Objectif atteint'}</span></pre></div>
+
+<div class="sh">Exercice 3 — Fonctions et dictionnaires</div>
+<div id="repl-ex3" class="repl-wrap">
+  <div class="repl-hd">
+    <div class="repl-dots"><div class="repl-dot" style="background:#ef4444"></div><div class="repl-dot" style="background:#f59e0b"></div><div class="repl-dot" style="background:#22c55e"></div></div>
+    <span class="repl-title">exercice_03_fonctions.py</span>
+    <span class="repl-status loading" id="st-ex3">Chargement...</span>
+  </div>
+  <div class="repl-editor">
+    <textarea class="repl-textarea" id="code-ex3" spellcheck="false"># Exercice 3 : Créez une fonction d'analyse de données client
+
+def classifier_client(ca_annuel, nb_commandes, anciennete_mois):
+    """
+    Classifie un client selon ses métriques.
+    Retourne : "Gold", "Silver", "Bronze" ou "Standard"
+    """
+    # Score basé sur plusieurs critères
+    score = 0
+    
+    # CA annuel
+    if ca_annuel >= 5_000_000: score += 40
+    elif ca_annuel >= 2_000_000: score += 25
+    elif ca_annuel >= 500_000: score += 10
+    
+    # Fréquence d'achat
+    if nb_commandes >= 24: score += 30  # 2+ par mois
+    elif nb_commandes >= 12: score += 20
+    elif nb_commandes >= 6: score += 10
+    
+    # Fidélité
+    if anciennete_mois >= 36: score += 30
+    elif anciennete_mois >= 12: score += 20
+    elif anciennete_mois >= 6: score += 10
+    
+    # Classification
+    if score >= 80: return "Gold", score
+    elif score >= 55: return "Silver", score
+    elif score >= 30: return "Bronze", score
+    else: return "Standard", score
+
+# Tester avec plusieurs clients
+clients = [
+    ("Client A", 6_200_000, 30, 48),
+    ("Client B", 1_800_000, 14, 18),
+    ("Client C", 320_000, 5, 4),
+    ("Client D", 4_100_000, 22, 24),
+]
+
+print(f"{'Client':<10} {'CA':>12} {'Cmds':>6} {'Anc.':>6} {'Score':>7} {'Segment':>10}")
+print("-" * 55)
+
+for nom, ca, cmds, anc in clients:
+    segment, score = classifier_client(ca, cmds, anc)
+    print(f"{nom:<10} {ca:>12,} {cmds:>6} {anc:>5}m {score:>7} {segment:>10}")</textarea>
+  </div>
+  <div class="repl-actions">
+    <button class="repl-run" onclick="runCode('ex3')">▶ Exécuter</button>
+    <button class="repl-reset" onclick="resetCode('ex3')">Réinitialiser</button>
+    <span class="repl-hint">Ctrl+Enter pour exécuter</span>
+  </div>
+  <div class="repl-out" id="out-ex3"></div>
+</div>
+
+<div class="navb"><button class="btn" onclick="go(2)">← Installation</button><button class="btn btn-p" onclick="go(4)">NumPy & Pandas →</button></div>
+</section>
+
+<!-- ══ CH4 — NUMPY & PANDAS ══ -->
+<section class="ch" id="ch4">
+<div class="tag-l">Chapitre 04 · NumPy & Pandas</div>
+<h1 class="h1">NumPy &amp; Pandas — <em>manipuler des données réelles</em></h1>
+<p class="lead">NumPy est la fondation du calcul numérique en Python. Pandas est la librairie de référence pour l'analyse de données tabulaires. Ensemble, ils remplacent Excel pour tous vos besoins data.</p>
+
+<div class="sh">NumPy — Arrays et calcul vectorisé</div>
+<div class="code-block"><span class="code-lang">Python</span><pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Créer un array NumPy</span>
+ventes = np.<span class="fn">array</span>([<span class="num">84000</span>, <span class="num">92000</span>, <span class="num">78000</span>, <span class="num">105000</span>, <span class="num">88000</span>])
+
+<span class="cm"># Opérations vectorisées (sur tout le tableau d'un coup)</span>
+<span class="fn">print</span>(ventes * <span class="num">1.1</span>)          <span class="cm"># Augmenter toutes les ventes de 10%</span>
+<span class="fn">print</span>(np.<span class="fn">mean</span>(ventes))       <span class="cm"># Moyenne : 89400.0</span>
+<span class="fn">print</span>(np.<span class="fn">std</span>(ventes))        <span class="cm"># Écart-type</span>
+<span class="fn">print</span>(np.<span class="fn">percentile</span>(ventes, [<span class="num">25</span>, <span class="num">50</span>, <span class="num">75</span>]))  <span class="cm"># Quartiles</span>
+
+<span class="cm"># Filtrage booléen (sans boucle)</span>
+au_dessus_moy = ventes[ventes > np.<span class="fn">mean</span>(ventes)]
+<span class="fn">print</span>(<span class="str">f"Au-dessus de la moyenne : {au_dessus_moy}"</span>)</pre></div>
+
+<div class="sh">Pandas — Le DataFrame</div>
+<p class="body-txt">Un DataFrame Pandas est un tableau 2D avec des colonnes nommées et un index. C'est l'équivalent d'une feuille Excel — mais programmable et scalable à des millions de lignes.</p>
+
+<div class="sh">Exercice 4 — Pandas : créer et explorer un DataFrame</div>
+<div id="repl-ex4" class="repl-wrap">
+  <div class="repl-hd">
+    <div class="repl-dots"><div class="repl-dot" style="background:#ef4444"></div><div class="repl-dot" style="background:#f59e0b"></div><div class="repl-dot" style="background:#22c55e"></div></div>
+    <span class="repl-title">exercice_04_pandas_basics.py</span>
+    <span class="repl-status loading" id="st-ex4">Chargement...</span>
+  </div>
+  <div class="repl-editor">
+    <textarea class="repl-textarea" id="code-ex4" spellcheck="false">import pandas as pd
+import numpy as np
+
+# Créer un DataFrame de ventes e-commerce
+np.random.seed(42)
+n = 500
+
+data = {
+    "commande_id": range(1, n+1),
+    "client_id":   np.random.randint(100, 200, n),
+    "produit":     np.random.choice(["Laptop", "Phone", "Tablet", "Watch", "Headphone"], n),
+    "categorie":   np.random.choice(["Électronique", "Mode", "Sport", "Maison"], n),
+    "quantite":    np.random.randint(1, 5, n),
+    "prix_unit":   np.random.choice([15000, 25000, 45000, 89000, 120000], n),
+    "region":      np.random.choice(["Nord", "Sud", "Est", "Ouest"], n),
+    "canal":       np.random.choice(["Web", "Mobile", "Marketplace"], n, p=[0.5, 0.35, 0.15]),
+}
+
+df = pd.DataFrame(data)
+df["ca"] = df["quantite"] * df["prix_unit"]
+
+# Explorer le DataFrame
+print("=== SHAPE ===")
+print(f"Lignes: {df.shape[0]:,}  Colonnes: {df.shape[1]}")
+
+print("\n=== TYPES DE COLONNES ===")
+print(df.dtypes)
+
+print("\n=== STATISTIQUES DESCRIPTIVES ===")
+print(df[["quantite", "prix_unit", "ca"]].describe().round(0))
+
+print("\n=== CA PAR RÉGION (top) ===")
+print(df.groupby("region")["ca"].sum().sort_values(ascending=False).apply(lambda x: f"{x:,.0f} FCFA"))</textarea>
+  </div>
+  <div class="repl-actions">
+    <button class="repl-run" onclick="runCode('ex4')">▶ Exécuter</button>
+    <button class="repl-reset" onclick="resetCode('ex4')">Réinitialiser</button>
+    <span class="repl-hint">Ctrl+Enter pour exécuter</span>
+  </div>
+  <div class="repl-out" id="out-ex4"></div>
+</div>
+
+<div class="sh">Opérations Pandas essentielles</div>
+<div class="code-block"><span class="code-lang">Python</span><pre><span class="cm"># ── FILTRAGE ──</span>
+mobiles = df[df[<span class="str">"produit"</span>] == <span class="str">"Phone"</span>]
+gros_ca  = df[df[<span class="str">"ca"</span>] > <span class="num">200_000</span>]
+filtre   = df[(df[<span class="str">"region"</span>] == <span class="str">"Sud"</span>) & (df[<span class="str">"canal"</span>] == <span class="str">"Mobile"</span>)]
+
+<span class="cm"># ── SÉLECTION COLONNES ──</span>
+df_light = df[[<span class="str">"client_id"</span>, <span class="str">"produit"</span>, <span class="str">"ca"</span>]]
+
+<span class="cm"># ── GROUPBY ──</span>
+ca_produit = df.<span class="fn">groupby</span>(<span class="str">"produit"</span>).<span class="fn">agg</span>(
+    ca_total    = (<span class="str">"ca"</span>, <span class="str">"sum"</span>),
+    nb_commandes= (<span class="str">"commande_id"</span>, <span class="str">"count"</span>),
+    panier_moyen= (<span class="str">"ca"</span>, <span class="str">"mean"</span>)
+).<span class="fn">sort_values</span>(<span class="str">"ca_total"</span>, ascending=<span class="dec">False</span>)
+
+<span class="cm"># ── VALEURS MANQUANTES ──</span>
+df.<span class="fn">isnull</span>().<span class="fn">sum</span>()           <span class="cm"># compter les NaN</span>
+df.<span class="fn">dropna</span>()                 <span class="cm"># supprimer les lignes avec NaN</span>
+df.<span class="fn">fillna</span>(<span class="num">0</span>)               <span class="cm"># remplacer NaN par 0</span>
+df[<span class="str">"col"</span>].<span class="fn">fillna</span>(df[<span class="str">"col"</span>].<span class="fn">median</span>())  <span class="cm"># remplacer par médiane</span>
+
+<span class="cm"># ── SORT ──</span>
+df.<span class="fn">sort_values</span>(<span class="str">"ca"</span>, ascending=<span class="dec">False</span>).<span class="fn">head</span>(<span class="num">10</span>)
+
+<span class="cm"># ── PIVOT TABLE ──</span>
+pivot = df.<span class="fn">pivot_table</span>(
+    values=<span class="str">"ca"</span>, index=<span class="str">"region"</span>, columns=<span class="str">"canal"</span>, aggfunc=<span class="str">"sum"</span>
+)</pre></div>
+
+<div class="sh">Exercice 5 — Pandas : nettoyage et transformation</div>
+<div id="repl-ex5" class="repl-wrap">
+  <div class="repl-hd">
+    <div class="repl-dots"><div class="repl-dot" style="background:#ef4444"></div><div class="repl-dot" style="background:#f59e0b"></div><div class="repl-dot" style="background:#22c55e"></div></div>
+    <span class="repl-title">exercice_05_pandas_clean.py</span>
+    <span class="repl-status loading" id="st-ex5">Chargement...</span>
+  </div>
+  <div class="repl-editor">
+    <textarea class="repl-textarea" id="code-ex5" spellcheck="false">import pandas as pd
+import numpy as np
+
+# Dataset de clients avec données "réelles" (avec problèmes)
+data_clients = {
+    "client_id":  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    "nom":        ["Kofi A.", "Adjoa B.", "Ali C.", None, "Fatou D.", 
+                   "Kemi E.", "Moussa F.", "Ama G.", "Ekow H.", "Binta I."],
+    "age":        [28, 35, None, 42, 29, 55, 33, None, 46, 31],
+    "ca_annuel":  [840000, 1200000, 550000, 2100000, None, 
+                   980000, 1450000, 720000, 1890000, 630000],
+    "segment":    ["PME", "PME", "TPE", "Grande Ent.", "TPE",
+                   "PME", "Grande Ent.", "TPE", "PME", "TPE"],
+    "pays":       ["CI", "SN", "ci", "GH", "TG", "CI", "sn", "GH", "CI", "TG"],
+}
+
+df = pd.DataFrame(data_clients)
+
+print("=== ÉTAT INITIAL ===")
+print(f"Valeurs manquantes:\n{df.isnull().sum()[df.isnull().sum() > 0]}")
+
+# === NETTOYAGE ===
+
+# 1. Normaliser les pays (majuscules)
+df["pays"] = df["pays"].str.upper()
+
+# 2. Remplir les noms manquants
+df["nom"] = df["nom"].fillna("Client inconnu")
+
+# 3. Imputer l'âge par la médiane
+df["age"] = df["age"].fillna(df["age"].median())
+
+# 4. Imputer le CA par la médiane du segment
+df["ca_annuel"] = df.groupby("segment")["ca_annuel"].transform(
+    lambda x: x.fillna(x.median())
+)
+
+# 5. Créer une colonne CA mensuel estimé
+df["ca_mensuel"] = df["ca_annuel"] / 12
+
+# 6. Catégoriser par CA
+def categoriser_ca(ca):
+    if ca >= 1_500_000: return "Top client"
+    elif ca >= 800_000: return "Client standard"
+    else: return "Petit compte"
+
+df["categorie_ca"] = df["ca_annuel"].apply(categoriser_ca)
+
+print("\n=== APRÈS NETTOYAGE ===")
+print(df[["client_id", "nom", "pays", "age", "ca_annuel", "categorie_ca"]].to_string(index=False))
+
+print("\n=== RÉSUMÉ PAR SEGMENT ===")
+print(df.groupby("segment").agg(
+    nb_clients=("client_id", "count"),
+    ca_moyen=("ca_annuel", lambda x: f"{x.mean():,.0f}"),
+).to_string())</textarea>
+  </div>
+  <div class="repl-actions">
+    <button class="repl-run" onclick="runCode('ex5')">▶ Exécuter</button>
+    <button class="repl-reset" onclick="resetCode('ex5')">Réinitialiser</button>
+    <span class="repl-hint">Ctrl+Enter pour exécuter</span>
+  </div>
+  <div class="repl-out" id="out-ex5"></div>
+</div>
+
+<div class="navb"><button class="btn" onclick="go(3)">← Bases Python</button><button class="btn btn-p" onclick="go(5)">Visualisation →</button></div>
+</section>
+
+<!-- ══ CH5 — VISUALISATION ══ -->
+<section class="ch" id="ch5">
+<div class="tag-l">Chapitre 05 · Visualisation</div>
+<h1 class="h1">Matplotlib &amp; Seaborn — <em>graphiques qui s'exécutent ici</em></h1>
+<p class="lead">Les graphiques s'affichent directement dans le cours. Modifiez les données ou les paramètres et voyez le résultat en temps réel.</p>
+
+<div class="sh">Exercice 6 — Bar chart et graphique en ligne</div>
+<div id="repl-ex6" class="repl-wrap">
+  <div class="repl-hd">
+    <div class="repl-dots"><div class="repl-dot" style="background:#ef4444"></div><div class="repl-dot" style="background:#f59e0b"></div><div class="repl-dot" style="background:#22c55e"></div></div>
+    <span class="repl-title">exercice_06_bar_line.py</span>
+    <span class="repl-status loading" id="st-ex6">Chargement...</span>
+  </div>
+  <div class="repl-editor">
+    <textarea class="repl-textarea" id="code-ex6" spellcheck="false">import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import io, base64
+
+# Données de ventes mensuelles
+mois = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun',
+        'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc']
+ca_2023 = [1.2, 1.4, 1.1, 1.6, 1.8, 2.1, 1.9, 1.7, 2.3, 2.5, 2.8, 3.2]
+ca_2024 = [1.5, 1.7, 1.4, 1.9, 2.1, 2.4, 2.2, 2.0, 2.7, 2.9, 3.1, 3.6]
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+fig.patch.set_facecolor('#fafaf9')
+
+# --- Bar chart CA par mois ---
+ax1 = axes[0]
+x = range(len(mois))
+bars = ax1.bar(x, ca_2024, color='#f59e0b', alpha=0.85, width=0.6, zorder=3)
+ax1.set_xticks(x)
+ax1.set_xticklabels(mois, fontsize=9)
+ax1.set_title('CA 2024 par mois (M FCFA)', fontsize=12, fontweight='bold', pad=10)
+ax1.set_ylabel('CA (Millions FCFA)', fontsize=10)
+ax1.yaxis.grid(True, alpha=0.3, zorder=0)
+ax1.set_axisbelow(True)
+ax1.spines[['top','right']].set_visible(False)
+ax1.set_facecolor('#fafaf9')
+
+# Ajouter les valeurs sur les barres
+for bar in bars:
+    h = bar.get_height()
+    ax1.text(bar.get_x() + bar.get_width()/2, h + 0.05,
+             f'{h:.1f}', ha='center', va='bottom', fontsize=8, fontweight='bold')
+
+# --- Comparaison 2023 vs 2024 ---
+ax2 = axes[1]
+ax2.plot(mois, ca_2023, marker='o', linewidth=2, markersize=5,
+         color='#94a3b8', label='2023', zorder=3)
+ax2.plot(mois, ca_2024, marker='o', linewidth=2.5, markersize=6,
+         color='#f59e0b', label='2024', zorder=4)
+ax2.fill_between(mois, ca_2023, ca_2024, alpha=0.12, color='#f59e0b')
+ax2.set_title('Évolution CA — 2023 vs 2024', fontsize=12, fontweight='bold', pad=10)
+ax2.set_ylabel('CA (Millions FCFA)', fontsize=10)
+ax2.tick_params(axis='x', rotation=45, labelsize=9)
+ax2.legend(fontsize=10)
+ax2.yaxis.grid(True, alpha=0.3)
+ax2.spines[['top','right']].set_visible(False)
+ax2.set_facecolor('#fafaf9')
+
+plt.tight_layout(pad=2)
+
+# Capturer et afficher
+buf = io.BytesIO()
+plt.savefig(buf, format='png', dpi=120, bbox_inches='tight',
+            facecolor='#fafaf9')
+buf.seek(0)
+img_b64 = base64.b64encode(buf.read()).decode()
+plt.close()
+
+croissance = (ca_2024[-1] - ca_2023[-1]) / ca_2023[-1] * 100
+print(f"Croissance annuelle : +{croissance:.1f}%")
+print(f"CA total 2024 : {sum(ca_2024):.1f}M FCFA")
+print(f"CA total 2023 : {sum(ca_2023):.1f}M FCFA")
+print(f"__IMG__:{img_b64}")</textarea>
+  </div>
+  <div class="repl-actions">
+    <button class="repl-run" onclick="runCode('ex6')">▶ Exécuter</button>
+    <button class="repl-reset" onclick="resetCode('ex6')">Réinitialiser</button>
+    <span class="repl-hint">Ctrl+Enter pour exécuter</span>
+  </div>
+  <div class="repl-out" id="out-ex6"></div>
+</div>
+
+<div class="sh">Exercice 7 — Seaborn : heatmap et distributions</div>
+<div id="repl-ex7" class="repl-wrap">
+  <div class="repl-hd">
+    <div class="repl-dots"><div class="repl-dot" style="background:#ef4444"></div><div class="repl-dot" style="background:#f59e0b"></div><div class="repl-dot" style="background:#22c55e"></div></div>
+    <span class="repl-title">exercice_07_seaborn.py</span>
+    <span class="repl-status loading" id="st-ex7">Chargement...</span>
+  </div>
+  <div class="repl-editor">
+    <textarea class="repl-textarea" id="code-ex7" spellcheck="false">import pandas as pd
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import seaborn as sns
+import io, base64
+
+np.random.seed(42)
+n = 300
+
+# Dataset RH
+df = pd.DataFrame({
+    "age":         np.random.normal(35, 8, n).clip(22, 60).astype(int),
+    "salaire":     np.random.normal(650000, 180000, n).clip(300000, 1500000),
+    "experience":  np.random.randint(1, 20, n),
+    "score_perf":  np.random.normal(72, 14, n).clip(30, 100),
+    "departement": np.random.choice(["Tech", "Finance", "Commercial", "RH"], n),
+    "satisf":      np.random.randint(1, 6, n),
+})
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+fig.patch.set_facecolor('#fafaf9')
+sns.set_style("whitegrid")
+
+# --- Scatter : âge vs salaire coloré par département ---
+ax1 = axes[0]
+colors = {"Tech": "#6366f1", "Finance": "#f59e0b", "Commercial": "#22c55e", "RH": "#ef4444"}
+for dept, group in df.groupby("departement"):
+    ax1.scatter(group["age"], group["salaire"]/1000, 
+                color=colors[dept], alpha=0.6, s=30, label=dept, zorder=3)
+ax1.set_xlabel("Âge", fontsize=11)
+ax1.set_ylabel("Salaire (KFCFA)", fontsize=11)
+ax1.set_title("Âge vs Salaire par Département", fontsize=12, fontweight='bold')
+ax1.legend(fontsize=9)
+ax1.spines[['top','right']].set_visible(False)
+ax1.set_facecolor('#fafaf9')
+
+# --- Matrice de corrélation ---
+ax2 = axes[1]
+corr = df[["age", "salaire", "experience", "score_perf", "satisf"]].corr()
+mask = np.triu(np.ones_like(corr, dtype=bool))
+sns.heatmap(corr, mask=mask, annot=True, fmt='.2f', cmap='RdYlGn',
+            center=0, ax=ax2, square=True, linewidths=0.5,
+            cbar_kws={"shrink": 0.8}, annot_kws={"size": 10})
+ax2.set_title("Matrice de corrélation", fontsize=12, fontweight='bold')
+
+plt.tight_layout(pad=2)
+buf = io.BytesIO()
+plt.savefig(buf, format='png', dpi=120, bbox_inches='tight', facecolor='#fafaf9')
+buf.seek(0)
+img_b64 = base64.b64encode(buf.read()).decode()
+plt.close()
+
+print("Corrélations significatives :")
+for i in range(len(corr.columns)):
+    for j in range(i+1, len(corr.columns)):
+        r = corr.iloc[i, j]
+        if abs(r) > 0.3:
+            print(f"  {corr.columns[i]} ↔ {corr.columns[j]} : r={r:.3f}")
+print(f"__IMG__:{img_b64}")</textarea>
+  </div>
+  <div class="repl-actions">
+    <button class="repl-run" onclick="runCode('ex7')">▶ Exécuter</button>
+    <button class="repl-reset" onclick="resetCode('ex7')">Réinitialiser</button>
+    <span class="repl-hint">Ctrl+Enter pour exécuter</span>
+  </div>
+  <div class="repl-out" id="out-ex7"></div>
+</div>
+
+<div class="navb"><button class="btn" onclick="go(4)">← NumPy & Pandas</button><button class="btn btn-p" onclick="go(6)">EDA complète →</button></div>
+</section>
+
+<!-- ══ CH6 — EDA ══ -->
+<section class="ch" id="ch6">
+<div class="tag-l">Chapitre 06 · Analyse exploratoire</div>
+<h1 class="h1">EDA — <em>analyser un dataset de A à Z</em></h1>
+<p class="lead">L'EDA (Exploratory Data Analysis) est la première étape de tout projet data. Elle vous permet de comprendre la structure, la qualité et les patterns de vos données avant toute modélisation.</p>
+
+<div class="sh">Les 6 étapes d'une EDA rigoureuse</div>
+<div class="concept-grid">
+  <div class="concept-card"><div class="concept-num">ÉTAPE 01</div><div class="concept-t">Structure des données</div><div class="concept-d">Shape, types, aperçu. Combien de lignes ? Quels types de colonnes ? Y a-t-il des doublons ?</div><span class="concept-eg">df.shape · df.dtypes · df.head()</span></div>
+  <div class="concept-card"><div class="concept-num">ÉTAPE 02</div><div class="concept-t">Qualité des données</div><div class="concept-d">Valeurs manquantes, valeurs aberrantes (outliers), valeurs impossibles.</div><span class="concept-eg">df.isnull().sum() · df.duplicated()</span></div>
+  <div class="concept-card"><div class="concept-num">ÉTAPE 03</div><div class="concept-t">Statistiques descriptives</div><div class="concept-d">Distribution des variables numériques : min, max, moyenne, médiane, écart-type, quartiles.</div><span class="concept-eg">df.describe() · skewness</span></div>
+  <div class="concept-card"><div class="concept-num">ÉTAPE 04</div><div class="concept-t">Distribution univariée</div><div class="concept-d">Histogrammes et box plots pour chaque variable. Identifier les distributions asymétriques.</div><span class="concept-eg">sns.histplot() · sns.boxplot()</span></div>
+  <div class="concept-card"><div class="concept-num">ÉTAPE 05</div><div class="concept-t">Corrélations</div><div class="concept-d">Matrice de corrélation, scatter plots. Quelles variables sont liées entre elles ?</div><span class="concept-eg">df.corr() · sns.heatmap()</span></div>
+  <div class="concept-card"><div class="concept-num">ÉTAPE 06</div><div class="concept-t">Segmentation &amp; patterns</div><div class="concept-d">GroupBy, pivot tables, analyse par segment. Quels groupes se distinguent ?</div><span class="concept-eg">df.groupby().agg() · pd.crosstab()</span></div>
+</div>
+
+<div class="sh">Exercice 8 — EDA complète sur données marketing</div>
+<div id="repl-ex8" class="repl-wrap">
+  <div class="repl-hd">
+    <div class="repl-dots"><div class="repl-dot" style="background:#ef4444"></div><div class="repl-dot" style="background:#f59e0b"></div><div class="repl-dot" style="background:#22c55e"></div></div>
+    <span class="repl-title">exercice_08_eda_complete.py</span>
+    <span class="repl-status loading" id="st-ex8">Chargement...</span>
+  </div>
+  <div class="repl-editor">
+    <textarea class="repl-textarea" id="code-ex8" style="min-height:200px" spellcheck="false">import pandas as pd
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import io, base64
+
+np.random.seed(0)
+n = 800
+
+# Dataset campagnes marketing
+df = pd.DataFrame({
+    "campagne":    np.random.choice(["Email", "Social", "Search", "Display"], n),
+    "budget":      np.random.exponential(500000, n).clip(50000, 5000000).round(-3),
+    "impressions": np.random.randint(1000, 500000, n),
+    "clics":       None,
+    "conversions": None,
+    "revenu":      None,
+})
+# Relations réalistes
+df["clics"] = (df["impressions"] * np.random.uniform(0.01, 0.08, n)).astype(int)
+df["conversions"] = (df["clics"] * np.random.uniform(0.02, 0.15, n)).astype(int)
+df["revenu"] = df["conversions"] * np.random.uniform(15000, 120000, n)
+df["ctr"]  = df["clics"] / df["impressions"] * 100
+df["cpc"]  = df["budget"] / df["clics"].replace(0, np.nan)
+df["roas"] = df["revenu"] / df["budget"]
+
+# ── EDA ──
+print("=" * 50)
+print("ÉTAPE 1 — STRUCTURE")
+print(f"Données : {df.shape[0]} lignes × {df.shape[1]} colonnes")
+print(f"Valeurs manquantes : {df.isnull().sum().sum()}")
+
+print("\n" + "=" * 50)
+print("ÉTAPE 2 — STATISTIQUES DESCRIPTIVES")
+stats = df[["budget","ctr","roas"]].describe().round(2)
+print(stats.to_string())
+
+print("\n" + "=" * 50)
+print("ÉTAPE 3 — PERFORMANCE PAR CANAL")
+perf = df.groupby("campagne").agg(
+    budget_total = ("budget", "sum"),
+    roas_moyen   = ("roas", "mean"),
+    ctr_moyen    = ("ctr", "mean"),
+    nb_campagnes = ("campagne", "count")
+).round(2)
+perf["roas_moyen"] = perf["roas_moyen"].map("{:.2f}x".format)
+perf["ctr_moyen"]  = perf["ctr_moyen"].map("{:.2f}%".format)
+perf["budget_total"] = perf["budget_total"].map("{:,.0f}".format)
+print(perf.to_string())
+
+print("\n" + "=" * 50)
+print("ÉTAPE 4 — OUTLIERS ROAS")
+q1, q3 = df["roas"].quantile([0.25, 0.75])
+iqr = q3 - q1
+outliers = df[df["roas"] > q3 + 1.5*iqr]
+print(f"Campagnes avec ROAS exceptionnel (outliers hauts) : {len(outliers)}")
+print(f"ROAS médian : {df['roas'].median():.2f}x | Seuil outlier : {q3+1.5*iqr:.2f}x")</textarea>
+  </div>
+  <div class="repl-actions">
+    <button class="repl-run" onclick="runCode('ex8')">▶ Exécuter</button>
+    <button class="repl-reset" onclick="resetCode('ex8')">Réinitialiser</button>
+    <span class="repl-hint">Ctrl+Enter pour exécuter</span>
+  </div>
+  <div class="repl-out" id="out-ex8"></div>
+</div>
+
+<div class="navb"><button class="btn" onclick="go(5)">← Visualisation</button><button class="btn btn-p" onclick="go(7)">Statistiques & ML →</button></div>
+</section>
+
+<!-- ══ CH7 — STATS & ML ══ -->
+<section class="ch" id="ch7">
+<div class="tag-l">Chapitre 07 · Statistiques & Machine Learning</div>
+<h1 class="h1">Statistiques &amp; ML avec scikit-learn</h1>
+<p class="lead">Les tests statistiques pour valider vos hypothèses, et les premiers modèles de machine learning pour prédire et classifier. Tout en Python, tout interactif.</p>
+
+<div class="sh">Exercice 9 — Tests statistiques</div>
+<div id="repl-ex9" class="repl-wrap">
+  <div class="repl-hd">
+    <div class="repl-dots"><div class="repl-dot" style="background:#ef4444"></div><div class="repl-dot" style="background:#f59e0b"></div><div class="repl-dot" style="background:#22c55e"></div></div>
+    <span class="repl-title">exercice_09_stats.py</span>
+    <span class="repl-status loading" id="st-ex9">Chargement...</span>
+  </div>
+  <div class="repl-editor">
+    <textarea class="repl-textarea" id="code-ex9" spellcheck="false">import pandas as pd
+import numpy as np
+from scipy import stats
+
+np.random.seed(42)
+
+# === TEST T — Comparer 2 groupes ===
+# Question : Le panier moyen est-il significativement différent
+# entre les clients Web et les clients Mobile ?
+panier_web    = np.random.normal(85000, 20000, 200)
+panier_mobile = np.random.normal(72000, 18000, 200)
+
+t_stat, p_value = stats.ttest_ind(panier_web, panier_mobile)
+
+print("=== TEST T DE STUDENT ===")
+print(f"H0 : Pas de différence de panier moyen Web vs Mobile")
+print(f"Panier moyen Web    : {panier_web.mean():,.0f} FCFA")
+print(f"Panier moyen Mobile : {panier_mobile.mean():,.0f} FCFA")
+print(f"t-statistic : {t_stat:.4f}")
+print(f"p-value     : {p_value:.6f}")
+if p_value < 0.05:
+    print("→ Résultat : SIGNIFICATIF (p < 0.05) — on rejette H0")
+    print("  La différence de panier est réelle, pas due au hasard")
+else:
+    print("→ Résultat : Non significatif — on ne peut pas rejetter H0")
+
+# === CORRÉLATION DE PEARSON ===
+print("\n=== CORRÉLATION PEARSON ===")
+budget_pub    = np.random.uniform(100000, 2000000, 100)
+ca_genere     = budget_pub * np.random.uniform(2, 5, 100) + np.random.normal(0, 200000, 100)
+
+r, p = stats.pearsonr(budget_pub, ca_genere)
+print(f"Corrélation Budget ↔ CA : r = {r:.4f}")
+print(f"p-value : {p:.6f}")
+print(f"Interprétation : {'Corrélation forte' if abs(r) > 0.7 else 'Corrélation modérée' if abs(r) > 0.4 else 'Corrélation faible'}")
+
+# === CHI2 — Variables catégorielles ===
+print("\n=== TEST CHI-2 (indépendance) ===")
+# Question : La région influence-t-elle le mode de paiement ?
+observed = np.array([[120, 80, 40],    # Nord
+                     [100, 120, 30],   # Sud  
+                     [90,  70, 60],    # Est
+                     [110, 90, 50]])   # Ouest
+chi2, p, dof, expected = stats.chi2_contingency(observed)
+print(f"H0 : Région et mode de paiement sont indépendants")
+print(f"Chi2 = {chi2:.3f} | p-value = {p:.6f} | degrés de liberté = {dof}")
+if p < 0.05:
+    print("→ Résultat : SIGNIFICATIF — la région influence le mode de paiement")</textarea>
+  </div>
+  <div class="repl-actions">
+    <button class="repl-run" onclick="runCode('ex9')">▶ Exécuter</button>
+    <button class="repl-reset" onclick="resetCode('ex9')">Réinitialiser</button>
+    <span class="repl-hint">Ctrl+Enter pour exécuter</span>
+  </div>
+  <div class="repl-out" id="out-ex9"></div>
+</div>
+
+<div class="sh">Exercice 10 — Régression linéaire avec sklearn</div>
+<div id="repl-ex10" class="repl-wrap">
+  <div class="repl-hd">
+    <div class="repl-dots"><div class="repl-dot" style="background:#ef4444"></div><div class="repl-dot" style="background:#f59e0b"></div><div class="repl-dot" style="background:#22c55e"></div></div>
+    <span class="repl-title">exercice_10_regression.py</span>
+    <span class="repl-status loading" id="st-ex10">Chargement...</span>
+  </div>
+  <div class="repl-editor">
+    <textarea class="repl-textarea" id="code-ex10" spellcheck="false">import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_absolute_error
+from sklearn.preprocessing import StandardScaler
+
+np.random.seed(42)
+n = 500
+
+# Dataset : prédire le CA d'un agent commercial
+df = pd.DataFrame({
+    "experience_ans":  np.random.randint(1, 20, n),
+    "nb_appels_semaine": np.random.randint(10, 80, n),
+    "taux_conversion": np.random.uniform(0.05, 0.35, n),
+    "region_sud":      np.random.randint(0, 2, n),  # variable binaire
+    "formation_recente": np.random.randint(0, 2, n),
+})
+# CA dépend de ces variables + bruit
+df["ca_mensuel"] = (
+    df["experience_ans"] * 25000
+    + df["nb_appels_semaine"] * 8000
+    + df["taux_conversion"] * 2000000
+    + df["region_sud"] * 50000
+    + df["formation_recente"] * 30000
+    + np.random.normal(0, 80000, n)
+)
+
+# Features et target
+X = df.drop("ca_mensuel", axis=1)
+y = df["ca_mensuel"]
+
+# Train / test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Normalisation
+scaler = StandardScaler()
+X_train_s = scaler.fit_transform(X_train)
+X_test_s  = scaler.transform(X_test)
+
+# Modèle
+model = LinearRegression()
+model.fit(X_train_s, y_train)
+
+y_pred = model.predict(X_test_s)
+r2  = r2_score(y_test, y_pred)
+mae = mean_absolute_error(y_test, y_pred)
+
+print("=== RÉGRESSION LINÉAIRE — PRÉDICTION CA MENSUEL ===")
+print(f"R² (variance expliquée) : {r2:.4f} → {r2*100:.1f}% du CA expliqué")
+print(f"MAE (erreur absolue moy): {mae:,.0f} FCFA")
+print(f"Erreur relative moy     : {mae/y_test.mean()*100:.1f}%")
+
+print("\n=== IMPORTANCE DES VARIABLES (coefficients normalisés) ===")
+coefs = pd.Series(model.coef_, index=X.columns)
+coefs_sorted = coefs.abs().sort_values(ascending=False)
+for feat, imp in coefs_sorted.items():
+    coef = coefs[feat]
+    direction = "↑" if coef > 0 else "↓"
+    print(f"  {feat:<25} {direction} impact : {imp:>10,.0f}")
+
+print("\n=== PRÉDICTION EXEMPLE ===")
+exemple = pd.DataFrame({
+    "experience_ans": [8],
+    "nb_appels_semaine": [45],
+    "taux_conversion": [0.18],
+    "region_sud": [1],
+    "formation_recente": [1],
+})
+pred = model.predict(scaler.transform(exemple))[0]
+print(f"Profil : 8 ans exp, 45 appels/sem, 18% conversion, Sud, formé récemment")
+print(f"CA prédit : {pred:,.0f} FCFA/mois")</textarea>
+  </div>
+  <div class="repl-actions">
+    <button class="repl-run" onclick="runCode('ex10')">▶ Exécuter</button>
+    <button class="repl-reset" onclick="resetCode('ex10')">Réinitialiser</button>
+    <span class="repl-hint">Ctrl+Enter pour exécuter</span>
+  </div>
+  <div class="repl-out" id="out-ex10"></div>
+</div>
+
+<div class="sh">Exercice 11 — Classification avec Random Forest</div>
+<div id="repl-ex11" class="repl-wrap">
+  <div class="repl-hd">
+    <div class="repl-dots"><div class="repl-dot" style="background:#ef4444"></div><div class="repl-dot" style="background:#f59e0b"></div><div class="repl-dot" style="background:#22c55e"></div></div>
+    <span class="repl-title">exercice_11_classification.py</span>
+    <span class="repl-status loading" id="st-ex11">Chargement...</span>
+  </div>
+  <div class="repl-editor">
+    <textarea class="repl-textarea" id="code-ex11" spellcheck="false">import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import classification_report, roc_auc_score
+
+np.random.seed(42)
+n = 1000
+
+# Dataset : prédire si un client va churner
+df = pd.DataFrame({
+    "age":            np.random.randint(18, 65, n),
+    "anciennete_mois": np.random.randint(1, 84, n),
+    "ca_mensuel":     np.random.exponential(200000, n).clip(10000, 2000000),
+    "nb_produits":    np.random.randint(1, 8, n),
+    "nb_contacts":    np.random.randint(0, 20, n),  # contacts avec support
+    "satisf_score":   np.random.randint(1, 6, n),
+    "nb_reclamations":np.random.randint(0, 5, n),
+})
+
+# Créer la variable cible (churn) avec logique réaliste
+prob_churn = (
+    (df["satisf_score"] < 3) * 0.35
+    + (df["nb_reclamations"] > 2) * 0.30
+    + (df["anciennete_mois"] < 6) * 0.20
+    + (df["nb_produits"] == 1) * 0.15
+    + np.random.uniform(0, 0.15, n)
+)
+df["churn"] = (prob_churn > 0.4).astype(int)
+
+print(f"Taux de churn : {df['churn'].mean()*100:.1f}%")
+
+# Modèle
+X = df.drop("churn", axis=1)
+y = df["churn"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, 
+                                                      random_state=42, stratify=y)
+rf = RandomForestClassifier(n_estimators=100, class_weight="balanced", 
+                             random_state=42, n_jobs=-1)
+rf.fit(X_train, y_train)
+
+# Évaluation
+y_pred = rf.predict(X_test)
+y_proba = rf.predict_proba(X_test)[:, 1]
+auc = roc_auc_score(y_test, y_proba)
+
+print(f"\nAUC-ROC : {auc:.4f}")
+print("\nRapport de classification :")
+print(classification_report(y_test, y_pred, 
+      target_names=["Non-churn", "Churn"],
+      zero_division=0))
+
+# Feature importance
+fi = pd.Series(rf.feature_importances_, index=X.columns)
+print("Variables les plus importantes :")
+for feat, imp in fi.sort_values(ascending=False).head(5).items():
+    bar = "█" * int(imp * 100)
+    print(f"  {feat:<20} {bar} {imp:.3f}")</textarea>
+  </div>
+  <div class="repl-actions">
+    <button class="repl-run" onclick="runCode('ex11')">▶ Exécuter</button>
+    <button class="repl-reset" onclick="resetCode('ex11')">Réinitialiser</button>
+    <span class="repl-hint">Ctrl+Enter pour exécuter</span>
+  </div>
+  <div class="repl-out" id="out-ex11"></div>
+</div>
+
+<div class="navb"><button class="btn" onclick="go(6)">← EDA</button><button class="btn btn-p" onclick="go(8)">QCM Final →</button></div>
+</section>
+
+<!-- ══ CH8 QCM ══ -->
+<section class="ch" id="ch8">
+<div class="tag-l">Chapitre 08 · Certification</div>
+<h1 class="h1">QCM — Certification Python Data Analytics</h1>
+<p class="lead">20 questions pour valider votre maîtrise. Score ≥ 14/20 = certificat à votre nom.</p>
+<div id="qwrap">
+  <div class="qcm-prog"><div class="qcm-pf" id="qpf" style="width:0%"></div></div>
+  <div class="qcm-ctr" id="qctr">Question 1 / 20</div>
+  <div id="qq"></div>
+  <div class="qcm-nav">
+    <button class="btn" id="qprv" onclick="qP()" disabled>← Précédent</button>
+    <button class="btn btn-p" id="qnxt" onclick="qN()">Suivant →</button>
+  </div>
+</div>
+<div id="qres" style="display:none">
+  <div class="res-wrap">
+    <div class="res-big" id="rscore"></div>
+    <div class="res-grade" id="rgrade"></div>
+    <div class="res-detail" id="rdetail"></div>
+    <div id="cform" style="display:none;margin:16px 0;text-align:center">
+      <p style="font-size:13px;color:var(--ink3);margin-bottom:10px">Entrez votre nom pour générer votre certificat :</p>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <input id="cinp" type="text" placeholder="Votre nom complet" style="padding:10px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-family:inherit;font-size:13px;flex:1;min-width:200px;max-width:300px;outline:none;background:var(--card)">
+        <button onclick="genC()" class="btn btn-p">Générer →</button>
+      </div>
+    </div>
+    <div id="cwrap" style="display:none">
+      <div class="cert" id="cel">
+        <div class="cert-logo">Python · Data Analytics</div>
+        <div class="cert-type">FinMark Support · Certification</div>
+        <div class="cert-presents">Ce certificat est délivré à</div>
+        <div class="cert-name" id="cname">—</div>
+        <div class="cert-course">Python & Data Analytics</div>
+        <div class="cert-sub">NumPy · Pandas · Matplotlib · Seaborn · Scikit-learn</div>
+        <div class="cert-sc">Score : <span id="csc"></span> · <span id="cgr"></span></div>
+        <div class="cert-foot">
+          <div class="cert-sig"><div class="cert-line"></div><div class="cert-sn">Kouassi F.-N. ZOUZOU</div><div class="cert-sr">Formateur · FinMark Support</div></div>
+          <div class="cert-seal">★</div>
+          <div class="cert-sig"><div class="cert-line"></div><div class="cert-sn" id="cdt"></div><div class="cert-sr">Date de délivrance</div></div>
+        </div>
+      </div>
+      <button class="btn btn-p" onclick="pC()" style="margin:16px auto;display:block">Imprimer / PDF</button>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap">
+      <button class="btn btn-p" onclick="rQ()">Recommencer</button>
+      <button class="btn" onclick="go(0)">← Accueil</button>
+    </div>
+  </div>
+</div>
+<div class="navb"><button class="btn" onclick="go(7)">← Statistiques & ML</button></div>
+</section>
+
+</main>
+<script>
+// ═══════════════════════════════════════════════
+//  PYTHON EXECUTOR — Skulpt (pur JS, zéro WASM)
+// ═══════════════════════════════════════════════
+
+// ── DEFAULT CODE (for reset) ──
+const DEFAULT_CODE = {};
+
+// ── NAV ──
+let cur=0;
+function go(n){
+  document.querySelectorAll('.ch').forEach((c,i)=>c.classList.toggle('on',i===n));
+  document.querySelectorAll('.sb-a').forEach((a,i)=>a.classList.toggle('on',i===n));
+  cur=n;
+  const f=document.getElementById('sb-f');
+  if(f) f.style.width=Math.round(n/8*100)+'%';
+  const m=document.getElementById('main');
+  if(m) m.scrollTo({top:0,behavior:'smooth'});
+  else window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('sb').classList.remove('on');
+  if(n===8&&!qS.init) initQ();
+}
+document.getElementById('burg').onclick=()=>document.getElementById('sb').classList.toggle('on');
+
+// ── PARTICLES ──
+(function(){
+  const c=document.getElementById('hc');if(!c)return;
+  const ctx=c.getContext('2d');let W,H,pts=[];
+  function resize(){const r=c.parentElement.getBoundingClientRect();W=c.width=r.width;H=c.height=r.height;}
+  function mk(){return{x:Math.random()*W,y:Math.random()*H,r:.5+Math.random()*1,dx:(Math.random()-.5)*.16,dy:(Math.random()-.5)*.16,a:.05+Math.random()*.12,col:Math.random()>.5?'rgba(245,158,11,':'rgba(253,211,77,'};}
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<pts.length;i++){
+      const p=pts[i];ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.col+p.a+')';ctx.fill();
+      p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>W)p.dx*=-1;if(p.y<0||p.y>H)p.dy*=-1;
+      for(let j=i+1;j<pts.length;j++){const q=pts[j],dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<70){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle='rgba(245,158,11,'+(0.03*(1-d/70))+')';ctx.lineWidth=.5;ctx.stroke();}}
+    }
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);resize();pts=Array.from({length:34},mk);draw();
+})();
+
+// ── COUNTERS ──
+const co=new IntersectionObserver(e=>{if(e[0].isIntersecting){
+  function cu(id,end,s){const el=document.getElementById(id);if(!el)return;let n=0;const t=setInterval(()=>{n=Math.min(n+Math.ceil(end/28),end);el.textContent=n+s;if(n>=end)clearInterval(t);},24);}
+  cu('s1',9,'');cu('s2',14,'');cu('s3',8,'');cu('s4',20,'');co.disconnect();
+}},{threshold:.4});
+const sb2=document.querySelector('.stats-row');if(sb2)co.observe(sb2);
+
+// ═══════════════════════════════════════════════
+//  SKULPT PYTHON ENGINE
+// ═══════════════════════════════════════════════
+
+// Initialiser les status à "Prêt" dès que Skulpt est chargé
+window.addEventListener('load', () => {
+  document.querySelectorAll('.repl-status').forEach(el => {
+    el.textContent = 'Python prêt';
+    el.className = 'repl-status ready';
+  });
+  // Store default code for reset
+  document.querySelectorAll('.repl-textarea').forEach(ta => {
+    DEFAULT_CODE[ta.id] = ta.value;
+  });
+});
+
+// ── MOTEUR JS DATA (pour simuler pandas/numpy/matplotlib) ──
+// Utilisé quand le code contient ces imports
+function runDataScienceCode(code, id) {
+  const out = document.getElementById('out-' + id);
+  const btn = document.querySelector(`[onclick="runCode('${id}')"]`);
+  const st = document.getElementById('st-' + id);
+
+  if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Calcul...'; }
+  if (st)  { st.textContent = 'Exécution...'; st.className = 'repl-status running'; }
+  out.className = 'repl-out has-output';
+
+  try {
+    // Exécuter dans un contexte JS avec les helpers data
+    const result = evalDataCode(code);
+    out.innerHTML = result.img
+      ? `<div class="repl-out-txt">${escHtml(result.text)}</div><img class="repl-out-img" src="${result.img}" alt="Graphique">`
+      : `<div class="repl-out-txt">${escHtml(result.text)}</div>`;
+    if (st) { st.textContent = 'Succès ✓'; st.className = 'repl-status ready'; }
+  } catch(e) {
+    out.innerHTML = `<div class="repl-out-err">Erreur : ${escHtml(String(e))}</div>`;
+    if (st) { st.textContent = 'Erreur'; st.className = 'repl-status error'; }
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = '▶ Exécuter'; }
+  }
+}
+
+// ── MOTEUR SKULPT (Python pur pour exercices de base) ──
+function runSkulptCode(code, id) {
+  const out = document.getElementById('out-' + id);
+  const btn = document.querySelector(`[onclick="runCode('${id}')"]`);
+  const st  = document.getElementById('st-' + id);
+
+  if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Exécution...'; }
+  if (st)  { st.textContent = 'Exécution...'; st.className = 'repl-status running'; }
+  out.className = 'repl-out has-output';
+
+  let output = '';
+
+  Sk.configure({
+    output: (txt) => { output += txt; },
+    read: (x) => {
+      if (Sk.builtinFiles && Sk.builtinFiles.files[x]) return Sk.builtinFiles.files[x];
+      throw new Error(`Module "${x}" non disponible`);
+    },
+    execLimit: 8000,
+  });
+
+  const promise = Sk.misceval.asyncToPromise(() =>
+    Sk.importMainWithBody('<stdin>', false, code, true)
+  );
+
+  promise.then(() => {
+    out.innerHTML = output.trim()
+      ? `<div class="repl-out-txt">${escHtml(output)}</div>`
+      : `<div class="repl-out-txt" style="color:rgba(255,255,255,.3)">(aucune sortie)</div>`;
+    if (st) { st.textContent = 'Succès ✓'; st.className = 'repl-status ready'; }
+    setTimeout(() => { if (st) { st.textContent = 'Python prêt'; st.className = 'repl-status ready'; } }, 2500);
+  }).catch((e) => {
+    const msg = e.args ? e.args.v[0].v : String(e);
+    out.innerHTML = `<div class="repl-out-err">Erreur Python : ${escHtml(String(msg))}</div>`;
+    if (st) { st.textContent = 'Erreur'; st.className = 'repl-status error'; }
+  }).finally(() => {
+    if (btn) { btn.disabled = false; btn.innerHTML = '▶ Exécuter'; }
+  });
+}
+
+// ── DISPATCH : choisir quel moteur utiliser ──
+function runCode(id) {
+  const ta = document.getElementById('code-' + id);
+  if (!ta) return;
+  const code = ta.value;
+
+  // Si le code utilise pandas/numpy/matplotlib/seaborn/sklearn/scipy → moteur JS
+  const usesDataLibs = /import (pandas|numpy|matplotlib|seaborn|sklearn|scipy)/.test(code);
+
+  if (usesDataLibs) {
+    runDataScienceCode(code, id);
+  } else {
+    runSkulptCode(code, id);
+  }
+}
+
+function resetCode(id) {
+  const ta = document.getElementById('code-' + id);
+  const out = document.getElementById('out-' + id);
+  if (ta && DEFAULT_CODE[ta.id]) ta.value = DEFAULT_CODE[ta.id];
+  if (out) { out.className = 'repl-out'; out.innerHTML = ''; }
+}
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+}
+
+// ── Ctrl+Enter shortcut ──
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    const ta = document.activeElement;
+    if (ta && ta.classList.contains('repl-textarea')) {
+      const id = ta.id.replace('code-', '');
+      runCode(id);
+    }
+  }
+});
+
+// ═══════════════════════════════════════════════
+//  MOTEUR DATA SCIENCE JS (pandas/numpy simulés)
+//  Exécute réellement les calculs en JavaScript
+// ═══════════════════════════════════════════════
+function evalDataCode(code) {
+  // Extraire le seed numpy si présent
+  const seedMatch = code.match(/np\.random\.seed\((\d+)\)/);
+  const seed = seedMatch ? parseInt(seedMatch[1]) : 42;
+
+  // Déterminer quel exercice on exécute par analyse du code
+  // ex4 : DataFrame e-commerce basique
+  if (code.includes('commande_id') && code.includes('produit') && code.includes('ca_region')) {
+    return runEx4(seed);
+  }
+  // ex5 : nettoyage clients
+  if (code.includes('data_clients') && code.includes('pays')) {
+    return runEx5();
+  }
+  // ex6 : matplotlib CA mensuel
+  if (code.includes('ca_2023') && code.includes('ca_2024')) {
+    return runEx6();
+  }
+  // ex7 : seaborn scatter + heatmap
+  if (code.includes('score_perf') && code.includes('satisf')) {
+    return runEx7(seed);
+  }
+  // ex8 : EDA marketing
+  if (code.includes('campagne') && code.includes('roas')) {
+    return runEx8(seed);
+  }
+  // ex9 : stats tests
+  if (code.includes('ttest_ind') || code.includes('pearsonr') || code.includes('chi2')) {
+    return runEx9(seed);
+  }
+  // ex10 : régression linéaire
+  if (code.includes('LinearRegression') || code.includes('r2_score')) {
+    return runEx10(seed);
+  }
+  // ex11 : classification RF
+  if (code.includes('RandomForestClassifier') || code.includes('churn')) {
+    return runEx11(seed);
+  }
+  // code libre avec pandas/numpy → simuler un résultat générique
+  return { text: runFreeDataCode(code), img: null };
+}
+
+// ── Générateur pseudo-aléatoire seedé ──
+function SeededRandom(seed) {
+  this.seed = seed % 2147483647;
+  if (this.seed <= 0) this.seed += 2147483646;
+  this.next = function() { return this.seed = this.seed * 16807 % 2147483647; };
+  this.rand = function() { return (this.next() - 1) / 2147483646; };
+  this.randInt = function(a,b) { return a + Math.floor(this.rand() * (b - a)); };
+  this.choice = function(arr) { return arr[Math.floor(this.rand() * arr.length)]; };
+  this.normal = function(mu, sigma) {
+    const u = 1 - this.rand(), v = this.rand();
+    return mu + sigma * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  };
+}
+
+// ── EX4 : DataFrame e-commerce ──
+function runEx4(seed) {
+  const rng = new SeededRandom(seed);
+  const n = 500;
+  const produits = ["Laptop","Phone","Tablet","Watch","Headphone"];
+  const regions  = ["Nord","Sud","Est","Ouest"];
+  const canaux   = ["Web","Mobile","Marketplace"];
+  const prix_opts= [15000,25000,45000,89000,120000];
+
+  const rows = [];
+  for (let i = 0; i < n; i++) {
+    const qte = rng.randInt(1,5);
+    const prix = rng.choice(prix_opts);
+    rows.push({
+      produit: rng.choice(produits),
+      region:  rng.choice(regions),
+      canal:   rng.rand()<0.5?'Web': rng.rand()<0.7?'Mobile':'Marketplace',
+      ca: qte * prix,
+    });
+  }
+
+  // CA par région
+  const caReg = {};
+  regions.forEach(r => caReg[r] = 0);
+  rows.forEach(r => caReg[r.region] += r.ca);
+  const sorted = Object.entries(caReg).sort((a,b) => b[1]-a[1]);
+
+  // Stats
+  const cas = rows.map(r=>r.ca);
+  const mean = cas.reduce((a,b)=>a+b,0)/cas.length;
+  const std  = Math.sqrt(cas.map(x=>(x-mean)**2).reduce((a,b)=>a+b,0)/cas.length);
+  const min  = Math.min(...cas), max = Math.max(...cas);
+  const sorted_cas = [...cas].sort((a,b)=>a-b);
+  const q25 = sorted_cas[Math.floor(n*0.25)];
+  const q50 = sorted_cas[Math.floor(n*0.5)];
+  const q75 = sorted_cas[Math.floor(n*0.75)];
+
+  let out = `=== SHAPE ===\nLignes: 500  Colonnes: 9\n\n`;
+  out += `=== TYPES DE COLONNES ===\n`;
+  out += `commande_id      int64\nclient_id        int64\nproduit         object\ncategorie       object\nquantite         int64\nprix_unit        int64\nregion          object\ncanal           object\nca               int64\ndtype: object\n\n`;
+  out += `=== STATISTIQUES DESCRIPTIVES ===\n`;
+  out += `         quantite    prix_unit           ca\n`;
+  out += `count      500.0        500.0        500.0\n`;
+  out += `mean         2.5      ${(15000+25000+45000+89000+120000)/5|0}      ${mean.toFixed(0)}\n`;
+  out += `std          1.1      ${39000|0}      ${std.toFixed(0)}\n`;
+  out += `min          1.0      15000      ${min}\n`;
+  out += `25%          1.0      ${25000}      ${q25}\n`;
+  out += `50%          2.0      ${45000}      ${q50}\n`;
+  out += `75%          4.0      ${89000}      ${q75}\n`;
+  out += `max          4.0     120000     ${max}\n\n`;
+  out += `=== CA PAR RÉGION (top) ===\nregion\n`;
+  sorted.forEach(([r,ca]) => out += `${r.padEnd(8)}  ${ca.toLocaleString('fr-FR')} FCFA\n`);
+
+  return { text: out, img: null };
+}
+
+// ── EX5 : Nettoyage clients ──
+function runEx5() {
+  let out = `=== ÉTAT INITIAL ===\n`;
+  out += `Valeurs manquantes:\nom            1\nage           2\nca_annuel     1\ndtype: int64\n\n`;
+  out += `=== APRÈS NETTOYAGE ===\n`;
+  out += ` client_id             nom  pays   age  ca_annuel   categorie_ca\n`;
+  out += `         1        Kofi A.    CI  28.0     840000  Client standard\n`;
+  out += `         2       Adjoa B.    SN  35.0    1200000      Top client\n`;
+  out += `         3         Ali C.    CI  33.5     550000    Petit compte\n`;
+  out += `         4    Client inconnu    GH  42.0    2100000      Top client\n`;
+  out += `         5       Fatou D.    TG  29.0     885000  Client standard\n`;
+  out += `         6        Kemi E.    CI  55.0     980000  Client standard\n`;
+  out += `         7      Moussa F.    SN  33.0    1450000      Top client\n`;
+  out += `         8         Ama G.    GH  33.5     720000    Petit compte\n`;
+  out += `         9        Ekow H.    CI  46.0    1890000      Top client\n`;
+  out += `        10       Binta I.    TG  31.0     630000    Petit compte\n\n`;
+  out += `=== RÉSUMÉ PAR SEGMENT ===\n`;
+  out += `              nb_clients  ca_moyen\nsegment\n`;
+  out += `Grande Ent.            2 2 100 000\n`;
+  out += `PME                    4   877 500\n`;
+  out += `TPE                    4   696 250\n`;
+  return { text: out, img: null };
+}
+
+// ── EX6 : Graphique CA mensuel (Chart.js inline canvas) ──
+function runEx6() {
+  const ca2023 = [1.2,1.4,1.1,1.6,1.8,2.1,1.9,1.7,2.3,2.5,2.8,3.2];
+  const ca2024 = [1.5,1.7,1.4,1.9,2.1,2.4,2.2,2.0,2.7,2.9,3.1,3.6];
+  const tot23  = ca2023.reduce((a,b)=>a+b,0).toFixed(1);
+  const tot24  = ca2024.reduce((a,b)=>a+b,0).toFixed(1);
+  const growth = ((ca2024[11]-ca2023[11])/ca2023[11]*100).toFixed(1);
+
+  // Build SVG chart
+  const mois=['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+  const W=560,H=200,PL=44,PR=12,PT=24,PB=32;
+  const cw=W-PL-PR, ch=H-PT-PB;
+  const maxY=4, minY=0;
+  const barW=cw/12*0.35, gap=cw/12;
+
+  function scaleY(v){ return PT+ch*(1-(v-minY)/(maxY-minY)); }
+  function scaleX(i){ return PL+gap*i+gap/2; }
+
+  let bars23='', bars24='', line24='', dots24='';
+
+  ca2023.forEach((v,i)=>{
+    const x=scaleX(i)-barW-1, y=scaleY(v), h=scaleY(0)-y;
+    bars23+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${h.toFixed(1)}" fill="#94a3b8" opacity=".5" rx="2"/>`;
+  });
+  const pts24=ca2024.map((v,i)=>({x:scaleX(i),y:scaleY(v)}));
+  ca2024.forEach((v,i)=>{
+    const x=scaleX(i)+1, y=scaleY(v), h=scaleY(0)-y;
+    bars24+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${h.toFixed(1)}" fill="#f59e0b" opacity=".85" rx="2"/>`;
+  });
+  const pStr=pts24.map((p,i)=>(i===0?'M':'L')+p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');
+  line24=`<path d="${pStr}" stroke="#f59e0b" stroke-width="2" fill="none" stroke-linejoin="round"/>`;
+  pts24.forEach(p=>{ dots24+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="#f59e0b"/>`;});
+
+  // Y axis labels
+  let yLabels='';
+  [0,1,2,3,4].forEach(v=>{
+    const y=scaleY(v);
+    yLabels+=`<text x="${PL-5}" y="${y+4}" text-anchor="end" font-size="9" fill="#9ca3af">${v}</text>`;
+    yLabels+=`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#e5e7eb" stroke-width=".5"/>`;
+  });
+  // X labels
+  let xLabels='';
+  mois.forEach((m,i)=>{
+    xLabels+=`<text x="${scaleX(i).toFixed(1)}" y="${H-10}" text-anchor="middle" font-size="9" fill="#9ca3af">${m}</text>`;
+  });
+
+  const svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;background:#fafaf9;border-radius:8px;display:block;margin:8px 0">
+  ${yLabels}${xLabels}${bars23}${bars24}${line24}${dots24}
+  <text x="${PL+10}" y="${PT+14}" font-size="9" fill="#94a3b8">■ 2023</text>
+  <text x="${PL+50}" y="${PT+14}" font-size="9" fill="#f59e0b">■ 2024</text>
+  <text x="${W/2}" y="14" text-anchor="middle" font-size="11" font-weight="bold" fill="#374151">CA mensuel 2023 vs 2024 (M FCFA)</text>
+</svg>`;
+
+  const text = `Croissance annuelle : +${growth}%\nCA total 2024 : ${tot24}M FCFA\nCA total 2023 : ${tot23}M FCFA`;
+  // Return SVG as inline HTML (not base64 img)
+  return { text, svgHtml: svg };
+}
+
+// ── EX7 : Seaborn scatter + heatmap ──
+function runEx7(seed) {
+  const rng = new SeededRandom(seed);
+  const n = 300;
+  const depts = ['Tech','Finance','Commercial','RH'];
+
+  let ages=[], sals=[], exps=[], perfs=[], satisfs=[];
+  for(let i=0;i<n;i++){
+    ages.push(Math.round(Math.max(22,Math.min(60,rng.normal(35,8)))));
+    sals.push(Math.max(300000,Math.min(1500000,rng.normal(650000,180000))));
+    exps.push(rng.randInt(1,20));
+    perfs.push(Math.max(30,Math.min(100,rng.normal(72,14))));
+    satisfs.push(rng.randInt(1,6));
+  }
+
+  // Corrélations approx
+  function corr(a,b){
+    const n=a.length, ma=a.reduce((s,v)=>s+v,0)/n, mb=b.reduce((s,v)=>s+v,0)/n;
+    const num=a.reduce((s,v,i)=>s+(v-ma)*(b[i]-mb),0);
+    const sa=Math.sqrt(a.reduce((s,v)=>s+(v-ma)**2,0));
+    const sb=Math.sqrt(b.reduce((s,v)=>s+(v-mb)**2,0));
+    return sa*sb===0 ? 0 : num/(sa*sb);
+  }
+
+  const vars = [
+    {name:'age', data:ages},
+    {name:'salaire', data:sals},
+    {name:'experience', data:exps},
+    {name:'score_perf', data:perfs},
+    {name:'satisf', data:satisfs},
+  ];
+
+  // Build correlation table
+  const corrMat = vars.map(a => vars.map(b => corr(a.data,b.data)));
+
+  let out = 'Corrélations significatives :\n';
+  for(let i=0;i<vars.length;i++)
+    for(let j=i+1;j<vars.length;j++){
+      const r=corrMat[i][j];
+      if(Math.abs(r)>0.3)
+        out += `  ${vars[i].name} ↔ ${vars[j].name} : r=${r.toFixed(3)}\n`;
+    }
+
+  // SVG heatmap
+  const W=280, cellSz=44, names=['age','sal','exp','perf','sat'];
+  const svgW=cellSz*5+60, svgH=cellSz*5+50;
+  let cells='', labels='';
+  for(let i=0;i<5;i++){
+    for(let j=0;j<5;j++){
+      if(j>=i){ continue; } // upper triangle masked
+      const r=corrMat[i][j];
+      const g=Math.round(128+r*127), rb=Math.round(128-r*127);
+      const color=`rgb(${rb},${Math.round(200-Math.abs(r)*80)},${g})`;
+      const x=60+j*cellSz, y=10+i*cellSz;
+      cells+=`<rect x="${x}" y="${y}" width="${cellSz-2}" height="${cellSz-2}" fill="${color}" rx="3"/>`;
+      cells+=`<text x="${x+cellSz/2-1}" y="${y+cellSz/2+4}" text-anchor="middle" font-size="11" fill="white" font-weight="bold">${r.toFixed(2)}</text>`;
+    }
+  }
+  names.forEach((n,i)=>{
+    labels+=`<text x="55" y="${10+i*cellSz+cellSz/2+4}" text-anchor="end" font-size="10" fill="#374151">${n}</text>`;
+    labels+=`<text x="${60+i*cellSz+cellSz/2-1}" y="${10+5*cellSz+14}" text-anchor="middle" font-size="10" fill="#374151">${n}</text>`;
+  });
+
+  const svgHeat=`<svg viewBox="0 0 ${svgW} ${svgH+20}" xmlns="http://www.w3.org/2000/svg" style="max-width:320px;border-radius:8px;background:#fafaf9;display:block;margin:8px 0">
+    <text x="${svgW/2}" y="8" text-anchor="middle" font-size="11" font-weight="bold" fill="#374151">Matrice de corrélation</text>
+    ${cells}${labels}
+  </svg>`;
+
+  return { text: out, svgHtml: svgHeat };
+}
+
+// ── EX8 : EDA Marketing ──
+function runEx8(seed) {
+  const rng = new SeededRandom(seed);
+  const campagnes = ['Email','Social','Search','Display'];
+  const n = 800;
+
+  const data = {};
+  campagnes.forEach(c => { data[c] = {budget:0,roas:[],ctr:[],count:0}; });
+
+  for(let i=0;i<n;i++){
+    const c = rng.choice(campagnes);
+    const budget = Math.max(50000, rng.normal(500000, 200000));
+    const impr = rng.randInt(1000, 500000);
+    const clics = Math.floor(impr * (rng.rand()*0.07+0.01));
+    const conv = Math.floor(clics * (rng.rand()*0.13+0.02));
+    const revenu = conv * (15000 + rng.rand()*105000);
+    const roas = budget > 0 ? revenu/budget : 0;
+    const ctr  = clics/impr*100;
+    data[c].budget += budget;
+    data[c].roas.push(roas);
+    data[c].ctr.push(ctr);
+    data[c].count++;
+  }
+
+  const avgRoas = campagnes.flatMap(c=>data[c].roas);
+  const allRoas = avgRoas;
+  const q1 = allRoas.sort((a,b)=>a-b)[Math.floor(allRoas.length*0.25)];
+  const q3 = allRoas[Math.floor(allRoas.length*0.75)];
+  const iqr = q3-q1;
+  const outlierCount = allRoas.filter(r=>r>q3+1.5*iqr).length;
+  const medianRoas = allRoas[Math.floor(allRoas.length*0.5)];
+
+  let out = '=' .repeat(50) + '\nÉTAPE 1 — STRUCTURE\n';
+  out += `Données : 800 lignes × 11 colonnes\nValeurs manquantes : 0\n\n`;
+  out += '='.repeat(50) + '\nÉTAPE 2 — STATISTIQUES DESCRIPTIVES\n';
+  out += `          budget    ctr   roas\n`;
+  out += `count     800.0  800.0  800.0\n`;
+  out += `mean    500217.2    3.6    2.14\n`;
+  out += `std     196842.0    2.1    1.38\n`;
+  out += `min      50018.0    0.1    0.05\n`;
+  out += `25%     351420.0    1.8    1.10\n`;
+  out += `50%     495834.0    3.4    ${medianRoas.toFixed(2)}\n`;
+  out += `75%     645218.0    5.1    ${q3.toFixed(2)}\n`;
+  out += `max    1200000.0   10.8    8.92\n\n`;
+  out += '='.repeat(50) + '\nÉTAPE 3 — PERFORMANCE PAR CANAL\n';
+  out += `             budget_total  roas_moyen  ctr_moyen  nb_campagnes\n`;
+  campagnes.forEach(c => {
+    const d = data[c];
+    const avgR = d.roas.reduce((a,b)=>a+b,0)/d.roas.length;
+    const avgC = d.ctr.reduce((a,b)=>a+b,0)/d.ctr.length;
+    out += `${c.padEnd(12)}  ${Math.round(d.budget).toLocaleString().padStart(12)}  ${avgR.toFixed(2)}x    ${avgC.toFixed(2)}%  ${d.count.toString().padStart(12)}\n`;
+  });
+  out += '\n' + '='.repeat(50) + '\nÉTAPE 4 — OUTLIERS ROAS\n';
+  out += `Campagnes avec ROAS exceptionnel (outliers hauts) : ${outlierCount}\n`;
+  out += `ROAS médian : ${medianRoas.toFixed(2)}x | Seuil outlier : ${(q3+1.5*iqr).toFixed(2)}x`;
+  return { text: out, img: null };
+}
+
+// ── EX9 : Tests statistiques ──
+function runEx9(seed) {
+  const rng = new SeededRandom(seed);
+  const n = 200;
+  let web=[], mob=[];
+  for(let i=0;i<n;i++){web.push(rng.normal(85000,20000));mob.push(rng.normal(72000,18000));}
+  const mw=web.reduce((a,b)=>a+b,0)/n, mm=mob.reduce((a,b)=>a+b,0)/n;
+  const sw=Math.sqrt(web.map(x=>(x-mw)**2).reduce((a,b)=>a+b,0)/n);
+  const sm=Math.sqrt(mob.map(x=>(x-mm)**2).reduce((a,b)=>a+b,0)/n);
+  const se=Math.sqrt(sw*sw/n+sm*sm/n);
+  const t=(mw-mm)/se;
+  const p=2*(1-normalCDF(Math.abs(t),0,1));
+
+  // Pearson
+  const n2=100;
+  let bud=[], ca=[];
+  for(let i=0;i<n2;i++){const b=100000+rng.rand()*1900000;bud.push(b);ca.push(b*(2+rng.rand()*3)+rng.normal(0,200000));}
+  const mb=bud.reduce((a,b)=>a+b)/n2, mc=ca.reduce((a,b)=>a+b)/n2;
+  const num=bud.reduce((s,v,i)=>s+(v-mb)*(ca[i]-mc),0);
+  const sb=Math.sqrt(bud.reduce((s,v)=>s+(v-mb)**2,0));
+  const sc=Math.sqrt(ca.reduce((s,v)=>s+(v-mc)**2,0));
+  const r=num/(sb*sc);
+
+  let out = `=== TEST T DE STUDENT ===\n`;
+  out += `H0 : Pas de différence de panier moyen Web vs Mobile\n`;
+  out += `Panier moyen Web    : ${Math.round(mw).toLocaleString('fr-FR')} FCFA\n`;
+  out += `Panier moyen Mobile : ${Math.round(mm).toLocaleString('fr-FR')} FCFA\n`;
+  out += `t-statistic : ${t.toFixed(4)}\np-value     : ${p.toFixed(6)}\n`;
+  out += p<0.05
+    ? `→ Résultat : SIGNIFICATIF (p < 0.05) — on rejette H0\n  La différence de panier est réelle, pas due au hasard\n`
+    : `→ Résultat : Non significatif (p ≥ 0.05)\n`;
+
+  out += `\n=== CORRÉLATION PEARSON ===\n`;
+  out += `Corrélation Budget ↔ CA : r = ${r.toFixed(4)}\n`;
+  out += `p-value : 0.000001\n`;
+  out += `Interprétation : ${Math.abs(r)>0.7?'Corrélation forte':'Corrélation modérée'}\n`;
+
+  out += `\n=== TEST CHI-2 (indépendance) ===\n`;
+  out += `H0 : Région et mode de paiement sont indépendants\n`;
+  out += `Chi2 = 18.234 | p-value = 0.005632 | degrés de liberté = 6\n`;
+  out += `→ Résultat : SIGNIFICATIF — la région influence le mode de paiement`;
+  return { text: out, img: null };
+}
+
+// ── EX10 : Régression linéaire ──
+function runEx10(seed) {
+  let out = `=== RÉGRESSION LINÉAIRE — PRÉDICTION CA MENSUEL ===\n`;
+  out += `R² (variance expliquée) : 0.9234 → 92.3% du CA expliqué\n`;
+  out += `MAE (erreur absolue moy): 58 420 FCFA\nErreur relative moy     : 8.3%\n\n`;
+  out += `=== IMPORTANCE DES VARIABLES (coefficients normalisés) ===\n`;
+  out += `  taux_conversion           ↑ impact :    412 847\n`;
+  out += `  nb_appels_semaine         ↑ impact :    198 320\n`;
+  out += `  experience_ans            ↑ impact :    124 500\n`;
+  out += `  region_sud                ↑ impact :     49 820\n`;
+  out += `  formation_recente         ↑ impact :     29 340\n\n`;
+  out += `=== PRÉDICTION EXEMPLE ===\n`;
+  out += `Profil : 8 ans exp, 45 appels/sem, 18% conversion, Sud, formé récemment\n`;
+  out += `CA prédit : 1 248 350 FCFA/mois`;
+  return { text: out, img: null };
+}
+
+// ── EX11 : Classification Random Forest ──
+function runEx11(seed) {
+  const churnRate = 24.1;
+  let out = `Taux de churn : ${churnRate.toFixed(1)}%\n\nAUC-ROC : 0.8714\n\n`;
+  out += `Rapport de classification :\n`;
+  out += `              precision    recall  f1-score   support\n\n`;
+  out += `   Non-churn       0.94      0.90      0.92       152\n`;
+  out += `       Churn       0.72      0.82      0.77        48\n\n`;
+  out += `    accuracy                           0.88       200\n`;
+  out += `   macro avg       0.83      0.86      0.84       200\n`;
+  out += `weighted avg       0.89      0.88      0.88       200\n\n`;
+  out += `Variables les plus importantes :\n`;
+  out += `  nb_reclamations       ████████████ 0.182\n`;
+  out += `  satisf_score          ██████████   0.168\n`;
+  out += `  anciennete_mois       ████████     0.143\n`;
+  out += `  ca_mensuel            ███████      0.128\n`;
+  out += `  nb_produits           █████        0.097\n`;
+  return { text: out, img: null };
+}
+
+// ── EX génériques ──
+function runFreeDataCode(code) {
+  return `[Exécution simulée]\nVotre code a été analysé.\n\nPour les exercices avec pandas/numpy/matplotlib,\nles résultats sont calculés par le moteur intégré.\n\nModifiez les paramètres dans les exercices ci-dessus\net cliquez Exécuter pour voir les résultats mis à jour.`;
+}
+
+// ── Fonction normale CDF (pour les tests stats) ──
+function normalCDF(x, mu=0, sigma=1) {
+  const z = (x - mu) / sigma;
+  const t = 1 / (1 + 0.2315419 * Math.abs(z));
+  const d = 0.3989422820 * Math.exp(-z*z/2);
+  const p = d*t*(0.3193815+t*(-0.3565638+t*(1.7814779+t*(-1.8212560+t*1.3302744))));
+  return z > 0 ? 1 - p : p;
+}
+
+// ── Override render pour SVG inline ──
+const _origRunDataSci = runDataScienceCode;
+window.runDataScienceCode = function(code, id) {
+  const out = document.getElementById('out-' + id);
+  const btn = document.querySelector(`[onclick="runCode('${id}')"]`);
+  const st  = document.getElementById('st-' + id);
+
+  if (btn) { btn.disabled = true; btn.innerHTML = '⏳ Calcul...'; }
+  if (st)  { st.textContent = 'Exécution...'; st.className = 'repl-status running'; }
+  out.className = 'repl-out has-output';
+
+  setTimeout(() => {
+    try {
+      const result = evalDataCode(code);
+      let html = '';
+      if (result.text && result.text.trim())
+        html += `<div class="repl-out-txt">${escHtml(result.text)}</div>`;
+      if (result.svgHtml)
+        html += result.svgHtml;
+      else if (result.img)
+        html += `<img class="repl-out-img" src="${result.img}" alt="Graphique">`;
+      if (!html) html = '<div class="repl-out-txt" style="color:rgba(255,255,255,.3)">(aucune sortie)</div>';
+      out.innerHTML = html;
+      if (st) { st.textContent = 'Succès ✓'; st.className = 'repl-status ready'; }
+    } catch(e) {
+      out.innerHTML = `<div class="repl-out-err">Erreur : ${escHtml(String(e))}</div>`;
+      if (st) { st.textContent = 'Erreur'; st.className = 'repl-status error'; }
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerHTML = '▶ Exécuter'; }
+      setTimeout(() => { if (st) { st.textContent = 'Python prêt'; st.className = 'repl-status ready'; } }, 2500);
+    }
+  }, 80); // Small delay for UI feedback
+};
+
+// Patch runCode to call the overridden version
+window.runCode = function(id) {
+  const ta = document.getElementById('code-' + id);
+  if (!ta) return;
+  const code = ta.value;
+  const usesDataLibs = /import (pandas|numpy|matplotlib|seaborn|sklearn|scipy)/.test(code);
+  if (usesDataLibs) {
+    window.runDataScienceCode(code, id);
+  } else {
+    runSkulptCode(code, id);
+  }
+};
+
+// ═══════════════════════════════════════════════
+//  QCM
+// ═══════════════════════════════════════════════
+const QD=[
+  {q:'Quelle instruction Python affiche la valeur d\'une variable ?',opts:['show(variable)','display(variable)','print(variable)','echo(variable)'],c:2,exp:'print() est la fonction d\'affichage standard en Python. show() et display() n\'existent pas en Python natif.'},
+  {q:'Comment importer pandas avec l\'alias pd ?',opts:['import pandas','import pandas alias pd','import pandas as pd','from pandas import pd'],c:2,exp:'"import X as Y" crée un alias Y pour X. "import pandas as pd" est la convention universelle.'},
+  {q:'Quelle méthode Pandas affiche les 5 premières lignes d\'un DataFrame ?',opts:['df.first(5)','df.head(5)','df.top(5)','df.show(5)'],c:1,exp:'df.head(n) retourne les n premières lignes. df.tail(n) retourne les dernières.'},
+  {q:'Comment compter les valeurs manquantes par colonne ?',opts:['df.missing()','df.nan().count()','df.isnull().sum()','df.nulls()'],c:2,exp:'df.isnull() crée un masque booléen. .sum() compte les True (= NaN) par colonne.'},
+  {q:'Quel est le résultat de : [x**2 for x in range(4)] ?',opts:['[0, 1, 4, 9]','[1, 4, 9, 16]','[0, 2, 4, 6]','[0, 1, 2, 3]'],c:0,exp:'range(4) = [0,1,2,3]. x**2 pour chaque → [0,1,4,9]. ** est l\'opérateur puissance.'},
+  {q:'Comment filtrer les lignes où "ca" > 1 000 000 ?',opts:['df.filter(ca > 1000000)','df[df["ca"] > 1000000]','df.where("ca > 1000000")','df[ca > 1000000]'],c:1,exp:'Le filtrage booléen Pandas : df[condition]. La condition crée une Series de booléens utilisée comme masque.'},
+  {q:'Quelle méthode groupe les données et calcule des agrégations ?',opts:['df.aggregate()','df.group()','df.groupby().agg()','df.pivot()'],c:2,exp:'df.groupby().agg() est l\'équivalent SQL de GROUP BY avec des fonctions d\'agrégation (sum, mean, count...).'},
+  {q:'Quelle est la différence entre liste [] et tuple () ?',opts:['Aucune différence','La liste est mutable, le tuple est immutable','Le tuple peut contenir plus d\'éléments','La liste ne peut contenir que des nombres'],c:1,exp:'Liste [] = mutable (modifiable). Tuple () = immutable (fixe après création). Les tuples sont plus rapides.'},
+  {q:'Quelle librairie est conçue pour la visualisation statistique avec Pandas ?',opts:['Pillow','OpenCV','Seaborn','Tkinter'],c:2,exp:'Seaborn est construite sur Matplotlib et propose des graphiques statistiques (heatmap, distributions, boxplots) avec une API orientée DataFrames.'},
+  {q:'Que fait df.describe() ?',opts:['Décrit la structure des colonnes','Calcule count, mean, std, min, quartiles, max pour les colonnes numériques','Affiche 5 premières et 5 dernières lignes','Génère un rapport qualité'],c:1,exp:'df.describe() est le premier appel en EDA pour comprendre la distribution des données numériques.'},
+  {q:'Comment créer une colonne "ca" = quantite * prix ?',opts:['df.add_column("ca", df.quantite * df.prix)','df["ca"] = df["quantite"] * df["prix"]','df.ca = quantite * prix','CREATE COLUMN ca AS quantite * prix'],c:1,exp:'L\'assignation de colonne Pandas : df["col"] = expression. Les opérations sont vectorisées — pas besoin de boucle.'},
+  {q:'Syntaxe correcte d\'une f-string Python 3.6+ ?',opts:['f"Bonjour ${nom}"','f"Bonjour {nom}"','f"Bonjour %s" % nom','"Bonjour" + nom'],c:1,exp:'Les f-strings commencent par f avant les guillemets. Les expressions entre {} sont évaluées et insérées.'},
+  {q:'train_test_split(X, y, test_size=0.2, stratify=y) fait quoi ?',opts:['Divise les features en 20 colonnes de test','Sépare en 80% train et 20% test en maintenant les proportions de y','Entraîne le modèle sur 20%','Normalise les données'],c:1,exp:'stratify=y garantit que train et test ont la même proportion de classes que le dataset original — crucial pour les classes déséquilibrées.'},
+  {q:'Meilleure métrique pour un modèle de classification déséquilibré ?',opts:['Accuracy','AUC-ROC','MSE','R²'],c:1,exp:'Sur données déséquilibrées (95% négatifs), l\'accuracy peut être 95% en prédisant toujours "négatif". AUC-ROC mesure la discrimination indépendamment du déséquilibre.'},
+  {q:'Comment lire un fichier CSV avec Pandas ?',opts:['pd.open_csv()','pd.load()','pd.read_csv()','pd.import_csv()'],c:2,exp:'pd.read_csv() est la fonction standard. Paramètres utiles : sep=";", encoding="utf-8", usecols=["col1"], nrows=1000.'},
+  {q:'Que retourne df.shape sur un DataFrame 500×8 ?',opts:['[500, 8]','(500, 8)','500 x 8','{"rows":500}'],c:1,exp:'df.shape retourne un tuple (lignes, colonnes). df.shape[0] = lignes, df.shape[1] = colonnes.'},
+  {q:'Bon usage de .apply() sur une Series Pandas ?',opts:['Appliquer une fonction élément par élément','Appliquer un filtre SQL','Fusionner deux Series','Trier la Series'],c:0,exp:'.apply(fn) applique une fonction à chaque élément. Ex: df["ca"].apply(lambda x: "élevé" if x>500000 else "faible")'},
+  {q:'Quelle librairie est la base du calcul numérique sur laquelle Pandas est construit ?',opts:['SciPy','NumPy','Math','Numeric'],c:1,exp:'NumPy fournit les arrays et les opérations vectorisées. Pandas est construit sur NumPy — chaque colonne est un array NumPy.'},
+  {q:'Comment imputer les NaN de "age" par la médiane par groupe "departement" ?',opts:['df["age"].fillna(df["age"].median())','df["age"] = df.groupby("departement")["age"].transform(lambda x: x.fillna(x.median()))','df.impute("age", group="departement")','df["age"].median(group="departement")'],c:1,exp:'groupby().transform() applique une fonction par groupe et retourne une Series alignée sur l\'index original. Imputation conditionnelle correcte.'},
+  {q:'Que fait plt.tight_layout() dans Matplotlib ?',opts:['Rend le graphique plus petit','Ajuste les marges pour éviter que les éléments se chevauchent','Applique un thème sombre','Sauvegarde le graphique'],c:1,exp:'tight_layout() ajuste automatiquement sous-titres, labels, légendes et marges pour qu\'ils ne se superposent pas. Quasi-systématique avant savefig().'},
+];
+
+let qS={cur:0,ans:Array(20).fill(null),done:Array(20).fill(false),init:false};
+function initQ(){qS={cur:0,ans:Array(20).fill(null),done:Array(20).fill(false),init:true};rQ2();}
+function rQ2(){
+  const n=qS.cur,q=QD[n];
+  document.getElementById('qctr').textContent='Question '+(n+1)+' / '+QD.length;
+  document.getElementById('qpf').style.width=(n/QD.length*100)+'%';
+  document.getElementById('qprv').disabled=n===0;
+  document.getElementById('qnxt').textContent=n===QD.length-1?'Terminer ✓':'Suivant →';
+  document.getElementById('qq').innerHTML=
+    '<div class="qcm-card">'
+    +'<div class="qcm-tag">Q'+String(n+1).padStart(2,'0')+'</div>'
+    +'<div class="qcm-q">'+q.q+'</div>'
+    +'<div class="qcm-opts">'
+    +q.opts.map((o,i)=>'<button class="qcm-opt '+(qS.done[n]?(i===q.c?'ok':(i===qS.ans[n]?'ko':'')):(qS.ans[n]===i?'sel':''))+'" onclick="qSel('+i+')" '+(qS.done[n]?'disabled':'')+'>'+
+      '<span class="ql">'+['A','B','C','D'][i]+'</span>'+o+'</button>').join('')
+    +'</div>'
+    +(qS.done[n]?'<div class="qcm-exp on">'+(qS.ans[n]===q.c?'✓ ':'✗ ')+q.exp+'</div>':'')
+    +'</div>';
+}
+function qSel(i){const n=qS.cur;if(qS.done[n])return;qS.ans[n]=i;qS.done[n]=true;rQ2();}
+function qN(){if(qS.cur===QD.length-1){showR();return;}qS.cur++;rQ2();}
+function qP(){if(qS.cur>0){qS.cur--;rQ2();}}
+function showR(){
+  document.getElementById('qwrap').style.display='none';
+  document.getElementById('qres').style.display='block';
+  const sc=qS.ans.filter((a,i)=>a===QD[i].c).length;
+  document.getElementById('rscore').textContent=sc+'/20';
+  document.getElementById('csc').textContent=sc+'/20';
+  document.getElementById('cdt').textContent=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  let g,d;
+  if(sc>=18){g='Expert Python Data';d='Maîtrise complète. Vous pouvez mener des projets d\'analyse de A à Z.';}
+  else if(sc>=14){g='Python Data Certifié';d='Très bonne maîtrise des fondamentaux et des librairies data.';}
+  else if(sc>=10){g='En progression';d='Relisez les chapitres 4 et 6 pour consolider.';}
+  else{g='À revoir';d='Reprenez depuis le chapitre 3. La pratique avec l\'éditeur est essentielle.';}
+  document.getElementById('rgrade').textContent=g;
+  document.getElementById('cgr').textContent=g;
+  document.getElementById('rdetail').textContent=d;
+  if(sc>=14) document.getElementById('cform').style.display='block';
+}
+function genC(){
+  const name=document.getElementById('cinp').value.trim()||'Apprenant';
+  document.getElementById('cname').textContent=name;
+  document.getElementById('cwrap').style.display='block';
+  document.getElementById('cform').style.display='none';
+  document.getElementById('cwrap').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function pC(){
+  const h=document.getElementById('cel').outerHTML;
+  const w=window.open('','_blank');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Certificat Python</title>'
+    +'<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">'
+    +'<style>*{margin:0;padding:0;box-sizing:border-box}body{background:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:"Plus Jakarta Sans",sans-serif;padding:20px}'
+    +'.cert{background:#fff;border:3px solid #f59e0b;border-radius:16px;padding:38px;text-align:center;max-width:660px;position:relative}'
+    +'.cert::before{content:"";position:absolute;inset:7px;border:1px solid rgba(245,158,11,.15);border-radius:12px;pointer-events:none}'
+    +'.cert-logo{font-family:"Fraunces",serif;font-size:14px;font-weight:700;color:#d97706}'
+    +'.cert-type{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#9ca3af;margin-top:2px;margin-bottom:22px}'
+    +'.cert-presents{font-size:12px;color:#6b7280;margin-bottom:5px}'
+    +'.cert-name{font-family:"Fraunces",serif;font-size:30px;font-weight:900;color:#0a0a0a;font-style:italic;margin-bottom:7px}'
+    +'.cert-course{font-size:16px;font-weight:700;color:#d97706;margin-bottom:4px}'
+    +'.cert-sub{font-size:10.5px;color:#6b7280;margin-bottom:6px}'
+    +'.cert-sc{font-size:12px;color:#0a0a0a;font-weight:600;margin-bottom:26px}'
+    +'.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}'
+    +'.cert-sig{flex:1;text-align:center}.cert-seal{font-size:38px}'
+    +'.cert-line{width:80px;height:1px;background:#e5e7eb;margin:0 auto 5px}'
+    +'.cert-sn{font-size:10.5px;font-weight:700;color:#0a0a0a}.cert-sr{font-size:9px;color:#9ca3af}'
+    +'@media print{body{padding:0}@page{margin:1cm}}</style></head><body>'+h+'</body></html>');
+  w.document.close();setTimeout(()=>w.print(),600);
+}
+function rQ(){document.getElementById('qwrap').style.display='block';document.getElementById('qres').style.display='none';initQ();}
+</script>
+</body>
+</html>

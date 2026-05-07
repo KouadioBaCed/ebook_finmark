@@ -70,7 +70,13 @@ Définis **deux fois** (front + serveur) et doivent rester alignés :
 | `dataviz` | 12 900 |
 | `sql` | 12 900 |
 | `kpi` | 12 900 |
-| `bundle` | 29 900 |
+| `python` | 12 900 |
+| `scoring` | 12 900 |
+| `bundle` | 44 900 |
+
+⚠️ Les fichiers HTML pour `python` et `scoring` doivent être déposés dans
+`public/courses/python.html` et `public/courses/scoring.html` — sinon les routes
+`/cours/python` et `/cours/scoring` afficheront un iframe vide (404).
 
 Le montant envoyé à GeniusPay est **toujours** celui défini côté serveur — toute
 valeur envoyée par le client est ignorée.

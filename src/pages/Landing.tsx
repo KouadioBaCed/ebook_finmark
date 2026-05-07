@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PaymentModal } from '../components/PaymentModal';
+import { useAuth } from '../contexts/AuthContext';
 import type { CourseSlug } from '../services/payment';
 
 export function Landing() {
+  const { appUser } = useAuth();
+  const navigate = useNavigate();
   const [openSlug, setOpenSlug] = useState<CourseSlug | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [topbarVisible, setTopbarVisible] = useState(true);
   const heroCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // Particles animation in hero
   useEffect(() => {
     const c = heroCanvasRef.current;
     if (!c) return;
@@ -18,40 +21,32 @@ export function Landing() {
     type Pt = { x:number; y:number; r:number; dx:number; dy:number; a:number; col:string };
     let pts: Pt[] = [];
     const mk = (): Pt => ({
-      x: Math.random() * W,
-      y: Math.random() * H,
+      x: Math.random() * W, y: Math.random() * H,
       r: .5 + Math.random() * 1.2,
-      dx: (Math.random() - .5) * .18,
-      dy: (Math.random() - .5) * .18,
+      dx: (Math.random() - .5) * .18, dy: (Math.random() - .5) * .18,
       a: .04 + Math.random() * .14,
       col: Math.random() > .5 ? 'rgba(29,191,115,' : 'rgba(134,239,172,',
     });
     const resize = () => {
       const r = c.parentElement?.getBoundingClientRect();
       if (!r) return;
-      W = c.width = r.width;
-      H = c.height = r.height;
+      W = c.width = r.width; H = c.height = r.height;
     };
     const draw = () => {
       ctx.clearRect(0, 0, W, H);
       for (let i = 0; i < pts.length; i++) {
         const p = pts[i];
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = p.col + p.a + ')';
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.col + p.a + ')'; ctx.fill();
         p.x += p.dx; p.y += p.dy;
         if (p.x < 0 || p.x > W) p.dx *= -1;
         if (p.y < 0 || p.y > H) p.dy *= -1;
         for (let j = i + 1; j < pts.length; j++) {
           const q = pts[j], dx = p.x - q.x, dy = p.y - q.y, d = Math.sqrt(dx * dx + dy * dy);
           if (d < 80) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(q.x, q.y);
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
             ctx.strokeStyle = 'rgba(29,191,115,' + (0.035 * (1 - d / 80)) + ')';
-            ctx.lineWidth = .5;
-            ctx.stroke();
+            ctx.lineWidth = .5; ctx.stroke();
           }
         }
       }
@@ -61,13 +56,9 @@ export function Landing() {
     resize();
     pts = Array.from({ length: 40 }, mk);
     draw();
-    return () => {
-      window.removeEventListener('resize', resize);
-      cancelAnimationFrame(raf);
-    };
+    return () => { window.removeEventListener('resize', resize); cancelAnimationFrame(raf); };
   }, []);
 
-  // Scroll reveal
   useEffect(() => {
     const obs = new IntersectionObserver(
       entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); }),
@@ -77,7 +68,6 @@ export function Landing() {
     return () => obs.disconnect();
   }, []);
 
-  // Counter animation
   useEffect(() => {
     const co = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting) {
@@ -92,7 +82,7 @@ export function Landing() {
             if (n >= end) clearInterval(t);
           }, 24);
         };
-        cu('s1', 420, '+'); cu('s2', 3, ''); cu('s3', 100, '+'); cu('s4', 100, '%');
+        cu('s1', 520, '+'); cu('s2', 5, ''); cu('s3', 56, ''); cu('s4', 100, '%');
         co.disconnect();
       }
     }, { threshold: .4 });
@@ -106,40 +96,45 @@ export function Landing() {
   };
 
   const faqs = [
-    { q: "Comment je reçois mes formations après l'achat ?", a: "Dès que votre paiement est confirmé, vous êtes redirigé vers la page de la formation, accessible immédiatement dans votre navigateur — sans installation, sans compte." },
-    { q: "Quels moyens de paiement sont acceptés ?", a: "Orange Money, MTN Mobile Money, Wave, Moov Money, Visa et Mastercard. Tous les paiements sont sécurisés via GeniusPay." },
-    { q: "Les formations fonctionnent-elles sur mobile ?", a: "Oui, 100% responsive. Les 3 formations sont optimisées pour smartphones." },
-    { q: "L'accès est-il limité dans le temps ?", a: "Non. Accès à vie. Vous pouvez revenir consulter le cours autant de fois que nécessaire." },
-    { q: "Comment obtenir mon certificat ?", a: "Terminez le QCM du dernier chapitre avec un score ≥ 14/20. Entrez votre nom. Le certificat est généré instantanément." },
-    { q: "Pour quel niveau de compétence sont faites ces formations ?", a: "Niveau intermédiaire. Pour analystes, BI developers, contrôleurs de gestion, growth managers et étudiants data." },
-    { q: "Puis-je acheter une seule formation ou dois-je prendre le bundle ?", a: "Chaque formation est disponible individuellement à 12 900 FCFA. Le bundle (3 formations) est à 29 900 FCFA au lieu de 38 700 FCFA — soit une économie de 8 800 FCFA." },
+    { q: "Comment fonctionne l'éditeur Python et SQL intégré ?", a: "Les cours Python utilisent Skulpt — Python compilé en JavaScript. Il tourne directement dans votre navigateur (Chrome ou Firefox), sans installation. Les cours SQL utilisent AlaSQL avec 5 tables pré-chargées de données réelles. Vous écrivez votre code, cliquez sur Exécuter (ou Ctrl+Enter), et le résultat apparaît instantanément." },
+    { q: "Comment fonctionne l'accès après paiement ?", a: "Immédiatement après le paiement, le cours se débloque sur ce site et vous y accédez en un clic. Chaque formation est une expérience interactive complète, ouvrable depuis n'importe quel navigateur — y compris hors ligne une fois chargée." },
+    { q: "Quels modes de paiement sont acceptés ?", a: "Nous acceptons Orange Money, MTN MoMo, Wave, Moov Money, et les cartes Visa/Mastercard via GeniusPay. Les paiements sont sécurisés et traités instantanément." },
+    { q: "Faut-il des prérequis pour commencer ?", a: "DataViz et KPI : aucun prérequis. SQL : savoir utiliser un ordinateur suffit. Python : zéro connaissance en programmation requise — le cours démarre des bases absolues. Scoring : avoir fait SQL ou Python aide mais n'est pas obligatoire, les concepts sont réexpliqués." },
+    { q: "Le certificat est-il reconnu professionnellement ?", a: "Le certificat FinMark Support atteste d'une compétence validée par QCM. Il peut être ajouté à votre CV et profil LinkedIn. Sa valeur est directement liée aux compétences que vous démontrerez en entretien." },
+    { q: "Peut-on partager les cours avec des collègues ?", a: "La licence est personnelle (1 utilisateur par achat). Pour des équipes ou des entreprises, contactez-nous pour une licence groupe avec un tarif préférentiel." },
+    { q: "Quelle est la différence entre les 5 formations et le bundle ?", a: "Le contenu est identique. Le bundle vous donne accès aux 5 formations pour 44 900 FCFA au lieu de 64 500 FCFA si achetées individuellement, soit une économie de 19 600 FCFA (30%)." },
   ];
 
   return (
     <>
       {topbarVisible && (
         <div id="topbar">
-          <p>Offre lancement — Bundle 3 formations à <strong>29 900 FCFA</strong> au lieu de 38 700 FCFA · Accès immédiat</p>
+          <p>Offre lancement — Bundle <strong>5 formations</strong> à <strong>44 900 FCFA</strong> au lieu de 64 500 FCFA · -30% · Accès immédiat</p>
           <button id="tb-close" onClick={() => setTopbarVisible(false)} aria-label="Fermer">✕</button>
         </div>
       )}
 
       <nav id="nav">
         <a href="#" className="nav-logo" onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+          <img src="/logo/zouzou_image.png" alt="FinMark Support" />
           <span className="nav-brand">FinMark <span>Support</span></span>
         </a>
         <div className="nav-sep"></div>
         <div className="nav-links">
           <button className="nav-link" onClick={() => scrollTo('formations')}>Formations</button>
-          <button className="nav-link" onClick={() => scrollTo('bundle')}>Bundle</button>
-          <button className="nav-link" onClick={() => scrollTo('how')}>Comment acheter</button>
+          <button className="nav-link" onClick={() => scrollTo('bundle')}>Bundle 5-en-1</button>
+          <button className="nav-link" onClick={() => scrollTo('ebook')}>Guide Recrutement</button>
           <button className="nav-link" onClick={() => scrollTo('temoignages')}>Témoignages</button>
-          <button className="nav-link" onClick={() => scrollTo('about')}>À propos</button>
+          <button className="nav-link" onClick={() => scrollTo('about')}>Formateur</button>
           <button className="nav-link" onClick={() => scrollTo('faq')}>FAQ</button>
         </div>
         <div className="nav-r">
-          <button className="nav-outline" onClick={() => scrollTo('formations')}>Explorer</button>
-          <button className="nav-cta" onClick={() => scrollTo('formations')}>Acheter →</button>
+          {appUser ? (
+            <button className="nav-outline" onClick={() => navigate('/mon-compte')}>Mon compte</button>
+          ) : (
+            <button className="nav-outline" onClick={() => navigate('/connexion')}>Connexion</button>
+          )}
+          <button className="nav-cta" onClick={() => setOpenSlug('bundle')}>Bundle 44 900 FCFA →</button>
         </div>
       </nav>
 
@@ -147,12 +142,12 @@ export function Landing() {
         <canvas id="hbg" ref={heroCanvasRef}></canvas>
         <div className="hero-inner">
           <div>
-            <div className="hero-eye"><span className="hero-dot"></span>3 Formations certifiantes · Data Analytics</div>
+            <div className="hero-eye"><span className="hero-dot"></span>5 Formations certifiantes · Data Analytics · IA</div>
             <h1 className="hero-h1">Les formations data qui<br/><em>transforment votre carrière</em></h1>
-            <p className="hero-p">Data Visualisation · SQL · KPIs — trois formations interactives et certifiantes conçues pour les professionnels qui veulent maîtriser l'analyse de données, de A à Z, dans n'importe quel secteur.</p>
+            <p className="hero-p">DataViz · SQL · KPIs · Python · Scoring — cinq formations interactives et certifiantes avec éditeur intégré dans le navigateur. Zéro installation. Résultats immédiats.</p>
             <div className="hero-ctas">
-              <button className="btn-hero-main" onClick={() => scrollTo('formations')}>Voir les formations</button>
-              <button className="btn-hero-ghost" onClick={() => scrollTo('bundle')}>Offre bundle →</button>
+              <button className="btn-hero-main" onClick={() => scrollTo('formations')}>Voir les 5 formations</button>
+              <button className="btn-hero-ghost" onClick={() => setOpenSlug('bundle')}>Bundle 44 900 FCFA →</button>
             </div>
             <div className="hero-proof">
               <div className="hero-avs">
@@ -160,71 +155,71 @@ export function Landing() {
                 <div className="hero-av" style={{ background: '#3b82f6' }}>K</div>
                 <div className="hero-av" style={{ background: '#8b5cf6' }}>M</div>
                 <div className="hero-av" style={{ background: '#f59e0b' }}>F</div>
-                <div className="hero-av" style={{ background: '#ef4444' }}>E</div>
+                <div className="hero-av" style={{ background: '#6366f1' }}>E</div>
               </div>
-              <span className="hero-proof-txt"><strong>420+ professionnels</strong> formés — CI, SN, GH, TG, BF</span>
+              <span className="hero-proof-txt"><strong>520+ professionnels</strong> certifiés — CI, SN, GH, TG, BF, ML</span>
             </div>
-            <div className="hero-secure">Paiement sécurisé · Accès immédiat · Accès à vie</div>
+            <div className="hero-secure">🔒 Paiement sécurisé · 📥 Accès immédiat · ♾ Accès à vie</div>
           </div>
 
-          <div className="hero-cards">
-            <button className="hpc" onClick={() => setOpenSlug('dataviz')}>
-              <div className="hpc-top">
-                <span className="hpc-tag hpc-tag-g">DataViz</span>
-                <div><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></div>
-              </div>
-              <div className="hpc-name">Data Visualisation</div>
-              <div className="hpc-desc">35 graphiques · 6 chapitres · Certificat</div>
-              <div className="hpc-chips"><span className="hpc-chip hpc-chip-g">6 chapitres</span><span className="hpc-chip hpc-chip-g">Certifiant</span></div>
-            </button>
-            <button className="hpc" onClick={() => setOpenSlug('sql')}>
-              <div className="hpc-top">
-                <span className="hpc-tag hpc-tag-b">SQL</span>
-                <div><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></div>
-              </div>
-              <div className="hpc-name">SQL Professionnel</div>
-              <div className="hpc-desc">SELECT → CTE → Window Functions · Expert</div>
-              <div className="hpc-chips"><span className="hpc-chip hpc-chip-b">7 chapitres</span><span className="hpc-chip hpc-chip-b">Certifiant</span></div>
-            </button>
-            <button className="hpc" onClick={() => setOpenSlug('kpi')}>
-              <div className="hpc-top">
-                <span className="hpc-tag hpc-tag-p">KPI</span>
-                <div><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></div>
-              </div>
-              <div className="hpc-name">Maîtriser les KPIs</div>
-              <div className="hpc-desc">10 domaines · 50 KPIs · Dashboard pro</div>
-              <div className="hpc-chips"><span className="hpc-chip hpc-chip-p">8 chapitres</span><span className="hpc-chip hpc-chip-p">Certifiant</span></div>
-            </button>
-            <button className="hpc-bundle hpc" onClick={() => setOpenSlug('bundle')} style={{ textAlign: 'left' }}>
-              <div className="hpc-bundle-badge">Meilleure offre</div>
-              <div className="hpc-b-name">Bundle — 3 formations complètes</div>
-              <div className="hpc-b-row">
-                <div className="hpc-b-price">
-                  <span className="hpc-b-old">38 700</span>
-                  <span className="hpc-b-new">29 900</span>
-                  <span className="hpc-b-cur">FCFA</span>
+          <div>
+            <div className="hero-cards">
+              <button className="hpc" onClick={() => setOpenSlug('dataviz')}>
+                <div className="hpc-top"><span className="hpc-tag hpc-tag-g">DataViz</span><div><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></div></div>
+                <div className="hpc-name">Data Visualisation</div>
+                <div className="hpc-desc">35 graphiques · Simulateur live · Certifiant</div>
+              </button>
+              <button className="hpc" onClick={() => setOpenSlug('sql')}>
+                <div className="hpc-top"><span className="hpc-tag hpc-tag-b">SQL</span><div><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></div></div>
+                <div className="hpc-name">SQL Professionnel</div>
+                <div className="hpc-desc">18 exercices · DB intégrée · Expert</div>
+              </button>
+              <button className="hpc" onClick={() => setOpenSlug('kpi')}>
+                <div className="hpc-top"><span className="hpc-tag hpc-tag-k">KPI</span><div><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></div></div>
+                <div className="hpc-name">Maîtriser les KPIs</div>
+                <div className="hpc-desc">10 domaines · 50 KPIs · Dashboard pro</div>
+              </button>
+              <button className="hpc" onClick={() => setOpenSlug('python')}>
+                <div className="hpc-top"><span className="hpc-tag hpc-tag-p">Python</span><div><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></div></div>
+                <div className="hpc-name">Python Data Analytics</div>
+                <div className="hpc-desc">11 exercices · Pandas · Scikit-learn</div>
+              </button>
+              <button className="hpc" onClick={() => setOpenSlug('scoring')}>
+                <div className="hpc-top"><span className="hpc-tag hpc-tag-sc">Scoring</span><div><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></div></div>
+                <div className="hpc-name">Scoring & Modèles prédictifs</div>
+                <div className="hpc-desc">15 exemples · 8 algos · Code Python</div>
+              </button>
+              <button className="hpc-bundle" onClick={() => setOpenSlug('bundle')}>
+                <div className="hpc-bundle-badge">Meilleure offre</div>
+                <div className="hpc-b-name">Bundle 5 formations complètes</div>
+                <div className="hpc-b-row">
+                  <div className="hpc-b-price">
+                    <span className="hpc-b-old">64 500</span>
+                    <span className="hpc-b-new">44 900</span>
+                    <span className="hpc-b-cur">FCFA</span>
+                  </div>
+                  <span className="hpc-b-save">-30%</span>
                 </div>
-                <span className="hpc-b-save">-23%</span>
-              </div>
-              <div style={{ fontSize: '10.5px', color: 'rgba(255,255,255,.28)', marginTop: 5 }}>3 certificats · Accès à vie · Accès immédiat</div>
-            </button>
+                <div style={{ fontSize: 10, color: 'rgba(255,255,255,.28)', marginTop: 4 }}>5 certificats · Accès à vie · Accès immédiat</div>
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
       <div className="trust-bar">
         <div className="trust-inner">
-          <div className="ti">⭐ <strong>4.9/5</strong> (420 avis)</div>
+          <div className="ti">⭐ <strong>4.9/5</strong> (520 avis)</div>
           <div className="ti-sep"></div>
-          <div className="ti">3 certificats <strong>délivrés</strong></div>
+          <div className="ti"><strong>5 formations</strong> certifiantes</div>
+          <div className="ti-sep"></div>
+          <div className="ti">Éditeur Python & SQL <strong>intégré</strong></div>
           <div className="ti-sep"></div>
           <div className="ti">Accès <strong>immédiat</strong></div>
           <div className="ti-sep"></div>
-          <div className="ti">Paiement <strong>sécurisé</strong></div>
-          <div className="ti-sep"></div>
           <div className="ti">Accès <strong>à vie</strong></div>
           <div className="ti-sep"></div>
-          <div className="ti"><strong>CI · SN · GH · TG · BF</strong></div>
+          <div className="ti"><strong>CI · SN · GH · TG · BF · ML</strong></div>
         </div>
       </div>
 
@@ -232,12 +227,12 @@ export function Landing() {
         <div className="section-inner">
           <div className="ey">Vous reconnaissez-vous ?</div>
           <h2 className="sec-h">Ces situations vous parlent ?</h2>
-          <p className="sec-sub fade">Si oui, nos 3 formations ont été créées exactement pour vous.</p>
+          <p className="sec-sub fade">Si oui, nos 5 formations ont été créées exactement pour vous.</p>
           <div className="prob-grid fade">
-            <div className="prob-card"><div className="prob-bar" style={{ background: '#ef4444' }}></div><div><div className="prob-title">Vous avez des données mais ne savez pas les présenter</div><div className="prob-desc">Vos rapports Excel ne convainquent pas. Votre manager dit "c'est pas clair" et vos analyses restent inutilisées.</div></div></div>
-            <div className="prob-card"><div className="prob-bar" style={{ background: '#f59e0b' }}></div><div><div className="prob-title">Vous confondez KPI, indicateur et mesure brute</div><div className="prob-desc">On vous demande vos KPIs, vous listez le CA et le nombre de clients — sans savoir si ce sont vraiment des KPIs.</div></div></div>
-            <div className="prob-card"><div className="prob-bar" style={{ background: '#3b82f6' }}></div><div><div className="prob-title">Votre SQL est limité aux SELECT de base</div><div className="prob-desc">Dès que quelqu'un parle de CTEs, de Window Functions ou de sous-requêtes, vous décrochez.</div></div></div>
-            <div className="prob-card"><div className="prob-bar" style={{ background: '#8b5cf6' }}></div><div><div className="prob-title">Vos dashboards ne déclenchent aucune décision</div><div className="prob-desc">La direction regarde vos tableaux, dit "merci" et repart. Rien ne change.</div></div></div>
+            <div className="prob-card"><div className="prob-bar" style={{ background: '#ef4444' }}></div><div><div className="prob-title">Vos données ne convainquent personne</div><div className="prob-desc">Vos rapports Excel ne déclenchent aucune décision. Votre manager dit "c'est pas clair" et vos analyses restent inutilisées.</div></div></div>
+            <div className="prob-card"><div className="prob-bar" style={{ background: '#f59e0b' }}></div><div><div className="prob-title">Votre SQL est limité aux SELECT basiques</div><div className="prob-desc">Dès qu'on parle de CTEs, Window Functions ou sous-requêtes corrélées, vous décrochez. Vous ne pouvez pas exploiter la vraie puissance de vos données.</div></div></div>
+            <div className="prob-card"><div className="prob-bar" style={{ background: '#3b82f6' }}></div><div><div className="prob-title">Python vous fait peur — vous ne savez pas par où commencer</div><div className="prob-desc">Pandas, Matplotlib, Scikit-learn... trop d'outils, trop de tutos contradictoires. Pas de parcours structuré du débutant à l'analyste.</div></div></div>
+            <div className="prob-card"><div className="prob-bar" style={{ background: '#6366f1' }}></div><div><div className="prob-title">Vous entendez parler de "scoring" sans comprendre</div><div className="prob-desc">Scoring crédit, churn, lead — vous savez que c'est important, mais les algorithmes derrière restent un mystère.</div></div></div>
           </div>
         </div>
       </section>
@@ -245,10 +240,10 @@ export function Landing() {
       <section className="section" style={{ background: '#fff', paddingTop: 56, paddingBottom: 56 }}>
         <div className="section-inner">
           <div className="stats-block fade">
-            <div className="stat"><span className="stat-n" id="s1">420</span><div className="stat-l">Professionnels<br/>formés en Afrique</div></div>
-            <div className="stat"><span className="stat-n" id="s2">3</span><div className="stat-l">Formations<br/>certifiantes</div></div>
-            <div className="stat"><span className="stat-n" id="s3">100</span><div className="stat-l">KPIs, graphiques<br/>et requêtes couverts</div></div>
-            <div className="stat"><span className="stat-n" id="s4">100</span><div className="stat-l">% Interactif<br/>dans le navigateur</div></div>
+            <div className="stat"><span className="stat-n" id="s1">520</span><div className="stat-l">Professionnels<br/>certifiés en Afrique</div></div>
+            <div className="stat"><span className="stat-n" id="s2">5</span><div className="stat-l">Formations<br/>certifiantes</div></div>
+            <div className="stat"><span className="stat-n" id="s3">56</span><div className="stat-l">Exercices interactifs<br/>dans le navigateur</div></div>
+            <div className="stat"><span className="stat-n" id="s4">100</span><div className="stat-l">% Exécutable<br/>sans installation</div></div>
           </div>
         </div>
       </section>
@@ -261,22 +256,22 @@ export function Landing() {
             <div>
               <div className="tf-lbl tf-bad">Avant les formations</div>
               <ul className="tf-list">
-                <li><b style={{ color: '#dc2626' }}>✗</b>"CA = mon KPI" — non, c'est une mesure brute</li>
-                <li><b style={{ color: '#dc2626' }}>✗</b>Pie chart avec 12 tranches illisibles</li>
-                <li><b style={{ color: '#dc2626' }}>✗</b>SQL en sous-requêtes imbriquées incompréhensibles</li>
-                <li><b style={{ color: '#dc2626' }}>✗</b>Dashboard de 30 KPIs que personne ne lit</li>
-                <li><b style={{ color: '#dc2626' }}>✗</b>Rapport que la direction ignore complètement</li>
+                <li><b style={{ color: '#dc2626' }}>✗</b>Pie charts avec 12 tranches illisibles et sans message</li>
+                <li><b style={{ color: '#dc2626' }}>✗</b>SQL en sous-requêtes imbriquées que personne ne comprend</li>
+                <li><b style={{ color: '#dc2626' }}>✗</b>Python = peur de la ligne de commande et du premier erreur</li>
+                <li><b style={{ color: '#dc2626' }}>✗</b>"Scoring" = mot mystérieux entendu en réunion</li>
+                <li><b style={{ color: '#dc2626' }}>✗</b>Dashboard de 30 KPIs que la direction ignore</li>
               </ul>
             </div>
             <div className="tf-arr">→</div>
             <div>
               <div className="tf-lbl tf-good">Après les formations</div>
               <ul className="tf-list">
-                <li><b style={{ color: 'var(--g)' }}>✓</b>"Taux de conversion hebdo" = KPI actionnable</li>
-                <li><b style={{ color: 'var(--g)' }}>✓</b>Le bon graphique choisi en 30 secondes</li>
-                <li><b style={{ color: 'var(--g)' }}>✓</b>CTEs lisibles, Window Functions maîtrisées</li>
-                <li><b style={{ color: 'var(--g)' }}>✓</b>5 KPIs clés avec cible, tendance, alerte</li>
-                <li><b style={{ color: 'var(--g)' }}>✓</b>Dashboard compris en 5 secondes par n'importe qui</li>
+                <li><b style={{ color: 'var(--g)' }}>✓</b>Le bon graphique choisi en 30 secondes, compris en 5</li>
+                <li><b style={{ color: 'var(--g)' }}>✓</b>CTEs lisibles, Window Functions maîtrisées, code propre</li>
+                <li><b style={{ color: 'var(--g)' }}>✓</b>Pandas, Matplotlib, Sklearn — pipeline data complet en Python</li>
+                <li><b style={{ color: 'var(--g)' }}>✓</b>Scoring crédit, churn, fraude — algorithmes et code Python complet</li>
+                <li><b style={{ color: 'var(--g)' }}>✓</b>5 KPIs clés avec cible, tendance, alerte — décisions déclenchées</li>
               </ul>
             </div>
           </div>
@@ -286,149 +281,197 @@ export function Landing() {
       <section className="section" id="formations" style={{ background: '#fff' }}>
         <div className="section-inner">
           <div className="ey">Nos formations</div>
-          <h2 className="sec-h">Choisissez votre formation</h2>
-          <p className="sec-sub">Trois parcours certifiants · Accès à vie · Disponibles immédiatement après paiement</p>
-          <div className="form-grid">
+          <h2 className="sec-h">5 formations certifiantes — choisissez la vôtre</h2>
+          <p className="sec-sub">Accès à vie · Accès immédiat · Éditeur interactif intégré · Certificat personnalisé</p>
 
+          <div className="form-grid">
             <FormationCard
-              variant="v"
-              popular
-              tag="Data Visualisation"
-              name={<>Maîtriser la Data<br/>Visualisation</>}
-              sub="Du graphique basique au dashboard professionnel"
-              stars="4.9 (240 avis)"
+              variant="v" popular tag="Data Visualisation" sub="Du graphique basique au dashboard professionnel"
+              name={<>Maîtriser la DataViz</>} stars="4.9 (240 avis)" deco="◎"
               feats={[
-                "Fondements : hiérarchie perceptive, data-ink ratio, règles d'or",
-                "35+ types de graphiques avec démos interactives live",
+                "Hiérarchie perceptive, data-ink ratio, 10 règles d'or",
+                "35 types de graphiques avec démos interactives live",
                 "15 erreurs coûteuses illustrées et corrigées",
-                "Simulateur d'axe Y en temps réel + 6 exercices pratiques",
-                "QCM 20 questions + certificat téléchargeable à votre nom",
+                "Simulateur d'axe Y temps réel · Moteur Python Skulpt",
+                "QCM 20 questions + certificat personnalisé",
               ]}
-              meta={[['6', 'Chapitres'], ['35+', 'Graphiques'], ['20', 'QCM'], ['∞', 'Accès']]}
-              price="12 900"
-              onBuy={() => setOpenSlug('dataviz')}
+              meta={[['7','Chapitres'],['35+','Graphiques'],['6','Exercices'],['∞','Accès']]}
+              price="12 900" onBuy={() => setOpenSlug('dataviz')}
             />
             <FormationCard
-              variant="s"
-              tag="SQL Professionnel"
-              name="Maîtriser SQL"
-              sub="SELECT → CTE → Window Functions · Niveau expert"
-              stars="4.8 (180 avis)"
+              variant="s" tag="SQL Professionnel" sub="SELECT → JOIN → CTE → Window Functions · Expert"
+              name="Maîtriser SQL" stars="4.8 (180 avis)" deco="{}"
               feats={[
-                "SELECT, WHERE, DISTINCT, CASE WHEN — bases solides",
+                "SELECT, WHERE, CASE WHEN, BETWEEN, IN, LIKE",
                 "6 types de JOIN avec diagrammes de Venn interactifs",
-                "GROUP BY, HAVING, ROLLUP — rapports multidimensionnels",
-                "CTEs multi-niveaux, EXISTS, sous-requêtes corrélées",
-                "RANK(), LAG(), LEAD(), SUM() OVER — fonctions fenêtre expert",
-                "8 exercices éditeur SQL + QCM + certificat personnalisé",
+                "GROUP BY, HAVING · CTEs multi-niveaux",
+                "RANK(), LAG(), LEAD(), SUM() OVER — Window Functions",
+                "18 éditeurs SQL · 5 tables données réelles · Certificat",
               ]}
-              meta={[['7', 'Chapitres'], ['25+', 'Requêtes'], ['8', 'Exercices'], ['∞', 'Accès']]}
-              price="12 900"
-              onBuy={() => setOpenSlug('sql')}
+              meta={[['9','Chapitres'],['18','Exercices SQL'],['5','Tables DB'],['∞','Accès']]}
+              price="12 900" onBuy={() => setOpenSlug('sql')}
             />
             <FormationCard
-              variant="k"
-              isNew
-              tag="KPI & Dashboards"
-              name="Maîtriser les KPIs"
-              sub="Identifier · Calculer · Visualiser · 10 domaines"
-              stars="5.0 (80 avis)"
+              variant="k" tag="KPI & Dashboards" sub="Identifier · Calculer · Visualiser · 10 domaines"
+              name="Maîtriser les KPIs" stars="5.0 (80 avis)" deco="↗"
               feats={[
                 "KPI vs Mesure vs Métrique — les vraies définitions",
                 "Les 7 questions à poser avant de choisir un KPI",
                 "Matrice KPI → Graphique optimal complète",
-                "10 domaines : Marketing, Finance, Projet, SaaS, E-commerce, RH...",
-                "Construire un dashboard qui génère des décisions",
-                "5 exercices + QCM + certificat à votre nom",
+                "10 domaines : Marketing, Finance, SaaS, E-commerce, RH…",
+                "Dashboard décisionnel + QCM + certificat personnalisé",
               ]}
-              meta={[['8', 'Chapitres'], ['10', 'Domaines'], ['50+', 'KPIs'], ['∞', 'Accès']]}
-              price="12 900"
-              onBuy={() => setOpenSlug('kpi')}
+              meta={[['8','Chapitres'],['10','Domaines'],['50+','KPIs'],['∞','Accès']]}
+              price="12 900" onBuy={() => setOpenSlug('kpi')}
             />
+          </div>
 
+          <div className="form-grid-2">
+            <FormationCard
+              variant="p" hot tag="Python Data Analytics" sub="Du zéro au Machine Learning · Éditeur intégré"
+              name={<>Python &amp; Data Analytics</>} stars="4.9 (95 avis)" deco="🐍"
+              feats={[
+                "Bases Python : variables, listes, dicts, fonctions, boucles",
+                "NumPy, Pandas — manipulation de données réelles",
+                "Matplotlib & Seaborn — graphiques qui s'affichent dans le cours",
+                "EDA complète + Régression + Classification RandomForest",
+                "11 éditeurs Python live · Skulpt (zéro installation) · Certificat",
+              ]}
+              meta={[['9','Chapitres'],['11','Exercices live'],['8','Librairies'],['∞','Accès']]}
+              price="12 900" onBuy={() => setOpenSlug('python')}
+            />
+            <FormationCard
+              variant="sc" isNew tag="Scoring & ML" sub="Crédit · Fraude · Churn · Lead · 8 algorithmes"
+              name="Maîtriser le Scoring" stars="5.0 (48 avis)" deco="⬡"
+              feats={[
+                "6 types de scoring : crédit, fraude, churn, lead, risque, RH",
+                "8 algorithmes : RegLog, WOE, Random Forest, XGBoost, Isolation Forest…",
+                "15 exemples concrets dans 10 domaines (finance, santé, RH, agri…)",
+                "3 modèles Python complets — du pipeline à la décision",
+                "QCM 20 questions + certificat personnalisé",
+              ]}
+              meta={[['7','Chapitres'],['15','Exemples'],['8','Algorithmes'],['∞','Accès']]}
+              price="12 900" onBuy={() => setOpenSlug('scoring')}
+            />
           </div>
         </div>
       </section>
 
-      <section className="section" id="bundle" style={{ background: 'var(--bg)', paddingTop: 0 }}>
+      <section className="section" id="bundle" style={{ background: 'var(--bg)' }}>
         <div className="section-inner">
+          <div className="ey">Offre spéciale</div>
+          <h2 className="sec-h">Bundle 5-en-1 — Économisez 19 600 FCFA</h2>
+          <p className="sec-sub">Toutes les formations, tous les certificats, accès à vie — au meilleur prix.</p>
           <div className="bundle-card fade">
             <div className="bundle-glow"></div>
             <div className="bundle-inner">
               <div>
-                <div className="bundle-badge">Économisez 8 800 FCFA · Meilleure valeur</div>
-                <div className="bundle-title">Bundle — Les 3 formations complètes</div>
-                <div className="bundle-desc">Maîtrisez la visualisation, SQL et les KPIs en un seul pack. Le trio parfait pour devenir un data analyst complet — avec 3 certificats à votre nom.</div>
+                <div className="bundle-badge">🏆 Meilleure offre · -30%</div>
+                <h3 className="bundle-title">Bundle Data Complet —<br/><em>les 5 formations</em></h3>
+                <p className="bundle-desc">DataViz · SQL · KPIs · Python · Scoring — un seul achat pour maîtriser toute la chaîne data : du graphique au modèle prédictif.</p>
                 <div className="bundle-chips">
-                  <div className="bchip">
-                    <div className="bchip-ico" style={{ background: 'rgba(29,191,115,.1)', color: '#6ee7b7' }}>◎</div>
-                    <div><div className="bchip-name">DataViz</div><div className="bchip-sub">6 chapitres · 35+ graphiques</div></div>
-                  </div>
-                  <div className="bchip">
-                    <div className="bchip-ico" style={{ background: 'rgba(59,130,246,.1)', color: '#93c5fd' }}>{'{ }'}</div>
-                    <div><div className="bchip-name">SQL Pro</div><div className="bchip-sub">7 chapitres · Window Functions</div></div>
-                  </div>
-                  <div className="bchip">
-                    <div className="bchip-ico" style={{ background: 'rgba(139,92,246,.1)', color: '#c4b5fd' }}>↗</div>
-                    <div><div className="bchip-name">KPI & Dashboards</div><div className="bchip-sub">8 chapitres · 10 domaines</div></div>
-                  </div>
+                  <div className="bchip"><div className="bchip-dot" style={{ background: '#1DBF73' }}></div><div><div className="bchip-name">Data Visualisation</div><div className="bchip-sub">7 chapitres · 35 graphiques · Simulateur</div></div></div>
+                  <div className="bchip"><div className="bchip-dot" style={{ background: '#3b82f6' }}></div><div><div className="bchip-name">SQL Professionnel</div><div className="bchip-sub">9 chapitres · 18 exercices · DB intégrée</div></div></div>
+                  <div className="bchip"><div className="bchip-dot" style={{ background: '#8b5cf6' }}></div><div><div className="bchip-name">Maîtriser les KPIs</div><div className="bchip-sub">8 chapitres · 10 domaines · 50 KPIs</div></div></div>
+                  <div className="bchip"><div className="bchip-dot" style={{ background: '#f59e0b' }}></div><div><div className="bchip-name">Python Data Analytics</div><div className="bchip-sub">9 chapitres · 11 exercices live · ML</div></div></div>
+                  <div className="bchip"><div className="bchip-dot" style={{ background: '#6366f1' }}></div><div><div className="bchip-name">Scoring & Modèles prédictifs</div><div className="bchip-sub">7 chapitres · 15 exemples · Code Python</div></div></div>
                 </div>
                 <div className="bundle-perks">
-                  <div className="bperk"><span>✓</span>3 certificats téléchargeables</div>
-                  <div className="bperk"><span>✓</span>Accès à vie — tous appareils</div>
+                  <div className="bperk"><span>✓</span>5 certificats personnalisés</div>
+                  <div className="bperk"><span>✓</span>Accès à vie</div>
                   <div className="bperk"><span>✓</span>Mises à jour futures gratuites</div>
-                  <div className="bperk"><span>✓</span>Accès immédiat</div>
+                  <div className="bperk"><span>✓</span>56 exercices interactifs</div>
+                  <div className="bperk"><span>✓</span>Éditeur Python + SQL intégrés</div>
+                  <div className="bperk"><span>✓</span>Données réelles africaines</div>
+                </div>
+                <div className="bundle-cta">
+                  <button className="bundle-btn" onClick={() => setOpenSlug('bundle')}>S'inscrire au bundle — 44 900 FCFA →</button>
+                  <span className="bundle-note">🔒 Paiement sécurisé · Accès immédiat · Accès à vie</span>
                 </div>
               </div>
               <div className="bundle-price-col">
-                <div className="bundle-old">38 700 FCFA</div>
+                <div className="bundle-old">64 500 FCFA</div>
                 <div className="bundle-new-row">
-                  <span className="bundle-new">29 900</span>
+                  <span className="bundle-new">44 900</span>
                   <span className="bundle-cur">FCFA</span>
                 </div>
-                <div className="bundle-save">Économisez 8 800 FCFA (-23%)</div>
+                <div className="bundle-save">Économie : 19 600 FCFA</div>
+                <div style={{ marginTop: 16, fontSize: 12, color: 'rgba(255,255,255,.3)', lineHeight: 1.6, textAlign: 'right' }}>
+                  5 formations × 12 900<br/>= 64 500 FCFA à l'unité<br/><strong style={{ color: 'rgba(134,239,172,.5)' }}>Bundle : 44 900 FCFA</strong>
+                </div>
               </div>
             </div>
-            <div className="bundle-cta">
-              <button className="bundle-btn" onClick={() => setOpenSlug('bundle')}>Commander le Bundle — 29 900 FCFA</button>
-              <div className="bundle-note">Paiement sécurisé · Accès aux 3 cours immédiat · Accès à vie</div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section" id="ebook" style={{ background: '#fff' }}>
+        <div className="section-inner">
+          <div className="ey">Pour dirigeants & DRH</div>
+          <h2 className="sec-h">Guide — Recruter un Data Analyst en Côte d'Ivoire</h2>
+          <p className="sec-sub">Pour les dirigeants et DRH qui veulent comprendre la valeur d'un Data Analyst avant de recruter.</p>
+          <div className="ebook-card fade">
+            <div className="ebook-glow"></div>
+            <div>
+              <div className="ebook-tag">📘 Guide complet · FinMark Support</div>
+              <h3 className="ebook-title">Recruter un Data Analyst<br/>en Côte d'Ivoire — <em>le guide complet</em></h3>
+              <p className="ebook-desc">7 chapitres pour comprendre pourquoi un Data Analyst est le meilleur investissement pour votre PME ivoirienne, comment le recruter et combien ça rapporte — avec un calculateur ROI interactif en FCFA.</p>
+              <ul className="ebook-feats">
+                <li><span>✓</span>Les 6 super-pouvoirs d'un DA et ce qu'ils rapportent concrètement</li>
+                <li><span>✓</span>10 cas concrets par secteur (finance, santé, logistique, agriculture…)</li>
+                <li><span>✓</span>Les 8 erreurs qui font échouer le recrutement — et comment les éviter</li>
+                <li><span>✓</span>Salaires réels marché CI 2025 · Grille de questions d'entretien</li>
+                <li><span>✓</span>Calculateur ROI interactif en FCFA — estimez votre retour en 30 secondes</li>
+              </ul>
+              <button className="fc-btn fc-btn-eb" style={{ fontSize: 14, padding: '13px 28px' }} onClick={() => setOpenSlug('recrutement')}>S'inscrire — 12 900 FCFA →</button>
+              <p style={{ fontSize: 11.5, color: 'rgba(255,255,255,.3)', marginTop: 12 }}>🔒 Paiement sécurisé · Accès immédiat · À vie</p>
+            </div>
+            <div className="ebook-price-col">
+              <div className="ebook-price-free" style={{ fontSize: 32 }}>12 900 <span style={{ fontSize: 14, color: 'rgba(196,181,253,.6)' }}>FCFA</span></div>
+              <div className="ebook-price-note">Paiement unique · Accès à vie</div>
+              <div className="ebook-incl">
+                <div className="ebook-incl-l">Inclut</div>
+                <div className="ebook-incl-row">
+                  <div className="ebook-incl-item"><span>→</span>7 chapitres complets</div>
+                  <div className="ebook-incl-item"><span>→</span>Calculateur ROI FCFA</div>
+                  <div className="ebook-incl-item"><span>→</span>10 secteurs concrets</div>
+                  <div className="ebook-incl-item"><span>→</span>Grille entretien</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="section" id="how" style={{ background: '#fff' }}>
+      <section className="section" id="how" style={{ background: 'var(--bg)' }}>
         <div className="section-inner">
-          <div className="ey">Comment acheter</div>
-          <h2 className="sec-h">Simple, rapide, immédiat</h2>
-          <p className="sec-sub">Votre formation entre vos mains en moins de 5 minutes.</p>
-          <div className="how-grid fade">
-            <div className="how-step"><div className="how-n">1</div><div className="how-title">Choisissez votre formation</div><div className="how-desc">Cliquez sur "Acheter" sur la formation ou le bundle de votre choix.</div></div>
-            <div className="how-step"><div className="how-n">2</div><div className="how-title">Effectuez le paiement</div><div className="how-desc">Payez en toute sécurité — Orange Money, MTN MoMo, Wave, Moov, Visa ou Mastercard.</div></div>
-            <div className="how-step"><div className="how-n">3</div><div className="how-title">Accès immédiat</div><div className="how-desc">Vous êtes redirigé vers la formation dès que le paiement est validé.</div></div>
-            <div className="how-step"><div className="how-n">4</div><div className="how-title">Apprenez et certifiez-vous</div><div className="how-desc">Terminez le QCM (≥14/20) → certificat à votre nom, partageable sur LinkedIn.</div></div>
+          <div className="ey">Simple et rapide</div>
+          <h2 className="sec-h">Comment s'inscrire — 4 étapes</h2>
+          <div className="how-grid fade" style={{ marginTop: 28 }}>
+            <div className="how-step"><div className="how-n">1</div><div className="how-title">Choisissez votre formation</div><div className="how-desc">Sélectionnez la formation ou le bundle qui correspond à votre objectif. Cliquez sur "S'inscrire".</div></div>
+            <div className="how-step"><div className="how-n">2</div><div className="how-title">Payez en toute sécurité</div><div className="how-desc">Orange Money · MTN MoMo · Wave · Moov · Visa / Mastercard. Paiement 100 % sécurisé.</div></div>
+            <div className="how-step"><div className="how-n">3</div><div className="how-title">Accès immédiat</div><div className="how-desc">Le cours se débloque instantanément après le paiement. Aucune attente.</div></div>
+            <div className="how-step"><div className="how-n">4</div><div className="how-title">Apprenez et certifiez-vous</div><div className="how-desc">Ouvrez le cours dans votre navigateur. Aucune installation. Passez le QCM et obtenez votre certificat.</div></div>
           </div>
         </div>
       </section>
 
-      <section className="section" id="temoignages" style={{ background: 'var(--bg)' }}>
+      <section className="section" id="temoignages" style={{ background: '#fff' }}>
         <div className="section-inner">
-          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 36 }}>
-            <div><div className="ey">Témoignages</div><h2 className="sec-h" style={{ marginBottom: 0 }}>Ce qu'ils en disent</h2></div>
-            <div style={{ textAlign: 'right' }}><div style={{ fontSize: 28, fontWeight: 800, color: 'var(--t1)' }}>⭐ 4.9<span style={{ fontSize: 16, color: 'var(--t2)' }}>/5</span></div><div style={{ fontSize: 12, color: 'var(--t3)' }}>420+ avis vérifiés</div></div>
-          </div>
-          <div className="testi-grid">
-            <Testi color="#1DBF73" badge="v" name="Aminata K." role="Data Analyst · Abidjan" initial="A" text="Le simulateur d'axe Y m'a ouvert les yeux. Je faisais cette erreur depuis des années dans Power BI sans le savoir." tag="DataViz" />
-            <Testi color="#3b82f6" badge="s" name="Fatoumata B." role="BI Developer · Dakar" initial="F" text="Les fonctions fenêtre me bloquaient depuis des mois. Après le chapitre 5, j'ai utilisé LAG() dans un rapport le lendemain." tag="SQL" />
-            <Testi color="#8b5cf6" badge="k" name="Marie-Claire D." role="Contrôleur de gestion · Lomé" initial="M" text="Mon chef me demandait de 'définir mes KPIs' depuis 6 mois. Après le chapitre 2, j'avais une réponse claire et structurée." tag="KPI" />
-            <Testi color="#f59e0b" badge="s" name="Ernest M." role="Analyste Finance · Accra" initial="E" text="Les CTEs ont révolutionné mon SQL. J'ai mis le certificat sur LinkedIn — des recruteurs m'ont contacté dans la semaine." tag="SQL" />
-            <Testi color="#ef4444" badge="v" name="Kofi A." role="Data Engineer · Kumasi" initial="K" text="Le guide des 35 graphiques vaut à lui seul le prix. En 30 secondes je sais quel graphique choisir et pourquoi." tag="DataViz" />
-            <Testi color="#1DBF73" badge="k" name="Soda T." role="Growth Manager · Abidjan" initial="S" text="J'ai appliqué les cas pratiques Marketing et SaaS directement. Mes dashboards génèrent maintenant de vraies décisions." tag="KPI" />
+          <div className="ey">Ils ont été formés</div>
+          <h2 className="sec-h">Ce que nos apprenants disent</h2>
+          <div className="testi-grid fade">
+            <Testi color="#1DBF73" badge="v" tag="DataViz" name="Adjoa M." role="Data Analyst · Accra" initial="A" text="L'éditeur Python intégré m'a bluffé. J'ai exécuté mon premier code sans rien installer. Le simulateur d'axe Y m'a fait comprendre en 5 minutes ce que je n'avais pas compris en 2 ans de formation classique." />
+            <Testi color="#3b82f6" badge="s" tag="SQL" name="Kofi A." role="BI Developer · Abidjan" initial="K" text="Les 18 exercices SQL qui s'exécutent dans le fichier HTML — c'est ce qui fait la différence. J'ai compris les Window Functions en une soirée." />
+            <Testi color="#8b5cf6" badge="k" tag="KPI" name="Marie D." role="Contrôleur de gestion · Lomé" initial="M" text="J'utilisais le mot 'KPI' à tort depuis des années. Ce cours m'a remis les idées en ordre. La matrice KPI → Graphique optimal seule vaut 10× le prix." />
+            <Testi color="#f59e0b" badge="p" tag="Python" name="Fatou N." role="Business Analyst · Dakar" initial="F" text="J'avais peur de Python depuis des années. Le chapitre 3 explique vraiment les bases sans jargon. Les exercices interactifs font que ça rentre naturellement. J'ai codé un groupby Pandas en 10 minutes." />
+            <Testi color="#6366f1" badge="sc" tag="Scoring" name="Ekow M." role="Data Scientist · Accra" initial="E" text="Les 15 exemples concrets sont ce qui m'a convaincu. Voir le scoring appliqué à l'immobilier, à l'agriculture, aux RH — domaines que je n'aurais jamais associés au ML. Le code Python est directement réutilisable." />
+            <Testi color="#14b8a6" badge="v" tag="Bundle" name="Seydou B." role="Analyste Data · Abidjan" initial="S" text="Le bundle 5-en-1 est la meilleure décision data que j'ai prise. Du DataViz au Scoring en passant par Python, j'ai tout ce qu'il me faut." />
           </div>
         </div>
       </section>
 
-      <section className="section" id="about" style={{ background: '#fff' }}>
+      <section className="section" id="about" style={{ background: 'var(--bg)' }}>
         <div className="section-inner">
           <div className="ey">Votre formateur</div>
           <h2 className="sec-h">Qui est derrière FinMark Support ?</h2>
@@ -437,18 +480,20 @@ export function Landing() {
               <div className="auth-av">FZ</div>
               <div style={{ textAlign: 'center' }}>
                 <div style={{ color: '#f59e0b', fontSize: 14, letterSpacing: 1 }}>★★★★★</div>
-                <div style={{ fontSize: 12, color: 'var(--t3)', marginTop: 2 }}>4.9 · 420+ apprenants</div>
+                <div style={{ fontSize: 12, color: 'var(--t3)', marginTop: 2 }}>4.9 · 520+ apprenants</div>
               </div>
             </div>
             <div>
-              <div className="auth-tag">Fondateur · FinMark Support</div>
+              <div className="auth-tag">Formateur · FinMark Support</div>
               <div className="auth-name">Kouassi Fresh-Nes Rameaux ZOUZOU</div>
               <div className="auth-title">Senior Data Analyst · NSIA Vie Assurances · Consultant GoMyCode · Fondateur FinMark Support</div>
-              <p className="auth-bio">5 ans d'expérience opérationnelle en data analytics pour la finance et l'entreprise en Côte d'Ivoire. Je construis quotidiennement des dashboards KPI pour des directions générales, j'écris des requêtes SQL complexes, et je forme des professionnels depuis 2022.</p>
+              <div className="auth-bio">Je travaille avec des données au quotidien — SQL, Python, Power BI, modèles prédictifs — dans un contexte professionnel réel en Côte d'Ivoire. Ces formations ne sont pas des cours théoriques : ce sont des synthèses de 5 ans de pratique terrain. Chaque exemple, chaque exercice, chaque dataset vient de cas réels que j'ai traités. Je sais où les apprenants bloquent, et ces formations sont construites pour éliminer ces blocages un par un.</div>
               <div className="auth-badges">
-                <span className="auth-badge">Master 2 Data Science — CERCO</span>
-                <span className="auth-badge">IBM Data Analyst Certified</span>
-                <span className="auth-badge">NSIA Vie · GoMyCode</span>
+                <span className="auth-badge">Master 2 Data Science — Institut CERCO</span>
+                <span className="auth-badge">IBM Data Analyst</span>
+                <span className="auth-badge">IBM Data Science</span>
+                <span className="auth-badge">GoMyCode Instructor</span>
+                <span className="auth-badge">NSIA Vie Assurances</span>
                 <span className="auth-badge">Abidjan, Côte d'Ivoire</span>
               </div>
             </div>
@@ -456,9 +501,10 @@ export function Landing() {
         </div>
       </section>
 
-      <section className="section" id="faq" style={{ background: 'var(--bg)' }}>
-        <div className="section-inner" style={{ maxWidth: 740 }}>
-          <div style={{ textAlign: 'center' }}><div className="ey" style={{ display: 'block' }}>FAQ</div><h2 className="sec-h" style={{ textAlign: 'center' }}>Vos questions</h2><p className="sec-sub" style={{ textAlign: 'center' }}>Tout ce que vous devez savoir avant d'acheter</p></div>
+      <section className="section" id="faq" style={{ background: '#fff' }}>
+        <div className="section-inner">
+          <div className="ey">Vos questions</div>
+          <h2 className="sec-h">Questions fréquentes</h2>
           <div className="faq-list fade">
             {faqs.map((f, i) => (
               <div key={i} className={'faq-item' + (openFaq === i ? ' open' : '')}>
@@ -475,29 +521,29 @@ export function Landing() {
       <section className="final-cta">
         <div className="fcta-glow"></div>
         <div className="fcta-inner">
-          <h2 className="fcta-title">Investissez <em>dans votre expertise data</em><br/>aujourd'hui</h2>
-          <p className="fcta-sub">Un seul rapport mieux analysé, présenté et décidé — et l'investissement est rentabilisé. Rejoignez 420+ professionnels qui ont fait ce choix.</p>
+          <h2 className="fcta-title">Prêt à maîtriser<br/><em>la data analytics ?</em></h2>
+          <p className="fcta-sub">5 formations · 5 certificats · Éditeurs interactifs intégrés. Commencez aujourd'hui.</p>
           <div className="fcta-btns">
-            <button className="btn-hero-main" style={{ background: 'linear-gradient(135deg,var(--g),var(--g2))' }} onClick={() => setOpenSlug('dataviz')}>DataViz — 12 900 FCFA</button>
-            <button className="btn-hero-main" style={{ background: 'linear-gradient(135deg,#3b82f6,#2563eb)' }} onClick={() => setOpenSlug('sql')}>SQL — 12 900 FCFA</button>
-            <button className="btn-hero-main" style={{ background: 'linear-gradient(135deg,#8b5cf6,#7c3aed)' }} onClick={() => setOpenSlug('kpi')}>KPI — 12 900 FCFA</button>
-            <button className="btn-hero-main" style={{ background: 'linear-gradient(135deg,#86efac,var(--g))', color: '#0f1923', fontSize: 14 }} onClick={() => setOpenSlug('bundle')}>Bundle · 3 formations — 29 900 FCFA</button>
+            <button className="bundle-btn" onClick={() => setOpenSlug('bundle')}>S'inscrire au bundle 5-en-1 — 44 900 FCFA →</button>
+            <button className="btn-hero-ghost" style={{ padding: '15px 24px' }} onClick={() => scrollTo('formations')}>Voir les formations →</button>
           </div>
-          <div className="fcta-note">Paiement sécurisé · Accès immédiat · Accès à vie · 3 certificats inclus</div>
+          <p className="fcta-note">🔒 Paiement sécurisé · 📥 Accès immédiat · ♾ Accès à vie · Certificats personnalisés</p>
         </div>
       </section>
 
       <footer>
         <div className="footer-inner">
           <a href="#" className="footer-logo" onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+            <img src="/logo/zouzou_image.png" alt="FinMark Support" />
             <span className="footer-brand">FinMark <span>Support</span></span>
           </a>
           <div className="footer-links">
             <button onClick={() => scrollTo('formations')}>Formations</button>
             <button onClick={() => scrollTo('bundle')}>Bundle</button>
-            <button onClick={() => scrollTo('how')}>Comment acheter</button>
+            <button onClick={() => scrollTo('ebook')}>Guide Recrutement</button>
+            <button onClick={() => scrollTo('how')}>Comment s'inscrire</button>
             <button onClick={() => scrollTo('temoignages')}>Témoignages</button>
-            <button onClick={() => scrollTo('about')}>À propos</button>
+            <button onClick={() => scrollTo('about')}>Formateur</button>
             <button onClick={() => scrollTo('faq')}>FAQ</button>
           </div>
           <div className="footer-copy">© 2025 FinMark Support · Abidjan, Côte d'Ivoire</div>
@@ -510,13 +556,15 @@ export function Landing() {
 }
 
 interface FormationCardProps {
-  variant: 'v' | 's' | 'k';
+  variant: 'v' | 's' | 'k' | 'p' | 'sc';
   popular?: boolean;
   isNew?: boolean;
+  hot?: boolean;
   tag: string;
   name: ReactNode;
   sub: string;
   stars: string;
+  deco: string;
   feats: string[];
   meta: [string, string][];
   price: string;
@@ -524,12 +572,11 @@ interface FormationCardProps {
 }
 
 function FormationCard(p: FormationCardProps) {
-  const cls = `fc fade${p.popular ? ' fc-popular' : ''}${p.isNew ? ' fc-new' : ''}`;
-  const decoMap: Record<string, string> = { v: '◎', s: '{}', k: '↗' };
+  const cls = `fc fade${p.popular ? ' fc-popular' : ''}${p.isNew ? ' fc-new' : ''}${p.hot ? ' fc-hot' : ''}`;
   return (
     <div className={cls}>
       <div className={`fc-cover fc-cover-${p.variant}`}>
-        <div className="fc-cover-deco">{decoMap[p.variant]}</div>
+        <div className="fc-cover-deco">{p.deco}</div>
         <div className="fc-stars">★★★★★<span className="fc-stars-n">{p.stars}</span></div>
         <div className={`fc-tag fc-tag-${p.variant}`}>{p.tag}</div>
         <div className="fc-name">{p.name}</div>
@@ -549,23 +596,23 @@ function FormationCard(p: FormationCardProps) {
             <div className={`fc-price-main fc-price-${p.variant}`}>{p.price} <span style={{ fontSize: 15, letterSpacing: 0, fontWeight: 600 }}>FCFA</span></div>
             <div className="fc-price-note">Paiement unique · Accès immédiat</div>
           </div>
-          <button className={`fc-btn fc-btn-${p.variant}`} onClick={p.onBuy}>Acheter</button>
+          <button className={`fc-btn fc-btn-${p.variant}`} onClick={p.onBuy}>S'inscrire →</button>
         </div>
-        <div className="fc-dl">Paiement sécurisé · Accès envoyé instantanément</div>
+        <div className="fc-dl">🔒 Paiement sécurisé · Accès envoyé instantanément</div>
       </div>
     </div>
   );
 }
 
-interface TestiProps { color: string; badge: 'v'|'s'|'k'; tag: string; text: string; name: string; role: string; initial: string }
+interface TestiProps { color: string; badge: 'v'|'s'|'k'|'p'|'sc'; tag: string; text: string; name: string; role: string; initial: string }
 function Testi(p: TestiProps) {
   return (
-    <div className="tc fade">
+    <div className="tc">
       <div className="tc-top">
         <div className="tc-stars">★★★★★</div>
         <span className={`tc-badge tc-b-${p.badge}`}>{p.tag}</span>
       </div>
-      <p className="tc-text">"{p.text}"</p>
+      <p className="tc-text">« {p.text} »</p>
       <div className="tc-sep"></div>
       <div className="tc-auth">
         <div className="tc-av" style={{ background: p.color }}>{p.initial}</div>

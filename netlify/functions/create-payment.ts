@@ -5,6 +5,7 @@
 interface CreatePaymentBody {
   courseSlug: string;
   courseName?: string;
+  uid?: string;
   email?: string;
   displayName?: string;
   phone?: string;
@@ -17,7 +18,10 @@ const COURSE_PRICES: Record<string, number> = {
   dataviz: 12900,
   sql: 12900,
   kpi: 12900,
-  bundle: 29900,
+  python: 12900,
+  scoring: 12900,
+  recrutement: 12900,
+  bundle: 44900,
 };
 
 const ALLOWED_METHODS = ['wave', 'orange_money', 'mtn_money', 'moov_money', 'card'] as const;
@@ -57,6 +61,8 @@ function json(body: unknown, status = 200, origin: string | null = null, extraHe
 
 const isValidEmail = (s: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s) && s.length <= 254;
 const isValidPhone = (s: string): boolean => /^\+?\d[\d\s.-]{6,20}$/.test(s);
+// Firebase UIDs sont alphanumériques (jusqu'à 128 chars).
+const isValidUid = (s: string): boolean => /^[A-Za-z0-9_-]{1,128}$/.test(s);
 
 export default async (req: Request) => {
   const origin = req.headers.get('origin');
@@ -92,6 +98,9 @@ export default async (req: Request) => {
   if (!body.courseSlug || typeof body.courseSlug !== 'string' || !(body.courseSlug in COURSE_PRICES)) {
     return json({ success: false, error: { code: 'INVALID_COURSE', message: 'Unknown course slug' } }, 422, origin);
   }
+  if (!body.uid || typeof body.uid !== 'string' || !isValidUid(body.uid)) {
+    return json({ success: false, error: { code: 'INVALID_UID', message: 'Invalid uid' } }, 422, origin);
+  }
   if (!body.email || typeof body.email !== 'string' || !isValidEmail(body.email)) {
     return json({ success: false, error: { code: 'INVALID_EMAIL', message: 'Invalid email' } }, 422, origin);
   }
@@ -120,6 +129,7 @@ export default async (req: Request) => {
     success_url,
     error_url,
     metadata: {
+      uid: body.uid,
       course_slug: body.courseSlug,
       email: body.email,
       display_name: body.displayName || '',

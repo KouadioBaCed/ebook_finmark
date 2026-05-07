@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recruter un Data Analyst en CI — FinMark Support</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,700;0,900;1,300;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{
+  --g:#6366f1;--g2:#4f46e5;--glt:#eef2ff;
+  --ink:#0a0a0a;--ink2:#374151;--ink3:#6b7280;
+  --paper:#fafaf9;--card:#ffffff;--border:#e5e7eb;
+  --navy:#0c1421;--navy2:#111e30;
+  --green:#22c55e;--amber:#f59e0b;--red:#ef4444;--blue:#3b82f6;--purple:#8b5cf6;--teal:#14b8a6;--orange:#f97316;
+  --r:10px;--sbw:272px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --sh-lg:0 8px 24px rgba(0,0,0,.10),0 24px 56px rgba(0,0,0,.09);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow-x:hidden;font-family:'Plus Jakarta Sans',sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased}
+#sb{width:var(--sbw);background:var(--navy);position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column;overflow-y:auto;transition:transform .3s;scrollbar-width:thin}
+.sb-hd{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:10px}
+.sb-hd img{height:34px;width:34px;object-fit:contain}
+.sb-brand{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:#fff}
+.sb-brand span{color:var(--g)}
+.sb-sub{font-size:8px;color:rgba(255,255,255,.22);text-transform:uppercase;letter-spacing:2px;margin-top:2px}
+.sb-nav{flex:1;padding:6px 0}
+.sb-cat{padding:13px 18px 4px;font-size:8px;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:2px;font-weight:700}
+.sb-a{display:flex;align-items:center;gap:9px;padding:8px 18px;color:rgba(255,255,255,.38);font-size:11.5px;font-weight:500;border-left:3px solid transparent;transition:all .15s;cursor:pointer;user-select:none;line-height:1.3}
+.sb-a:hover,.sb-a.on{color:#fff;border-left-color:var(--g);background:rgba(99,102,241,.06)}
+.sb-a.on{font-weight:600}
+.sb-nn{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:rgba(255,255,255,.16);min-width:18px;flex-shrink:0}
+.sb-a.on .sb-nn{color:var(--g)}
+.sb-foot{padding:12px 18px;border-top:1px solid rgba(255,255,255,.05)}
+.sb-pb-lbl{font-size:8px;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.sb-pb{height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+#sb-f{height:100%;width:0;background:linear-gradient(90deg,var(--g),#a5b4fc);border-radius:2px;transition:width .4s}
+#tb{display:none;background:var(--navy);padding:10px 16px;align-items:center;gap:12px;position:sticky;top:0;z-index:50;border-bottom:1px solid rgba(255,255,255,.05)}
+#burg{background:none;border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.6);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:14px}
+#tb-title{font-size:12px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace}
+#main{margin-left:var(--sbw);min-height:100vh;overflow-x:hidden}
+.ch{display:none;max-width:1060px;margin:0 auto;padding:36px 44px 80px;box-sizing:border-box;width:100%}
+.ch.on{display:block}
+@keyframes fup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+@keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes lineGrow{from{width:0}to{width:100%}}
+@keyframes glowText{0%,100%{text-shadow:0 0 0 transparent}50%{text-shadow:0 0 20px rgba(99,102,241,.35)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ch.on>*{animation:fup .4s cubic-bezier(.22,.68,0,1.2) both}
+.ch.on>*:nth-child(1){animation-delay:.04s}.ch.on>*:nth-child(2){animation-delay:.10s}
+.ch.on>*:nth-child(3){animation-delay:.16s}.ch.on>*:nth-child(4){animation-delay:.22s}
+.ch.on>*:nth-child(5){animation-delay:.28s}.ch.on>*:nth-child(6){animation-delay:.34s}
+.ch.on>*:nth-child(7){animation-delay:.40s}.ch.on>*:nth-child(8){animation-delay:.46s}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+.reveal.on{opacity:1;transform:translateY(0)}
+.tag-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;color:var(--g);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.tag-l::before{content:'';width:20px;height:2px;background:var(--g);border-radius:1px;flex-shrink:0}
+.h1{font-family:'Fraunces',serif;font-size:clamp(26px,4vw,42px);font-weight:900;color:var(--ink);letter-spacing:-.7px;line-height:1.1;margin-bottom:14px;position:relative}
+.h1::after{content:'';display:block;height:3px;background:linear-gradient(90deg,var(--g),transparent);margin-top:11px;width:0;animation:lineGrow .8s .3s ease forwards}
+.h1 em{color:var(--g);font-style:italic;animation:glowText 3s ease infinite}
+.lead{font-size:15.5px;color:var(--ink2);line-height:1.78;margin-bottom:32px;max-width:660px}
+.sh{font-family:'Fraunces',serif;font-size:21px;font-weight:700;color:var(--ink);margin:38px 0 16px;letter-spacing:-.2px;display:flex;align-items:center;gap:12px}
+.sh::after{content:'';flex:1;height:1px;background:var(--border)}
+.sh3{font-size:15px;font-weight:700;color:var(--ink);margin:18px 0 9px}
+.body-txt{font-size:14px;color:var(--ink2);line-height:1.8;margin-bottom:12px}
+.pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px}
+/* CALLOUTS */
+.callout{border-radius:10px;padding:14px 18px;margin:14px 0;border-left:3px solid;display:flex;gap:14px}
+.c-ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.c-lbl{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:4px}
+.c-txt{font-size:13.5px;line-height:1.65;margin:0;color:var(--ink2)}
+.c-icon-txt{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--g);flex-shrink:0;margin-top:2px;min-width:32px}
+.cg{background:#f0fdf4;border-color:#22c55e}.cg .c-lbl{color:#16a34a}
+.ca{background:#fffbeb;border-color:var(--amber)}.ca .c-lbl{color:#d97706}
+.cr{background:#fef2f2;border-color:#ef4444}.cr .c-lbl{color:#dc2626}
+.cb{background:#eff6ff;border-color:var(--blue)}.cb .c-lbl{color:#2563eb}
+.ci{background:var(--glt);border-color:var(--g)}.ci .c-lbl{color:var(--g2)}
+.cp{background:#faf5ff;border-color:var(--purple)}.cp .c-lbl{color:#7c3aed}
+.co{background:#fff7ed;border-color:var(--orange)}.co .c-lbl{color:#ea580c}
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;transition:all .2s}
+.card:hover{box-shadow:var(--sh);transform:translateY(-2px)}
+.card-tag{display:inline-block;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 9px;border-radius:10px;margin-bottom:9px;font-family:'JetBrains Mono',monospace}
+.card-t{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.card-d{font-size:12.5px;color:var(--ink3);line-height:1.58}
+.card-icon-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--g);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;display:block;padding:6px 0;border-bottom:1px solid var(--border)}
+/* TABLE */
+.dtbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px;overflow-x:auto;display:block}
+.dtbl th{background:var(--navy);color:#fff;padding:10px 14px;text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.dtbl td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.55}
+.dtbl tr:nth-child(even) td{background:#fafafa}
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden;transition:transform .2s}
+.kpi:hover{transform:translateY(-2px)}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.kpi.kpi-g::before{background:var(--green)}.kpi.kpi-b::before{background:var(--blue)}
+.kpi.kpi-p::before{background:var(--purple)}.kpi.kpi-a::before{background:var(--amber)}
+.kpi.kpi-t::before{background:var(--teal)}.kpi.kpi-r::before{background:var(--red)}
+.kpi-n{font-family:'Fraunces',serif;font-size:32px;font-weight:900;color:var(--ink);line-height:1}
+.kpi-n span{font-size:16px;color:var(--ink3)}
+.kpi-l{font-size:11.5px;color:var(--ink3);margin-top:4px;line-height:1.4}
+.kpi-trend{font-size:11px;font-weight:700;margin-top:8px}
+.kpi-trend.up{color:var(--green)}.kpi-trend.dn{color:var(--red)}
+/* HERO */
+.hero{background:var(--navy);min-height:430px;position:relative;overflow:hidden;border-radius:20px;margin-bottom:28px;display:flex;align-items:stretch}
+canvas#hc{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.18}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 390px;gap:44px;align-items:center;padding:50px 48px;width:100%}
+.hero-ey{display:inline-flex;align-items:center;gap:8px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.22);color:#a5b4fc;padding:5px 13px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:18px}
+.hero-dot{width:5px;height:5px;background:var(--g);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0}
+.hero-h1{font-family:'Fraunces',serif;font-size:clamp(28px,4vw,52px);font-weight:900;color:#fff;line-height:1.06;letter-spacing:-.8px;margin-bottom:14px}
+.hero-h1 em{color:#a5b4fc;font-style:italic}
+.hero-p{font-size:15px;color:rgba(255,255,255,.52);line-height:1.7;margin-bottom:26px}
+.hero-ctas{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+.btn-main{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:13px 26px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .22s;display:inline-flex;align-items:center;gap:7px}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(99,102,241,.35)}
+.btn-ghost{background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);padding:13px 18px;border-radius:var(--r);font-size:14px;font-weight:600;border:1.5px solid rgba(255,255,255,.12);cursor:pointer;font-family:inherit;transition:all .2s}
+.hero-proof{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.h-avs{display:flex}
+.h-av{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;margin-left:-6px}
+.h-av:first-child{margin-left:0}
+.hero-pt{font-size:12px;color:rgba(255,255,255,.4)}
+.hero-pt strong{color:rgba(255,255,255,.75)}
+/* HERO RIGHT — DASHBOARD */
+.hero-dash{display:flex;flex-direction:column;gap:9px;position:relative}
+.hfb{position:absolute;font-size:9px;font-weight:700;padding:4px 9px;border-radius:12px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.2);color:#a5b4fc;white-space:nowrap;font-family:'JetBrains Mono',monospace;animation:flt 3s ease-in-out infinite;z-index:3}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.hfb1{top:-10px;right:8px}.hfb2{bottom:-8px;left:8px;animation-delay:1.5s}
+.dash-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px 16px}
+.dash-lbl{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;font-weight:700}
+.dash-bar-row{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.dash-bar-name{font-size:10.5px;color:rgba(255,255,255,.5);min-width:90px;flex-shrink:0}
+.dash-bar-track{flex:1;background:rgba(255,255,255,.07);border-radius:10px;height:8px;overflow:hidden}
+.dash-bar-fill{height:100%;border-radius:10px;transition:width 1.5s cubic-bezier(.34,1.56,.64,1)}
+.dash-bar-val{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:rgba(255,255,255,.5);min-width:28px;text-align:right}
+.dash-kpi-row{display:flex;gap:8px}
+.dash-kpi{flex:1;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.18);border-radius:8px;padding:10px 12px;text-align:center}
+.dash-kpi-n{font-family:'Fraunces',serif;font-size:18px;font-weight:900;color:#a5b4fc;line-height:1}
+.dash-kpi-l{font-size:9px;color:rgba(255,255,255,.3);margin-top:3px}
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:22px 0}
+.stat{padding:20px 14px;text-align:center;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-n{font-family:'Fraunces',serif;font-size:32px;font-weight:900;color:var(--g);letter-spacing:-1px;display:block;line-height:1}
+.stat-l{font-size:10.5px;color:var(--ink3);margin-top:4px}
+/* PAIN */
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+.pain-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;gap:12px}
+.pain-line{width:3px;border-radius:2px;flex-shrink:0}
+.pain-t{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.pain-d{font-size:12px;color:var(--ink2);line-height:1.55}
+/* PROGRAMME */
+.prog{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:18px 0}
+.prog-item{display:grid;grid-template-columns:50px 1fr;border-bottom:1px solid var(--border);cursor:pointer;background:var(--card);transition:background .15s}
+.prog-item:last-child{border-bottom:none}
+.prog-item:hover{background:var(--glt)}
+.prog-n{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;color:var(--border);padding:18px 0 18px 18px;align-self:flex-start;padding-top:20px}
+.prog-body{padding:16px 18px}
+.prog-t{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.prog-d{font-size:11.5px;color:var(--ink2);line-height:1.5;margin-bottom:2px}
+.prog-lk{font-size:11px;color:var(--g);font-weight:600}
+/* COMPARISON */
+.comp-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border-radius:12px;overflow:hidden;margin:18px 0}
+.comp-cell{background:var(--card);padding:12px 16px;font-size:13px;color:var(--ink2);line-height:1.5}
+.comp-cell.hd{background:var(--navy);color:#fff;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.comp-cell.yes{color:#16a34a;font-weight:600}.comp-cell.no{color:#dc2626;font-weight:600}
+/* SECTOR CARDS — Premium avec gradient header */
+.sector-card{border-radius:16px;overflow:hidden;margin-bottom:18px;box-shadow:var(--sh);transition:all .22s}
+.sector-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg)}
+.sector-hd{padding:22px 24px;position:relative;overflow:hidden}
+.sector-hd::before{content:'';position:absolute;inset:0;opacity:.08;background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(255,255,255,.15) 8px,rgba(255,255,255,.15) 9px)}
+.sector-num{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:6px;text-transform:uppercase;letter-spacing:2px}
+.sector-domain{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;padding:3px 9px;border-radius:10px;margin-bottom:10px;display:inline-block}
+.sector-title{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:#fff;line-height:1.2}
+.sector-body{padding:18px 24px;background:var(--card);border:1px solid var(--border);border-top:none}
+.sector-desc{font-size:13.5px;color:var(--ink2);line-height:1.7;margin-bottom:14px;padding-left:10px;border-left:2px solid var(--g)}
+.sector-case{background:var(--paper);border-radius:10px;padding:16px 18px;margin-bottom:14px}
+.sector-case-lbl{font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--ink3);margin-bottom:10px;font-family:'JetBrains Mono',monospace}
+.sector-case-t{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sector-case-d{font-size:12.5px;color:var(--ink2);line-height:1.65}
+.sector-gains{display:flex;gap:10px;flex-wrap:wrap}
+.gain-chip{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:7px;transition:all .15s}
+.gain-chip:hover{border-color:var(--g);box-shadow:var(--sh)}
+.gain-chip-n{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:800}
+.gain-chip-l{font-size:11px;color:var(--ink3)}
+/* PROFILE CARDS */
+.profile-card{background:var(--navy);border-radius:16px;padding:28px 30px;color:#fff;margin:20px 0;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+.profile-card::after{content:'DATA';position:absolute;right:-8px;bottom:-16px;font-family:'Fraunces',serif;font-size:80px;font-weight:900;color:rgba(99,102,241,.06);line-height:1;letter-spacing:-4px;pointer-events:none}
+.profile-level{display:inline-block;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;padding:4px 12px;border-radius:10px;margin-bottom:12px;font-family:'JetBrains Mono',monospace}
+.profile-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.profile-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:#fff}
+.profile-sal{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#a5b4fc;text-align:right;line-height:1.4}
+.profile-sal span{font-size:10px;color:rgba(255,255,255,.35);display:block;margin-bottom:2px}
+.profile-sub{font-size:12.5px;color:rgba(255,255,255,.45);margin-bottom:20px;line-height:1.55}
+.skill-bars{display:flex;flex-direction:column;gap:9px}
+.skill-bar-row{display:flex;align-items:center;gap:11px}
+.skill-bar-lbl{font-size:11.5px;color:rgba(255,255,255,.6);min-width:130px}
+.skill-bar-track{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.skill-bar-fill{height:100%;border-radius:3px;width:0;transition:width 1.3s cubic-bezier(.22,.68,0,1.2)}
+.skill-bar-pct{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,.35);min-width:28px;text-align:right}
+/* SALARY CARDS */
+.sal-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;position:relative;overflow:hidden}
+.sal-card::after{content:'FCFA';position:absolute;right:12px;bottom:6px;font-family:'Fraunces',serif;font-size:40px;font-weight:900;color:rgba(99,102,241,.05);line-height:1}
+.sal-level{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;font-family:'JetBrains Mono',monospace;margin-bottom:10px;display:block}
+.sal-title{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.sal-range{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--g);margin-bottom:6px}
+.sal-note{font-size:12px;color:var(--ink3);line-height:1.55}
+/* ERROR CARDS */
+.error-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px;display:flex;gap:16px;align-items:flex-start;transition:all .2s;position:relative;overflow:hidden}
+.error-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:transparent;transition:background .2s}
+.error-card:hover{border-color:#fca5a5;box-shadow:0 2px 16px rgba(239,68,68,.08)}
+.error-card:hover::before{background:var(--red)}
+.error-num{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:#fca5a5;flex-shrink:0;line-height:1;margin-top:2px}
+.error-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.error-desc{font-size:13px;color:var(--ink3);line-height:1.6;margin-bottom:8px}
+.error-fix{font-size:12.5px;color:#16a34a;font-weight:600;display:flex;align-items:flex-start;gap:6px}
+.error-fix-label{color:var(--green);font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:1px;flex-shrink:0;margin-top:1px}
+/* ROI CALCULATOR */
+.roi-calc{background:var(--navy);border-radius:18px;padding:32px;margin:24px 0;color:#fff;position:relative;overflow:hidden}
+.roi-calc::before{content:'ROI';position:absolute;right:-18px;bottom:-18px;font-family:'Fraunces',serif;font-size:120px;font-weight:900;color:rgba(99,102,241,.06);line-height:1;pointer-events:none}
+.roi-glow{position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(99,102,241,.12),transparent 65%);pointer-events:none}
+.roi-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px}
+.roi-sub{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:24px}
+.roi-inputs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.roi-input-group{display:flex;flex-direction:column;gap:6px}
+.roi-label{font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.roi-input{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:11px 14px;color:#fff;font-size:15px;font-family:'JetBrains Mono',monospace;font-weight:600;width:100%;outline:none;transition:border .15s}
+.roi-input:focus{border-color:var(--g)}
+.roi-results{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.roi-result{background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.18);border-radius:12px;padding:18px;text-align:center;transition:transform .2s}
+.roi-result:hover{transform:scale(1.02)}
+.roi-result-n{font-family:'Fraunces',serif;font-size:26px;font-weight:900;color:#a5b4fc;line-height:1}
+.roi-result-l{font-size:11px;color:rgba(255,255,255,.35);margin-top:5px}
+.roi-note{font-size:11px;color:rgba(255,255,255,.22);margin-top:16px;text-align:center;font-style:italic}
+/* TIMELINE */
+.timeline{position:relative;padding-left:30px;margin:20px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--g),rgba(99,102,241,.1))}
+.tl-item{position:relative;margin-bottom:24px}
+.tl-dot{position:absolute;left:-26px;top:4px;width:12px;height:12px;background:var(--g);border-radius:50%;border:2px solid var(--paper);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+.tl-tag{font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--g);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px}
+.tl-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.tl-desc{font-size:13px;color:var(--ink3);line-height:1.6}
+/* CHART */
+.chart-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;margin:18px 0}
+.chart-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.chart-sub{font-size:11.5px;color:var(--ink3);margin-bottom:18px}
+.chart-canvas{height:220px;position:relative}
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}
+.tc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.tc-stars{color:var(--amber);font-size:12px;margin-bottom:9px}
+.tc-text{font-size:12.5px;color:var(--ink2);line-height:1.75;margin-bottom:14px;font-style:italic}
+.tc-sep{height:1px;background:var(--border);margin-bottom:11px}
+.tc-auth{display:flex;align-items:center;gap:9px}
+.tc-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:11px;flex-shrink:0}
+.tc-nm{font-size:13px;font-weight:700;color:var(--ink)}
+.tc-rl{font-size:10px;color:var(--ink3)}
+/* AUTHOR */
+.auth-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px 34px;display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;margin:20px 0}
+.auth-av{width:78px;height:78px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--purple));display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:800;color:#fff;flex-shrink:0}
+.auth-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--g);margin-bottom:4px}
+.auth-nm{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.auth-tl{font-size:12px;color:var(--ink3);margin-bottom:11px}
+.auth-bio{font-size:13.5px;color:var(--ink2);line-height:1.75;margin-bottom:12px}
+.auth-bds{display:flex;flex-wrap:wrap;gap:6px}
+.auth-bd{font-size:10.5px;color:var(--ink2);background:var(--paper);padding:3px 10px;border-radius:14px;border:1px solid var(--border)}
+/* NAVB */
+.navb{display:flex;gap:10px;margin-top:38px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap}
+.btn{padding:9px 20px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--ink2);font-family:inherit;transition:all .18s}
+.btn:hover{border-color:var(--g);color:var(--g)}
+.btn-p{background:var(--g);color:#fff;border-color:var(--g)}
+.btn-p:hover{background:var(--g2);color:#fff;border-color:var(--g2)}
+/* CTA FINAL */
+.cta-final{background:var(--navy);border-radius:20px;padding:40px 44px;text-align:center;position:relative;overflow:hidden;margin:24px 0}
+.cta-glow{position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:300px;height:200px;background:radial-gradient(circle,rgba(99,102,241,.12),transparent 65%);pointer-events:none}
+.cta-tag{display:inline-block;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:2px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.22);color:#a5b4fc;padding:4px 12px;border-radius:14px;margin-bottom:16px}
+.cta-h{font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:10px}
+.cta-h em{color:#a5b4fc;font-style:italic}
+.cta-p{font-size:14px;color:rgba(255,255,255,.5);margin-bottom:24px;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.65}
+.cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+/* RESPONSIVE */
+@media(max-width:960px){
+  #sb{transform:translateX(-100%)}#sb.on{transform:translateX(0)}
+  #main{margin-left:0}#tb{display:flex}
+  .ch{padding:18px 14px 52px}
+  .hero-inner{grid-template-columns:1fr;padding:28px 20px;min-height:auto}
+  .hero-dash{display:none}
+  .g2,.g3,.g4,.kpi-row,.roi-inputs,.roi-results,.pain-grid{grid-template-columns:1fr 1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .stat:nth-child(2){border-right:none}
+  .stat:nth-child(3){border-top:1px solid var(--border);border-right:1px solid var(--border)}
+  .stat:nth-child(4){border-top:1px solid var(--border)}
+  .testi-grid{grid-template-columns:1fr}
+  .auth-card{grid-template-columns:1fr;text-align:center;padding:22px 18px}
+  .auth-av{margin:0 auto}.auth-bds{justify-content:center}
+  .comp-row{grid-template-columns:1fr}
+  .hero-ctas,.navb{flex-direction:column}
+  .btn,.btn-main,.btn-ghost{width:100%;text-align:center}
+}
+@media(max-width:520px){
+  .g2,.g3,.g4,.kpi-row,.roi-inputs,.roi-results,.pain-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<nav id="sb">
+  <div class="sb-hd">
+    <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAH0AfQDASIAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAcIBAUGAwIB/8QAVBAAAQMDAQQDBw0LCwQDAQAAAAECAwQFEQYHEiExQVGxCBMiYXFycxQkMjQ1NjdSgZGhs8EVFyMlQlR0dZKTshYzU1ViY4KUwtLTJlbR8GSDouH/xAAcAQEAAQUBAQAAAAAAAAAAAAAABQECAwQGBwj/xAA5EQEAAgECBAMFBQgBBQEAAAAAAQIDBBEFEiExBkFxEzJRYYEiMzSxwRQjJDVykaHRYgclQuHwUv/aAAwDAQACEQMRAD8AuWAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALwTJz971PS0L3Qx+HI1cL1IZ+o6paS0yytXC4wnykTvkdNJvyOVzl4qvWcP4v8S5eFRXDp/ft5/CGfDi5+s9nYwaznWX8LEzc8XM6iz3amuTMxOw5ObV5kTtXibXTVY+kukTmuVGuciO8hyPAPGmtrqq4tXbmradvnG7PlwVmPspTB+Ru342uTpTJ+ns0Tu0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABq9UUz6qzzRs5omfmIm4tVWKmN3hkm1URUVFTKLzOS1BpCOrqHVNK5I3Lzb1qcF4y8N5uJcufT9bR0mPjDPhyRXpLgd7ghstPU8lVdYI2IqpvJlepDaQ6Mrldh0iJ48HV6dsMNqj3lVHzKnFxynBPButnWUvmry1rO87s181Yjo3ETdyJrOpEQ+gD2eI26NIABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPmSRkbd570anjU862oZS0sk8i4a1FUinUWoqq5VDlZI5sCLwaQPHOP4OEY4tfrae0L6U5pSo2upXOwk7M+UyEVFTKKioQcyomau82R2eeMnaaJ1JK6obQ1b8o7gxV7CE4V42wazURgyU5d+07rrYpiN4d6AnFMg7liAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGg169WafkVOlyIRCjlwvFc58F3iJa2iLjTsnntIhRVVFTJ5F4+mZ11I/wCP6slJ2h7b2cdCpxyZltc5tfTyt44fnK9Br1RWoiqiqniM63ud6thRuFRVTKL0HJaGOXPSfnDLFk2Ui71LE7rYi/QejnI1qucuEQ8qL2nD6NvYazWNWtJZJntXDlTgp9AZ88afTzlt2rG/+GvEbzs1d81hFTTLBSMSRU9k5eGDWw60q97efAxW5+Mpx+9vOVy9K5PpFPFNV404nkzTel+WPKIhu1w1iEt2O7090gR0bkR/5TTZEWaSqn093jVjl8LwfnJTPUvDHGbcW0ftMkbWidp/21stOSQAHRsQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGNc6lKO3zVS8o2K4pa0ViZnyHjdrvQWxm9V1DGL0NVeKmmZriyuk3e+KnjVUIj1Bdaq6XGWWol3m7y7qdSGA1TzrWeNMsZuXBWOWPixzfqsVb6+lr4UlpZmyN/srkySENEXqotl1iaki94cuHNVSbo3bzGu60ydXwPjFeKYJvttaO8L4ndzm0X3uSee0h9FwvAl/aOuNNyee0h1F4qcD46rvr6/wBP+10TsyUdhu9vKq45dB70D1dWwryy7CmEjvBRDLtq+vIvOOS0kb6mkfOF8SnOh9pQejb2Gr1nSOq7FOxiZeicENpQ+0oPRt7D1c1HNVrkyinvubBXUaecVu1o2/wsidp3QcuWvVruCouD6RSQdQaOiq5FmonNievNF5Gpp9DVqyoks8e5njwXJ4trfBvEseacePHzR5THZtVzRs1+j6aSpvEe61d1vFV8hKprbJZ6W1w7sLcvXm5eZsj07wvwW3CNH7O872md5YMl+edwAHSMYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGr1axZNNV8aIqq6FUTBtD5mjbLE6N6Za5MKhjzY/aY7U+MTArU9FZI5jk8JqjeVOK8EO21noaupaqSqt8azROcr1RPyTlI7TcHyJGykkeqLy8Z4xrOD6nT5Zpek/L5tWazEv21tc+uhY1FV2+nBPKWIp+FPGn9hOwjfQOi6mGpZX3Nm4reLWKSWiYREToO+8JcNzaPT2tljabeTYrG0OZ2k+9qTz2kNouMkx7S+GmZPPaQyi5yct44j+Or/TBM7PZFRURDKtq+vYvOMJq8jLtq+vYvOOR0ldtVT1hdWU80HtGD0bew9jxoPaMHo29h5XetZb7fLVSLhGJk9/m9cePnt2iB7zzwwNV0sjWInSpjQXa3Tv3IquNzupFIivN7rrjVPkkncjc8EauEwYMc8rXZSV6L4nKefanx9Wuaa4ce9Y85nuyxjTwioqZQHAaB1FKsyW+rcr0X2Dl6PEd+drwrieLiWnjPj+sfCVlq8s7AAJFaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHnVSJDTSyr+QxXfMgnoMC/X23WWnWavnSNOhOlTi5NrNnSfcZGrmZ9lxIp2gX+rvWoqh80zu8RuVsbehEOcR3HgcVrfEeaM00wR0hE5uITFtqLSac1TaL7HmiqUc7pavBTeFUtP3ea0XKGshe5ve3ZVEXmWis1U2ttdNVNXPfI2uXyqiE5wjik66kxaNrQ3NLqfb1692WACZbQAAAB+SPaxivcuGomVUD9VEVMKiKnjPNIIEXKRRovmoRprDaL3iqfS2zk1d10nUpy7NdahRUkWvc5ufY8DntV4k0WDJyTvO3nDHOWsJ3ThyBweiNdxXSdKKtTcmX2C9Z3icUyS+j1mHWY4yYZ3hfExMbw5fab72JPPaQqi44k07TlxpeXz2kJop5v42jfW19IY7ztL3Y5PlMu2L6+i84wUXihl2x3r6Lzzk9JX+Jp6wrWyf7f7Rg9G3sOb2myPZYla12EdzOkt/tCn9G3sOX2p8bGiZwq5PaOMfy7J/SyIsa7q4H2i5PFHZ5no12DwKabz0ZIs22mnK2806o7C76J9JNZCGnF/HFN56dpN6Hqf/T/f9nyxPxj8jJO4AD0BjAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADGujFkttSxvN0TkT5lMkKmUwpSY3jYlUe/RSU96qYJs5a9UwpiMX/1SbdqOziS51DrnZ2sSdy5kYvBF8ZGb9E6ha/vb6GVcLwVGrjJ53ruF58OadqzMT5w57JpcmPJO0dGjia57msa1Vc5cIiFptG0z6XTlHE9ePe2u+dEIv2c7NapK9lwvPgMjwrI06V8ZM0TGxxtjamGtRERCf8PcOy6aLZcsbTPkktDhtSJtaNt30ADpm+AAAafWkzqfTFfK1ytc2FVRUNwaHaDj+SNxzy7y419XMxgvMfCfyUt2lXqdyTKrnruqq54dKny5yJhGtTCHk5yLjB9N5Hi+Xee6K33ln2id9PcIJo1XfR6Y+cspRv75SxP62J2FZKJfXUPnt7SzFt9oQ+YnYdv4LmeXLXy6NzS2mYlzu1H3rS+e0hFF4E3bUuGlpfPaQcikT40j+Nr6Lss7S9mrxMu1r6+i88wUXj8pl2tfX0PnnK6WP4mnrClLLDW72hT+ib2HLbU1xZEynWdTbvaFP6NvYcrtW9wk+U9k4t/L8n9LZRQi9B9tU8N8+muPCLVmYUidm402v45pvPTtJyQgrTTvx1TJ/eJ2k6oeneAvw+X1hfadwAHfLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKqIiqvJAB+Krc8VQiPaptKkt9S+12aSNJWLuyvdxRF6vKRc/WWoZJVetymReaoj1wQur43g09+Tbefkj83EcWK3L3WuBB+zbadUsro7feXb8UmGsk6UXxqTdE9ssTZGLlrkRUXxKb+j1uLV058bZwaimevNV9AA22cAAA0G0L3n3L0Djfmg2he8+5egca+s/D39J/Jbb3ZVvauVPvJ4tXCnoi8Dxq8byhot1ll0TvXUOf6RvaWbtvtCDzE7CsFG711D6RvaWftntCDzE7DtvB0be1+n6t7R9pc5tU96kvntILRe0nPasv/ScvntIJapFeMo31lfRdnn7T3avaZdqX1/D55gIvH5TMtLvX8PnnL6av8RT1hZSeqxlu9z6f0Tew5PawqJYkz4zrLb7n0/om9hyW1r3BTl0nr/Fp24fk/pbs9kRxOaqqinsxuGqpjxtXd5Kin1G9zUVHHiU1hiizb6Zyl6pc/wBI3tQnlCAtMOzeaX0je0n1OR6P4FjbBl9YZYncAB3aoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYt4esdpq3tXCtheqfsqZRhX33Frf0d/8KltvdlS3aVRL1UPqrtUzyqqq56qpjI5Vbu8MH7Xr69l848kU82y+/MuKtP25lkRuVjkcxVRU5L1FrdntbJX6Uo5pOLkajPmRCpzXFptlHvLpfKv2E74cmYy2j5JrhV5m0w6swb3dqKz0TqutlbHG3pVTOXghAu3C9VVRf1t7ZVbBB+SnTk6HX6uNJhnIldRm9jTmdNXbYKOOdWU9vmlYn5SOTBl2Dazaa+qZBUwvpt5cI57kxn5CA3SuVV+L0HpG5Wqip4S80xwwcdHiHVxk3mY29EVXiOSZ6rfQSxzwtliej2OTKKnSaLaJw0bc/QOOX2G3ua4WWSkqHq90Lt1uehEQ6jaIqpo25qnRA46+c8ajR2yV86z+SW54vj5o+CtSLhOJ9o48G4Tkioi9an21Tye1ULW28suiXNVD6RvaWitfufB5idhVqid66h9I3tLS2z3Pg8xOw7Lwh2y/T9Ulou0ub2r8NJy+e37SBkUnjaz70pfPb9pAmSM8Xxvq6+imqna0PZF4mXalxcIPG8wUcZVoXNyp8/HOZ0kb56esLKT1hZS2+51N6JvYcltaRVsW61Mrxwh1tt9z6f0Tew5Da+qfcDHHp5HrPF/5fk9EhbsiHec1iZXwukI5XczxRc8s4PRq4Q8Ut3asS2+mfdulT+8b2oWATkV90wv48pPSN7ULBJyPR/A/wBxl9YbNJ3gAB3K8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMK/e4ld+jyfwqZphX73Erv0d/8ACpbb3ZUt2lTi4L6+l8482uPu4+3pvOPBFwedZI+1LhrT9qXs1cqiFqtk6Y0ZSpnpXsQqki9XMtZslXOi6VV55XsQm/D8bZbeiZ4PO959HWO9ivkK0bZHY1tUqzg5McfkLMO9ipWTbJw1vV+VOw3vEUb6WPVIcTnbD9XIt4ces+2uweKOPtqnCWr1QETsmXue/ZVXlXsJD2jY/kXc0X+gcR33PC5dVeVewkTaPw0VdF/+O47zh/8ALPpLo9PO+m+ismcLjowfTVPJFyp9NU86mN90LSzMolzVQ+kb2lqLX7nweYnYVToneu4fSN7S1lr9z4PRp2HYeEo2jL9Etw+d4lzO1v3oy+e37SAUchPu11caQl9I37Sv8atcipnpI7xXG+rr6Kayftw9Udl2OlTOtTUSvgyvHfMFEa16dKmda5G/dGBFTjvnN6Wn7+nqx0nrCyts9zqb0Tew4/bDw0+mFwvE7C2e51N6JvYcdti976KvBOOT1Li8f9vyeiTv7qG0dxPpFPHOOjB9tceM2rs0Ynq3Oll/HlJ6RvahYVORXjSy/jyk9K3tQsOnI9E8Extgy+sNzDO8AAO3ZQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8LjEs9vqIE5yROb86HuBMbk9VPNaWqptGoaumqInsakio1VTn5DS+XrLba00VadUMT1YzclamEkanFCPJdh8HqrMdfKsXJcqmcHKarg2b2kzi6xLm9TwjJN5nH2QrbKKouFdHSUzVdJK7daidZb7SFuS16epKREwrY2q7y4TJz+jNm1j03O2pjatRUN4tfIiZaviO2JXhfD7aWJtfvKS4foZ00TNu8i8lKx7aFxreq8qdhZxeSlYdtS/8AW9V5U7DDx/8ADR6reLfc/VxyH213A8EdxPtq8EOHtG/Rz9Z3TV3O3sqryr2EibSMfyKumfzdxHPc6L4dV5V7CS9oELqjR1ziYiq5ad2EQ7nh9d+G7R8JdNpvw30VYY7KdSno1TyejmSOjdjwVwp9NU8+tHL1lAzkiGXRr67hX+8b2lr7X7nQejTsKo2iJ89yp4mNVyrI3h8pbCgZuUULepidh1vhSJ5ck+ia4b7suT2wLjR8vpG/aQA3dRvBCwG2BVTSEvDP4Rv2lfXPRMIaHiiu+qifkprffeqSNauHIviXBl2ZUW5QK5OO/wADXb287pTBnWZy/dKBG44uRFycxhty5q+rWx26rP2z3NpvRN7DS7QrY656bqIo270qNy1DdWv3NpvRN7DIVEVMLyU9eyYq58M47dpjZN7bxsq9LG+GV0UqK17VwqKGuJ11BoS0XaZ0+6sEjuaxonE1FPsttjJEc+sncidConE86zeEdZF5im0x8d2pOntv0cVs4tk9ff4nsjcscfhK7HBMcSeDX2Kz0Vmpe8UcTWIvFyonFVNgdpwXhccN0/s995nrLZpXljYABMLwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABeSlX9tm8muKtFTHLCry5FoCH9u2iqm4ol5tsLpXtTMzETKr5CL4vgvm0+1O8dUdxPDbNgmKoJRcYyqIp9NVcY4Ip5vRzXubJhFauORmWqhqrnVspqOF0kki4RETPA4n2Vr25durmaxM/YjumPucEVyVUiJ4OVT6CZp4mTQuikTLXJhUOU2WaYTTWnmQyMxUS4fJnmi45HXHe8OwWwaatLd3XaTHOPDWtkEbRtmlfBcJayyxOmhk8LcRMqjuk4mPSuonzd6S0VaO5cWFrT5SONHbyMai9eCN1Ph7T58k33mN2LJoMd7b9kR7Ltnc9LUtud4arXs4xx47SXkRERETkgBK6TR4tJj9njjo2seKuOvLVxe2Nyt0dKqc++N+0rurlcqKpYfbL7zZl/vG/aV2RTjPFG/7THojNfO13sirjGTOs6/jOn85DXZ4mdZXfjOn89Dmsdf3lZ+bUx26rSWr3MpvRN7EMkxrV7mUvom9iGSewU92HQx2AAXKgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfj2te1WvajmrzRUP0wb3dqKz0L6yumbFE1OalJmIjeVJmIjeWquWidOV8qyT0DEcq58BEb9hl2fTNltTt6joo2uTk5Woqp9BG11220UNS6Okt7pWIvs0enE2Gl9sNoudVHT1kS0iv4I5zs8SPrq9HOTaJjdp11Glm/SY3SiD4gljmibLE5HMcmUVOk+yRboAAAAA4rbN7zJvSM+0rmi8Sxe2jhoqb0jPtK4NccL4m/E19EJxKZ9pGz3ReZnWVfxnT+ehrUXOTOsq/jSmT+2hzdK73jb4tOszNoWrtXuZS+ib2IZJjWn3MpfRN7EMk9cp7sOmjsAAuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAr53Qt/qZ7220xyK2KD2SJ05LBlbdv8Abaim1Y6rVi96n9i7yIRXGbXrpZ5EbxW166eeVGnTwXip+o7dckjVVFzlEQ/F4NTo8SH0zK8ccM8Ti4mazFtnK9Y2tCx+wLUM1202+lqXK59M5GNz1IhJhEvc6Wmams1TXStVjZZMsz0oqcyWjvtDa1tPWb93ZaObWwVm3cABttoAAHMbTrdLc9JVMEKZe3w8eRFUq+rXxPVkmWvT8lULjPaj2q1yZRUwqEaa02V0d1q5K2gk7xK9VVWoiYVTneOcKvq9smLvCO12lvl2tTugZrjeaJoJrnqOjp4WK5FkTeXHJDsKbY9eHTo2oqUbFnmjkVSTdDaJt+mo99n4WoVMLIqcSH0HA89ssTlrtENTT6PNN4m/SHT0kfeaWKL4jEb8yHqAd1EbJwAAAAAADR6o1bp7TD6dl8uCUjqhHLEneXv3t3GfYtXHNOZSZiI3lbe9aRzWnaG8Bx9FtN0PW1sFHTXxJJ55GxRN9SzJvOcuETKswnFTsClbVt2lbjy48nWlon0AAXMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVa201VTHtOvLGVEzWo+PCNeqIn4JhaUqrts+FG9ekj+qYaet9yPVC8dnbBX1/SXKerKz87n/AHij1ZWfnc/7xTf7MLDRal1rR2a4OmbTTtkVywuRrvBY5yYVUXpTqJo+8ho/85u/79n+w08eC+SN6oPTaDPqac9O3burx6srPzuf94pPm3HVNysWkLPQWyeSnluMa98nYuHNYxrMoi9Cqr04+Jesy/vIaP8Azm7/AL9n+w3+0fQ9Lq3TkNuSdaeppONLM5M4XGFa7xKiJnyIviNmmDJSlo85Sun4fqcOHJHnMRt1/urDZr1dLPcmXG3V09PUtdvb7Xr4Xid8ZPEpbrStzW9aatt2dGkbqumZK5icmuVEVUTxZyQfZth1/kuTW3avoYKJrvwj4Hue9yf2UVqY8q8upSfLfSQUFDT0NLGkcFPG2KJqfktamET5kLtJjvXfm7MvB9Pnw83tI2j4fN7nP640rQapti0tW3D0TwHomVadADbvSLxNbR0TVqxeNrdlar3se1NS1bkokgmhz4LnSYVfkNro7Y3dZKpst7fHDCi5xE9HZ8SlgAR1eE6ett9mhXheni2+zDs1vgtduioqZqNjiajURCre1K41Mu0S+qypma1tY+NER6oibvg/YWwKa6sn9Vapu1VnPfq2aTPleqmXWdKxENLjtuXFSsfF82m9XG23SluEFVMstNM2VqLIuFVq5wviLhWivgulqpblSu3oKqFsrF8Tkz85SwsT3N9+9X6Vnskz8zW6XMaKvOJ+VT5nb3zoY9Hk2tyz5tXgmo5cs4p8/wA4SoRB3SmoX0droLBSzOZLVP8AVE267CpG3g1PIrsr/gJfKk7Ub9/KPXFxuDH71O2TvNP1d7ZwRU8vF3ymxq78tNvikuMaj2Wn5Y726f7aD1ZWfnc/7xSwnc11clRoqtilkfI+K4OwrnZXCxsx9OSuZOvctz71DfqbPsJYX485Hp/pNTSz+9hC8HvMaqI+O/5JoABKuwAAAAAAAACDO6k9t2D0c/bGTmQZ3Untuwejn7YzX1X3Uo3i/wCEt9PzhFuiffnY/wBY0/1jS4pTrRPvzsf6xp/rGlxTDovdlpcB9y/rAADeT4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVV22fCjevSR/VMLVFVdtnwo3r0kf1TDT1vuR6oTjv3FfX9JYmy6+0Om9bUV4uKSrTQtkR/em7zvCY5qYTKdKoTV9+zRvxLp/l2/wC4rc1rnLutarl6kQ++8T/0Mn7Kmnjz3xxtVCaXiGbTU5Me2yzFo2u6Tul1pLbTMuKT1UzIY9+BEbvOVETK73LKm42laxj0XaKe4SUDq1JqhIdxsu5jwXOznC/FK27PIZk17YFWJ6Ilyp8qrV/pGkx9057zrd+sE+rebdM97Y7WnvCYwcQzZNLkyT3js1/3+6b/ALZm/wA4n+wle/3Rtp05W3l0KypS0zp1jR2FdutzjPQUzLc7QPg2vX6sl+rUafNe8W3nscN1ubPTJN532jp2+aOvv903/bM3+cT/AGG7qNstig0vS3R9JI6vqt9WUEcqOcxGuVuXvx4KLjqz4iuB12zzQN41nLK+kdHS0UK7stTKiqm98VqJ7JenxdfFDBTU5rTtHVoYeJ63JbkrO8z8odj9/i89/wB77hUHec+x74/ex53L6DutC7WrDqOqjoKuJ9qrpFRsbJXI6OR3U1/Dj4lRPFkifaJstuukral0ZWRXGha5GyvZGrHRKvBFVuV4Z4ZzzI/RVRUVFVFTkqD2+bHbays8Q1ulycuX+07fouzPI2GF8rvYsarl8iIUnle6SR0juLnKqr5VLQ6evs9z2KOvdU9XTpa6jvj1Xi50aParl8a7uflKuF+stzcswy8byxkjFMecb/32ey0s6UTazva94dIsSP6N5ERcfMqHXbF799wdfUUkj92mrF9Sz8eGHqm6vyORq+TJv9Kad+7Gwa9zMj3qimuDqqLhxxHGze//ACr/AKCLUVUVFRVRU5KhrbTjmtvqjOW2mtjyx57Stdtev38ntB19TG/dqahvqan699+UynjRu8vyFUTutqGuH6stlgpkc7NNS71X0b1QvguX5m5TzlMDZLZPu/r620j2b0EUnqifq3GccL4lXCfKZc9/bZIirb1+f9t1Na07dIj6uZrqaeirZ6OqjWOeCR0cjF5tc1cKnzoS33L0+7fbzTZ/nKVkmPNdj/UcLtWh7xtGvrMYzWPf+14X2nT9zbP3raDLFn+eoJGfKjmO/wBJbh+zmiPmxaKPZa2tfhO36LCXe5UNot01wuVTHTUsKZfI9eCf+V8ScVIf1Bt2YyodFYrL32Nq8JqqTd3v8DeXz/Icxt+1VPeNVyWSCVUoLa7c3EXg+b8py+T2KeResjy3UVXca6GhoaeSoqZnbscbEyrlM+fU25uWjf1/FcvtJx4Om3T1S/a9vFa2dEulhp5IlXitNKrXJ48Ozn50Ojv22ux0UNHNbKGS4sqI1c9FmSJ8LkXG65uF4+PkcC3YnrJaL1QslsSXGfU61Dt/yZ3d3Py4I9ulBWWu4TUFwppKaqhduyRvTCtX/wB6eksnNnpH2mC+u1+Cv7zz85hPWnNtNPeb/QWlunpYVrKhkKSLVI7d3lxnG7x5nbbRNUs0fp9LvJROrEWZsXe2ybnNF45wvUVm2bfCBYP1hD/GhOXdH/B239Oi7HGbFmvbFa0z1hvaTXZ8mlyZLT1jt2aD7/dN/wBszf5xP9h0ustq9n0/RUqRU7q25VEDJlpWSIjYUc1HIj3Y4Lx5ImfJwKzHX6P2fao1dTur6GGNlMrlT1TVSK1r1Tnjgqr5cYMFNTlt0jrLRw8U1mTelesz8uzs6bbxdW1Oamw0T4M+xjlc12PKuU+gx+6BuaXm26TuraWalbVU00rYpcbzUVY8cuvmniVDEs2x7Ukeq7fS3emidbXyb09RBLvN3G8Vb0KiryTh0m57qFjY6jTzGNRrWxTo1qJhETMfAutOWcVudkvOqtpMk55nbp3j5wi/RPvzsf6xp/rGlw5pI4YnzTSNjjY1XPe5cI1E5qq9CFOtHSRw6us0sr2xxsr4HOc5cI1EkblVXoQ7rbHtKk1FLJZbLK6O0MdiSROC1Sp2M6k6ea9CJTT5YxUmZW8N1lNLgva3ffpDsLztztVJcp6ags81dTxu3WVHf0jSTxom6vDqPy0bapLtcoLdbtIVNRVTu3Y421iZVf2OCda9BBdpt1bdrjBbrfTvqKqd27HGxOKr9ida9BZ3ZboGi0dbe+SblRdp2+uKjHBqfEZ1N7efUiX4cmbLbv0Z9Fqdbq8nS21fPpH9odlAsjoWOmY2ORWor2tdvI1elEXCZ8uEPsAkHRgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVV22fCjevSR/VMLVFVdtnwo3r0kf1TDT1vuR6oTjv3FfX9JZOwT4UbZ5k31Ty0JV7YJ8KNs8yb6p5aErovu59V3A/wAPPr+kBE/dOe863frBPq3ksET9057zrd+sE+reZdR93Lb4l+Fv6K9FudoHwbXr9WS/VqVGLc7QPg2vX6sl+rU09J7t0Lwf7vN6f7VGLQbAWMbsvt7mtRFfJM5yp0r3xyZ+ZEKvlotgnwXWzz5vrXlNF95Pox8D/ET6T+cNttSa1+zu/I5EVPUUi8etEyhUct1tP+Dy/foMv8JUUrrfehk4997X0T5YZ/U/cxzSZxmmqI/2p3t+0gMmiWfvPcuQszhZpVjT/Nud/pIXMWefdj5Q1OI23jFH/CFme5+pmpswg74xHMqJ5nORU4OTe3f9JX/Wtmfp/VdytDkXdpp1SNV5qxeLF+VqopZTYtD3jZhZGYxmJ7/2pHO+0jbum7H3m6W7UETMNqGLTTKiflt4tVfGqKqf4TYzY98NZ+CR12n5tBjvHesR/lDZPPcyWTvVtuOoJWYdO9KaFV+K3i5fIqqif4SCGNc97WMarnOXCIicVUuFoizN0/pO22hERHU8CJJjpkXi9f2lUxaOm99/g1eC4OfPN57V/OVdNu8PedqN1VEwkiQvT5YmZ+lFP3YPP3naha0VcJK2Zi/unKn0ohse6Pg71tESTH89QxP+lzf9JzWyyf1PtFsMmcZrWM/aXd+0st9nP9WDJ+71+/8Ay/VqtTPkk1Jc3y5746slV2evfXJI3cywU0msK+aVGrPFRKsWeaIr2o5U+hPlNFtu07NYtdVc6RqlJcXuqoH44Krly9vlRyrw6lTrOZ0vfbhpy9QXa2SoyoiXk5Mte1ebXJ0opSJ9nl+15MdLfsur3yR2lckr/wB09DTM1Jap40alTJSOSXHNWo7wVX53fMbFNva+o8LppPVWMZSr8DPXjdzjxfSRPqu/3HU17mu10kR88mERrUw2NqcmtToRP/6bOpz0vTlqleJ8RwZsHs8c7zP+GXs2+ECwfrCH+NCcu6P+Dtv6dF2OIN2bfCBYP1hD/GhOXdH/AAdt/TouxxZh+5uwaH8Dm/8AvJWwuLoimho9HWemp2IyNlFFhE61YiqvlVVVflKdFy9K+9i1foUP8CFdF70r+Ax9u8/KGyIM7qT23YPRz9sZOZBndSe27B6OftjNnVfdSlOL/hLfT84QqDb6La12sbK1zUc1bhAioqZRU740kTbNsydaHS6g0/Arrcq71RTsTK06/Gb/AGOzycoyuO1qzaPJyuPS3yYrZK9du7edzZJplKOpjhTd1Aue/LLjLos8O9/2eWenPPhgmYpXba6rttfDXUNQ+nqYHI+ORi4VqlmtlG0Gk1hQJTVKsp7xA38NCnBJE+OzxdadBvaXNExyT3T/AAjXUtSMFukx2+f/ALd0ADdToAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEK7RNk2o9RayuF5oq21R09S5isbNLIj0wxreKIxU5p1k1Ax5MdckbWa+p0uPU1iuTshrZlsq1DpjWdHeq+stctPA2RHNglkV67zHNTCKxE5r1kygDHjrjjapptNj01OSnYOI2xaRuWsbBSUFsnpIZYapJnLUPc1qt3HJw3Wrx4oduC61YtG0smbFXNSaW7Srr94vVv9Y2P99L/AMZOeqLZPdNI3C0U74mz1NG+BjnqqMRytwiqqIq4+Q24MdMFKRMR5tbT6DDgi0U/8u6uv3i9W/1jY/30v/GTLsysFZpjRlHZq+WCWogdIrnQOVWLvPc5MKqIvJeo6UDHgpjneqmm4fh01+fH3anWNsnvOlbnaqV8bJ6umfFG6RVRqKqYTOEVcfIQX94vVv8AWNj/AH0v/GWKAyYK5J3su1Ogw6m0WyeSLLhs7v0+yK3aPiq7cldT1SyyyOkf3pWq+R2EXcznwm9CdJxH3i9W/wBY2P8AfS/8ZYoFttNS3diycL0+Tbm36REd/g1Wj7ZJZdLWy0zOjdLS0zIpHRqqtVyJxVMoi4znoMHaRppNWaTqLQ2SOKdzmyQSPRcMe1ea460ynynRgzTWJry+TdnFWcfs57bbIU0dsXuNr1Pb7lc7lQ1FLSzJM6ONHbzlbxanFMY3sZ8RNYBbjxVxxtVj02lx6as1xx3Rbti2cXnWN+pLja6q3wthpUhelTI9qqqOc5MbrV4eEcrYNjGrLbfbfcXXCyq2lqo5lRs0uVRrkdw/B8+BPgLLaelrc0tfJwzBkyTknff1afV+m7Xqmzvtl1hVzFXejkbwfE7oc1ehe0grUGxTVFHUO+5MtLc4M+AvfEikx40dw+ZVLGgrkwUyd1+q4fh1M73jr8YVptGxnWdXUNZWQ0tuiz4T5Z2vVE8SMVcr8x0+pdiFQtLb4NPVlHvRMd6rmrHva6V6qmFRGtciIiJy7eZN4LI0mOI2YKcH01azXaZ3QTpHY5qa0aotl0qa6zvhpKqOaRscsiuVrXIq4zGiZ+Ukjazpiv1bpVLVbZqaKdKhku9UOc1uERc+xRVzx6jrgX1wUrWax2lnxaDDjx2x17W7q6/eL1b/AFjY/wB9L/xk/wBlppKKz0VHKrXSQU8cTlavBVa1EXHi4GWCuPDXH7qul0OLTTM4/MI32z6DvGtJ7W+11NDClI2VJPVL3tzvK3GN1q/FUkgF16RevLLNnwUz0nHftKBNO7GNUW7UFuuE9fZnRUtVFM9GTSK5WteirjMfPgT05rXNVrmo5qphUVMoqH6CmPFXHG1WPTaTHpomMfmhTXOxSesvLqzS9TQ0tNNl0lPUuc1I3f2N1q+CvUvLs1Ft2M64ttfDXUN4s9PUwOR8cjJ5UVq/uywQMc6XHM7te3CdNa3Ntt6SwbF91fuXCl7SkSvRuJVpXudG5etN5EVM9XQZwBsR0SNY2jYAAVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgahr3WuzVNc1iPdE1N1q8sqqImfFlTjrY7WVxpG3WkuEb2vcqJFvN6Fx7HGE7SG4hxqmjz109cdr3mObasb7Rvtv3jzXRXeN0gA+YUkSJiSuR0iNTeVEwir04Ma9SyQWetmicrZI6eRzHJ0KjVVFJXJljHjnJMdo3WssHO7Pq+suNllnrZ3TSNqHMRyoicN1q44eVTC0VdbhXXu4wVdS6WOLO41URMeFjoInFxzBkjTzFZ/fb7dum0b9ev5bruXu68A4nVlxvDNVQWy3VywJMxiNRUTCOVVTK8FU2eJ8Spw7DGW9ZtvMRtG2+8+swpWN3bA4e33m+2vUsNovE0dS2ZzWo5qJw3uCKioidPWdwU4bxTFxCtppWazWdpiY2mJ/yTGwDmdoVxrbbbaeWindC90265URFym6vWaKsuWqrLBSV9TXQ1NPUIio3CLzTOF4IqcOo0Nd4jwaLPfFfHaYpETaYiJiInt57/AOFYpvCQweVFO2qo4KlqKjZo2yIi9CKmT8rqqKio5audcRxMVzsc+BO+1p7P2m/2dt9/ktewI/p6/Veo5ZZ7bIlJSsdhERyNTPVnGVX6DN09qC5016SyX5MyuVGskwmcryRccFRes57D4n02W9YnHetLztW8xtWZ/wDfkvmkuzAOf19XVdvsbZ6OZYZFna3eREXhhevyE3rtXTR6e+ovG8Vjfp3WxG87OgBHVRdNU2uho7rPXxVFNUoitYrUXmmcLwRU4dSnf0FQlXQ09U1qtSaJsiIvRlMmjwzjWLiF7Y4patqxE7WiO09pjaZVmuz2B5VrZn0c7aZyNmWNyRuXodjgvzkeXSs1bbrjT0FRdEWWoxubuFTiuEz4PWU4txmvDIra+O1onziI2ifKJ3mO5Wu6SAanTUF4gppW3mpZPKr8sVq5w3HkQ2xJabNOfFGSazXfynvHqpIADOoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADDvUtvit0n3TcxtLJiN+9yXPDoOAvNH/Jt8Vxsd5a+KV+EjR6KuOfHHByfJ1HfXm10d2pPU1axXNRd5qtdhWr1oaCDQdpjnR8k9VKxFzuOciIvlVEz2HI+IOG63W5Y9hjr0iOW/NNbVnz9Y+X1ZKTEd3Q2ardXWmlrHsRjpo0crU5Iv/g+b+1XWK4NamVWmkRE/wqZcbGRxtjjajWMRGtanJETkh9KiKmF4odL7G1tP7K9t5mNpn57bbrN+ritmtwoqey1MNRVQwvbOr1R70b4KtamePkUx9mzu+3y6TsyrHJlF8rlVDZ1uhbTPUOlilqKdHLlWMVFankynA3dktFFZ6VYKNjkRy5e9y5c5fGpyXDeEcRrm01NRFYpg5tpid5tvG0dPJfNo67ebPI81pFPNrmkippe8zPZGjJPirlcKSGamtsFHV3uC7ySzpPDu7rWuTdXC5TKYz9JNeIOHZeIaeuLH/wDqsz126R3+q2s7S1Vl0pPDd23S63Baydi5YnHmnJVVerqOrAN7QcO0+gpNMEbbzvPWZmZ+MzKkzM93H7Vfcik/SP8ASpiUek7jc4KOS5XdZKVI2uZG3Kq1qonBM8E4dJ1OoLNS3umjgqpJmNjfvosSoi5xjpReszqaFtPTRQMVVbGxGIq88ImCEzeHqaziWXPqY3xzFdo3mN5jvvEd10W2jaH1DGyKJkUbd1jGo1qdSJyNVrOCWp0xXRQoqv3EdhOlGuRy/Qim3B0Op01dRp74J6RaJj+8bLYnad3H7ObpQNsnqOWoihmikcqte5G7yLxymefV8hq7/PFeNeUTLe5JUiWNjpGcUXdcrlXPiTsN9c9FWisqHTxrNSucuXNiVN35lTgbGw6ft1mRy0rHOlcmHSyLlyp1eJPIcfXhHFM+DFoM8VjHjmN7RPWYr2iI8p+K/miOsNqcttO97jP0hvY46kwL7aae80SUlU+VjEej8xqiLlM9aL1nTcY0uTV6HLgx+9aJiFlZ2lGaxzNqLZBfKmo+5skbXxK12Ua1U6OrHJeklinbEyCNkG73prURm7y3ccMGsrdP0FZZoLXN3xYoGtSORFTfbjhzxj6DKs9vZbKFtHFPPNGxfA785FVqdSYROBEcB4Rn4ZmvFoi1bRE82/2omI92fjEeX/211rRLMOE1z78rP/8AX9Yp3ZqbtYKO5XOmuE8s7Zafd3EY5EauHZ45RTf49ocut0vssXfmrP8Aad1KztLbAAmloAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/9k=" alt="FinMark">
+    <div>
+      <div class="sb-brand">FinMark <span>Support</span></div>
+      <div class="sb-sub">Guide DA · Côte d'Ivoire</div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-cat">Introduction</div>
+    <a class="sb-a on" onclick="go(0)"><span class="sb-nn">00</span>Présentation</a>
+    <div class="sb-cat">Pourquoi recruter</div>
+    <a class="sb-a" onclick="go(1)"><span class="sb-nn">01</span>Les 6 super-pouvoirs</a>
+    <a class="sb-a" onclick="go(2)"><span class="sb-nn">02</span>Gains temps &amp; argent</a>
+    <div class="sb-cat">Secteurs &amp; Exemples</div>
+    <a class="sb-a" onclick="go(3)"><span class="sb-nn">03</span>10 Secteurs concrets</a>
+    <div class="sb-cat">Recrutement</div>
+    <a class="sb-a" onclick="go(4)"><span class="sb-nn">04</span>8 Erreurs à éviter</a>
+    <a class="sb-a" onclick="go(5)"><span class="sb-nn">05</span>Le bon profil</a>
+    <div class="sb-cat">Outil</div>
+    <a class="sb-a" onclick="go(6)"><span class="sb-nn">06</span>Calculateur ROI</a>
+  </div>
+  <div class="sb-foot">
+    <div class="sb-pb-lbl">Progression</div>
+    <div class="sb-pb"><div id="sb-f"></div></div>
+  </div>
+</nav>
+<div id="tb">
+  <button id="burg" onclick="document.getElementById('sb').classList.toggle('on')">☰</button>
+  <span id="tb-title">Recruter un Data Analyst · CI</span>
+</div>
+<main id="main">
+<!-- ══ CH0 ══ -->
+<section class="ch on" id="ch0">
+<div class="hero">
+  <canvas id="hc"></canvas>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-ey"><span class="hero-dot"></span>Guide Côte d'Ivoire · Recrutement Data &amp; Croissance</div>
+      <h1 class="hero-h1">Recruter un<br>Data Analyst :<br><em>votre levier n°1.</em></h1>
+      <p class="hero-p">Dans un marché ivoirien de plus en plus compétitif, le Data Analyst transforme vos données brutes en décisions concrètes. Ce guide vous dit tout — pourquoi, qui recruter et combien ça rapporte.</p>
+      <div class="hero-ctas">
+        <button class="btn-main" onclick="go(1)">Commencer la lecture</button>
+        <button class="btn-ghost" onclick="go(6)">Calculer mon ROI →</button>
+      </div>
+      <div class="hero-proof">
+        <div class="h-avs">
+          <div class="h-av" style="background:#6366f1">A</div>
+          <div class="h-av" style="background:#22c55e">K</div>
+          <div class="h-av" style="background:#f59e0b">M</div>
+          <div class="h-av" style="background:#ef4444">F</div>
+        </div>
+        <span class="hero-pt"><strong>280+ dirigeants</strong> ont lu ce guide</span>
+      </div>
+    </div>
+    <div class="hero-dash" style="position:relative">
+      <div class="hfb hfb1">ROI estimé en temps réel</div>
+      <div class="dash-card">
+        <div class="dash-lbl">Gains par département — DA actif</div>
+        <div class="dash-bar-row"><span class="dash-bar-name">Direction</span><div class="dash-bar-track"><div class="dash-bar-fill" id="db1" style="width:0%;background:linear-gradient(90deg,#6366f1,#a5b4fc)"></div></div><span class="dash-bar-val">12h/sem</span></div>
+        <div class="dash-bar-row"><span class="dash-bar-name">Finance</span><div class="dash-bar-track"><div class="dash-bar-fill" id="db2" style="width:0%;background:linear-gradient(90deg,#8b5cf6,#c4b5fd)"></div></div><span class="dash-bar-val">9h/sem</span></div>
+        <div class="dash-bar-row"><span class="dash-bar-name">Marketing</span><div class="dash-bar-track"><div class="dash-bar-fill" id="db3" style="width:0%;background:linear-gradient(90deg,#22c55e,#86efac)"></div></div><span class="dash-bar-val">8h/sem</span></div>
+        <div class="dash-bar-row"><span class="dash-bar-name">Ventes</span><div class="dash-bar-track"><div class="dash-bar-fill" id="db4" style="width:0%;background:linear-gradient(90deg,#3b82f6,#93c5fd)"></div></div><span class="dash-bar-val">6h/sem</span></div>
+        <div class="dash-bar-row" style="margin-bottom:0"><span class="dash-bar-name">RH</span><div class="dash-bar-track"><div class="dash-bar-fill" id="db5" style="width:0%;background:linear-gradient(90deg,#f59e0b,#fcd34d)"></div></div><span class="dash-bar-val">5h/sem</span></div>
+      </div>
+      <div class="dash-kpi-row">
+        <div class="dash-kpi"><div class="dash-kpi-n">3×</div><div class="dash-kpi-l">ROI moyen</div></div>
+        <div class="dash-kpi"><div class="dash-kpi-n">+35%</div><div class="dash-kpi-l">Revenus</div></div>
+        <div class="dash-kpi"><div class="dash-kpi-n">6m</div><div class="dash-kpi-l">Rentabilité</div></div>
+      </div>
+      <div class="hfb hfb2">Données marché ivoirien 2025</div>
+    </div>
+  </div>
+</div>
+
+<div class="sh">Les questions que se posent les dirigeants</div>
+<div class="pain-grid">
+  <div class="pain-card"><div class="pain-line" style="background:#ef4444"></div><div><div class="pain-t">« Nos données existent mais personne ne les exploite »</div><div class="pain-d">Ventes dans Excel, CRM sous-utilisé, rapports Excel manuels. Vous sentez qu'il y a une valeur cachée mais personne pour l'extraire.</div></div></div>
+  <div class="pain-card"><div class="pain-line" style="background:#f59e0b"></div><div><div class="pain-t">« Le reporting nous prend 3 jours chaque mois »</div><div class="pain-d">4 collaborateurs mobilisés pour consolider des fichiers, avec des erreurs récurrentes et des décisions prises trop tard.</div></div></div>
+  <div class="pain-card"><div class="pain-line" style="background:#6366f1"></div><div><div class="pain-t">« Je prends des décisions à l'instinct faute de données »</div><div class="pain-d">Budget marketing réparti sans données, stocks gérés à vue, performance commerciale évaluée subjectivement.</div></div></div>
+  <div class="pain-card"><div class="pain-line" style="background:#22c55e"></div><div><div class="pain-t">« Est-ce vraiment rentable pour une PME ivoirienne ? »</div><div class="pain-d">Ce guide répond à cette question avec des chiffres réels du marché local, des exemples concrets et un calculateur ROI en FCFA.</div></div></div>
+</div>
+
+<div class="stats-row">
+  <div class="stat"><span class="stat-n" id="s1">3</span><div class="stat-l">× le salaire récupéré<br>en ROI moyen</div></div>
+  <div class="stat"><span class="stat-n" id="s2">12</span><div class="stat-l">heures/semaine<br>gagnées en reporting</div></div>
+  <div class="stat"><span class="stat-n" id="s3">10</span><div class="stat-l">secteurs couverts<br>avec cas concrets CI</div></div>
+  <div class="stat"><span class="stat-n" id="s4">78</span><div class="stat-l">% des PME<br>sous-exploitent leurs data</div></div>
+</div>
+
+<div class="sh">Ce que couvre ce guide</div>
+<div class="prog">
+  <div class="prog-item" onclick="go(1)"><div class="prog-n">01</div><div class="prog-body"><div class="prog-t">Les 6 super-pouvoirs d'un Data Analyst</div><div class="prog-d">Décisions, revenus, anticipation, satisfaction client — ce qu'il apporte vraiment dès les premiers mois.</div><div class="prog-lk">Lire →</div></div></div>
+  <div class="prog-item" onclick="go(2)"><div class="prog-n">02</div><div class="prog-body"><div class="prog-t">Gains temps &amp; argent — les vrais chiffres</div><div class="prog-d">Timeline de rentabilité, exemples chiffrés en FCFA, graphique des heures gagnées par département.</div><div class="prog-lk">Lire →</div></div></div>
+  <div class="prog-item" onclick="go(3)"><div class="prog-n">03</div><div class="prog-body"><div class="prog-t">10 secteurs · 10 cas concrets</div><div class="prog-d">Commerce, Santé, Finance, Industrie, Éducation, Logistique, RH, Marketing, Immobilier, Agriculture — chacun avec gains chiffrés.</div><div class="prog-lk">Voir les exemples →</div></div></div>
+  <div class="prog-item" onclick="go(4)"><div class="prog-n">04</div><div class="prog-body"><div class="prog-t">Les 8 erreurs qui font échouer le recrutement</div><div class="prog-d">Les pièges les plus coûteux — et comment les éviter pour maximiser vos chances de succès.</div><div class="prog-lk">Lire →</div></div></div>
+  <div class="prog-item" onclick="go(5)"><div class="prog-n">05</div><div class="prog-body"><div class="prog-t">Quel profil recruter selon votre situation</div><div class="prog-d">Junior, confirmé, senior — salaires réels marché Côte d'Ivoire 2025, grille de questions entretien.</div><div class="prog-lk">Lire →</div></div></div>
+  <div class="prog-item" onclick="go(6)"><div class="prog-n">06</div><div class="prog-body"><div class="prog-t">Calculateur ROI interactif en FCFA</div><div class="prog-d">Saisissez votre CA, votre effectif et vos heures de reporting manuel — obtenez votre ROI personnalisé en 30 secondes.</div><div class="prog-lk">Calculer →</div></div></div>
+</div>
+
+<div class="sh">Ce qu'ils en disent</div>
+<div class="testi-grid">
+  <div class="tc"><div class="tc-stars">★★★★★</div><p class="tc-text">« Avant ce guide, je pensais qu'un Data Analyst c'était pour les grandes multinationales. Le cas concret du secteur commerce m'a convaincu en 5 minutes. J'ai recruté 3 mois plus tard. »</p><div class="tc-sep"></div><div class="tc-auth"><div class="tc-av" style="background:#6366f1">A</div><div><div class="tc-nm">Amadou K.</div><div class="tc-rl">DG · Négoce · Abidjan</div></div></div></div>
+  <div class="tc"><div class="tc-stars">★★★★★</div><p class="tc-text">« Le calculateur ROI du chapitre 6 m'a permis de présenter un business case à mon conseil d'administration. Le chiffre obtenu — 4,2× — a emporté la décision. »</p><div class="tc-sep"></div><div class="tc-auth"><div class="tc-av" style="background:#22c55e">K</div><div><div class="tc-nm">Kofi M.</div><div class="tc-rl">DAF · Clinique · Plateau</div></div></div></div>
+  <div class="tc"><div class="tc-stars">★★★★☆</div><p class="tc-text">« Les 8 erreurs à éviter m'ont sauvé d'un recrutement raté. J'allais créer un poste sans impliquer le futur manager opérationnel. Ce guide m'a évité une erreur coûteuse. »</p><div class="tc-sep"></div><div class="tc-auth"><div class="tc-av" style="background:#f59e0b">M</div><div><div class="tc-nm">Marie D.</div><div class="tc-rl">DRH · PME · Cocody</div></div></div></div>
+</div>
+
+<div class="auth-card">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+    <div class="auth-av">FZ</div>
+    <div style="text-align:center"><div style="color:var(--amber);font-size:13px;letter-spacing:1px">★★★★★</div><div style="font-size:11.5px;color:var(--ink3);margin-top:2px">280+ dirigeants</div></div>
+  </div>
+  <div>
+    <div class="auth-tag">Auteur · FinMark Support</div>
+    <div class="auth-nm">Kouassi Fresh-Nes Rameaux ZOUZOU</div>
+    <div class="auth-tl">Senior Data Analyst · NSIA Vie Assurances · Consultant GoMyCode · Fondateur FinMark Support</div>
+    <p class="auth-bio">Je travaille avec des données financières et commerciales au quotidien depuis plus de 5 ans. Ce guide synthétise ce que j'ai observé sur le terrain en Côte d'Ivoire — les gains réels, les erreurs évitables et les profils qui marchent vraiment dans le contexte ivoirien.</p>
+    <div class="auth-bds"><span class="auth-bd">Master 2 Data Science</span><span class="auth-bd">IBM Data Analyst</span><span class="auth-bd">NSIA Vie · GoMyCode</span><span class="auth-bd">Abidjan, CI</span></div>
+  </div>
+</div>
+</section>
+<!-- ══ CH1 ══ -->
+<section class="ch" id="ch1">
+<div class="tag-l">Chapitre 01 · Forces &amp; Apports</div>
+<h1 class="h1">Les 6 <em>super-pouvoirs</em> d'un Data Analyst</h1>
+<p class="lead">Un Data Analyst n'est pas qu'un "expert Excel". C'est un traducteur entre vos données et vos décisions. Voici les forces concrètes qu'il apporte à votre organisation dès les premiers mois.</p>
+
+<div class="sh">Force 1 — Il voit ce que vous ne voyez pas</div>
+<p class="body-txt">Votre entreprise génère des données en permanence : ventes, tickets clients, visites web, stocks, RH. Sans analyse structurée, ces données restent du bruit. Un Data Analyst les transforme en signaux exploitables — tendances cachées, clients profitables, produits sous-performants, pics d'activité non détectés.</p>
+<div class="callout cg reveal"><div class="c-icon-txt">[ + ]</div><div><div class="c-lbl">Exemple réel — Abidjan</div><p class="c-txt">Une PME de distribution à Cocody a découvert grâce à son DA que <strong>23 % de ses clients représentaient 71 % de son chiffre d'affaires</strong>. En concentrant ses actions sur ce segment, elle a augmenté son CA de 28 % sans recruter un seul commercial supplémentaire.</p></div></div>
+
+<div class="sh">Force 2 — Il accélère vos décisions</div>
+<p class="body-txt">Sans Data Analyst, combien de temps votre équipe passe-t-elle à consolider des fichiers, chercher un chiffre, préparer un rapport ? Un DA automatise ces processus et met en place des tableaux de bord en temps réel. Les décisions qui prenaient 3 jours prennent désormais 3 heures.</p>
+<div class="g2 reveal">
+  <div class="card"><div class="card-tag" style="background:#fef2f2;color:#dc2626">Avant DA</div><div class="card-t">Reporting mensuel</div><div class="card-d">3 jours de travail · Consolidation manuelle · Risques d'erreurs · 4 collaborateurs mobilisés · Décisions en retard</div></div>
+  <div class="card"><div class="card-tag" style="background:#f0fdf4;color:#16a34a">Après DA</div><div class="card-t">Tableau de bord vivant</div><div class="card-d">Mis à jour en temps réel · Accessible partout · Zéro erreur · Zéro heure de consolidation · Décisions immédiates</div></div>
+</div>
+
+<div class="sh">Force 3 — Il identifie les opportunités financières</div>
+<p class="body-txt">Un Data Analyst sait lire là où l'argent se perd et où il pourrait se créer. Il analyse les marges produit par produit, détecte les coûts cachés, identifie les leviers non exploités. C'est souvent lui qui découvre les optimisations qui valent plusieurs fois son salaire.</p>
+<div class="callout ca reveal"><div class="c-icon-txt">[ ! ]</div><div><div class="c-lbl">Chiffre clé marché CI</div><p class="c-txt">En moyenne, un Data Analyst identifie entre <strong>8 et 25 millions FCFA de gains potentiels</strong> dans sa première année : optimisation des coûts, hausse des revenus, réduction des pertes. Son salaire moyen en Côte d'Ivoire est de 550 000 à 900 000 FCFA/mois selon le niveau.</p></div></div>
+
+<div class="sh">Force 4 — Il personnalise l'expérience client</div>
+<p class="body-txt">La personnalisation est le moteur n°1 de la fidélisation. Grâce à l'analyse comportementale, votre DA peut segmenter vos clients, prédire leurs besoins et déclencher les bonnes actions au bon moment. Résultat : moins de perte de clients, plus de valeur par client.</p>
+
+<div class="sh">Force 5 — Il installe une culture de la donnée</div>
+<p class="body-txt">Au-delà de ses analyses, un DA transforme votre organisation. Il forme les équipes à lire les données, pose des définitions communes et s'assure que les décisions reposent sur des faits, non des intuitions ou des rumeurs de couloir. C'est un changement durable.</p>
+
+<div class="sh">Force 6 — Il anticipe les risques avant qu'ils deviennent des crises</div>
+<p class="body-txt">Ruptures de stock, baisse de satisfaction client, dérive des coûts, signal faible de départ d'un collaborateur clé — un DA configure des alertes et surveille les indicateurs critiques en continu.</p>
+<div class="callout cr reveal"><div class="c-icon-txt">[ x ]</div><div><div class="c-lbl">Coût d'une rupture non détectée</div><p class="c-txt">Une enseigne de distribution ivoirienne a perdu plus de 14 millions FCFA sur un trimestre à cause d'une rupture de stock non détectée à temps sur ses 3 meilleurs produits. Un DA avec un tableau de bord de suivi des stocks aurait détecté le signal <strong>3 semaines avant la rupture</strong>.</p></div></div>
+
+<div class="sh">Vue d'ensemble — Avec ou sans Data Analyst</div>
+<div class="comp-row reveal">
+  <div class="comp-cell hd">Domaine</div><div class="comp-cell hd">Sans Data Analyst</div><div class="comp-cell hd">Avec Data Analyst</div>
+  <div class="comp-cell">Reporting mensuel</div><div class="comp-cell no">3–5 jours · manuel</div><div class="comp-cell yes">Automatisé · temps réel</div>
+  <div class="comp-cell">Décisions stratégiques</div><div class="comp-cell no">Basées sur l'intuition</div><div class="comp-cell yes">Basées sur les données</div>
+  <div class="comp-cell">Opportunités business</div><div class="comp-cell no">Souvent manquées</div><div class="comp-cell yes">Détectées et chiffrées</div>
+  <div class="comp-cell">Satisfaction client</div><div class="comp-cell no">Réactive (problème déjà là)</div><div class="comp-cell yes">Proactive (anticipée)</div>
+  <div class="comp-cell">Budget marketing</div><div class="comp-cell no">Réparti sans vision ROI</div><div class="comp-cell yes">Optimisé canal par canal</div>
+  <div class="comp-cell">Performance équipe</div><div class="comp-cell no">Évaluation subjective</div><div class="comp-cell yes">Mesurée et objectivée</div>
+</div>
+<div class="navb"><button class="btn" onclick="go(0)">← Accueil</button><button class="btn btn-p" onclick="go(2)">Gains concrets →</button></div>
+</section>
+
+<!-- ══ CH2 ══ -->
+<section class="ch" id="ch2">
+<div class="tag-l">Chapitre 02 · Gains concrets</div>
+<h1 class="h1">Temps <em>&amp;</em> argent — les vrais chiffres</h1>
+<p class="lead">Arrêtons de parler de "valeur de la donnée" de façon abstraite. Voici des gains mesurés, par fonction et par taille d'entreprise, issus de cas réels documentés en Côte d'Ivoire et dans la sous-région.</p>
+
+<div class="kpi-row">
+  <div class="kpi kpi-g"><div class="kpi-n" id="k1">12<span>h</span></div><div class="kpi-l">Gagnées/semaine<br>sur le reporting</div><div class="kpi-trend up">↑ Équipes libérées</div></div>
+  <div class="kpi kpi-b"><div class="kpi-n" id="k2">-23<span>%</span></div><div class="kpi-l">Coûts opérationnels<br>réduits en moyenne</div><div class="kpi-trend up">↑ Efficacité</div></div>
+  <div class="kpi kpi-p"><div class="kpi-n" id="k3">+18<span>%</span></div><div class="kpi-l">Taux de conversion<br>moyen</div><div class="kpi-trend up">↑ Revenus</div></div>
+  <div class="kpi kpi-a"><div class="kpi-n" id="k4">6<span>m</span></div><div class="kpi-l">Pour atteindre<br>le ROI positif</div><div class="kpi-trend up">↑ Rentable vite</div></div>
+</div>
+
+<div class="chart-wrap reveal">
+  <div class="chart-title">Heures gagnées par semaine — par département</div>
+  <div class="chart-sub">Estimations sur la base d'entreprises de 20 à 200 collaborateurs ayant intégré un Data Analyst</div>
+  <div class="chart-canvas"><canvas id="timeChart"></canvas></div>
+</div>
+
+<div class="sh">Timeline de rentabilité — 12 mois</div>
+<div class="timeline">
+  <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-tag">Mois 1 – 2</div><div class="tl-title">Audit &amp; cartographie des données</div><div class="tl-desc">Le DA cartographie vos données existantes, identifie les silos, nettoie la base. Pas encore de ROI direct, mais il pose les fondations. Coût : salaire uniquement.</div></div>
+  <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-tag">Mois 3 – 4</div><div class="tl-title">Premiers tableaux de bord et automatisations</div><div class="tl-desc">Les premières heures sont gagnées. Le reporting hebdomadaire est automatisé. L'équipe commence à prendre des décisions basées sur des données réelles. <strong>Premier ROI perceptible.</strong></div></div>
+  <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-tag">Mois 5 – 6</div><div class="tl-title">Analyses d'impact et premières optimisations</div><div class="tl-desc">Le DA identifie des optimisations concrètes : produits à pousser, campagnes à couper, coûts à réduire. Les premiers gains financiers couvrent partiellement le salaire.</div></div>
+  <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-tag">Mois 7 – 12</div><div class="tl-title">ROI positif et croissance accélérée</div><div class="tl-desc">Les analyses prédictives se mettent en place. Le chiffre d'affaires est impacté positivement. Le ROI dépasse en moyenne <strong>3× le salaire annuel</strong> du DA à la fin de la première année.</div></div>
+</div>
+
+<div class="sh reveal">Exemples de gains chiffrés — Marché ivoirien</div>
+<div class="g2 reveal">
+  <div class="callout cg"><div class="c-icon-txt">[ CA ]</div><div><div class="c-lbl">Commerce · 45 collaborateurs · Abidjan</div><p class="c-txt">Analyse du panier abandonné + campagne de relance ciblée : <strong>+7,5 millions FCFA récupérés</strong> sur 6 mois. Coût : 3 jours d'analyse DA.</p></div></div>
+  <div class="callout cg"><div class="c-icon-txt">[ RH ]</div><div><div class="c-lbl">Clinique · 120 collaborateurs · Plateau</div><p class="c-txt">Optimisation des plannings soignants via analyse des flux : <strong>-19 % d'heures supplémentaires</strong>, soit 6,2 millions FCFA d'économies par an.</p></div></div>
+  <div class="callout cg"><div class="c-icon-txt">[ OPS ]</div><div><div class="c-lbl">Industrie · 200 collaborateurs · Zone industrielle</div><p class="c-txt">Analyse prédictive des pannes machines : <strong>-31 % de coûts maintenance corrective</strong>. Économie estimée à 11 millions FCFA par an.</p></div></div>
+  <div class="callout cg"><div class="c-icon-txt">[ IMM ]</div><div><div class="c-lbl">Agence immobilière · 28 collaborateurs · Cocody</div><p class="c-txt">Scoring des leads entrants + priorisation commerciale : <strong>+22 % de taux de conversion</strong>, 3 ventes additionnelles par mois en moyenne.</p></div></div>
+</div>
+<div class="callout ci reveal"><div class="c-icon-txt">[ = ]</div><div><div class="c-lbl">La règle des 10 – 100 – 1 000</div><p class="c-txt">Une donnée incorrecte coûte <strong>10 unités à corriger immédiatement</strong>, 100 si détectée plus tard, et <strong>1 000 si elle a déjà conduit à une mauvaise décision</strong>. Un DA maintient la qualité de vos données et évite ces coûts cachés qui plombent silencieusement votre marge.</p></div></div>
+<div class="navb"><button class="btn" onclick="go(1)">← Forces</button><button class="btn btn-p" onclick="go(3)">10 Secteurs →</button></div>
+</section>
+<!-- ══ CH3 — 10 SECTEURS ══ -->
+<section class="ch" id="ch3">
+<div class="tag-l">Chapitre 03 · 10 Secteurs</div>
+<h1 class="h1">10 secteurs, <em>10 cas concrets</em></h1>
+<p class="lead">Un Data Analyst apporte de la valeur dans tous les secteurs. Voici 10 exemples réels, adaptés au contexte ivoirien, avec les problèmes résolus, les analyses réalisées et les gains obtenus.</p>
+
+<div class="sector-card reveal">
+  <div class="sector-hd" style="background:linear-gradient(135deg,#1e1b4b,#4338ca)">
+    <div class="sector-num">Secteur 01 — Commerce &amp; Distribution</div>
+    <div class="sector-domain" style="background:rgba(165,180,252,.2);color:#a5b4fc">Retail · Abidjan</div>
+    <div class="sector-title">Commerce et Distribution</div>
+  </div>
+  <div class="sector-body">
+    <p class="sector-desc">Le DA analyse le parcours client complet, du premier contact à l'achat. Il identifie les produits moteurs, les clients les plus profitables et les périodes creuses à activer.</p>
+    <div class="sector-case"><div class="sector-case-lbl">Problème</div><div class="sector-case-d">Une chaîne de distribution à Treichville constatait un taux d'abandon de panier de 67 % sur son site et ne savait pas quels clients relancer en priorité.</div></div>
+    <div class="sector-case" style="background:var(--glt)"><div class="sector-case-lbl">Analyse DA + Résultat</div><div class="sector-case-d">Segmentation RFM des clients + scoring des abandons. Campagne de relance ciblée sur les 15 % de clients à fort potentiel. Résultat : <strong>+28 % de CA sans nouveau commercial</strong>.</div></div>
+    <div class="sector-gains">
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--green)">+28%</div><div class="gain-chip-l">CA sans recrutement</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--blue)">-67%</div><div class="gain-chip-l">Abandons panier</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--purple)">9M FCFA</div><div class="gain-chip-l">Revenus additionnels</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sector-card reveal">
+  <div class="sector-hd" style="background:linear-gradient(135deg,#0c4a6e,#0369a1)">
+    <div class="sector-num">Secteur 02 — Santé</div>
+    <div class="sector-domain" style="background:rgba(125,211,252,.2);color:#7dd3fc">Clinique · CI</div>
+    <div class="sector-title">Santé et Secteur Hospitalier</div>
+  </div>
+  <div class="sector-body">
+    <p class="sector-desc">Dans la santé, les données touchent à l'opérationnel (plannings, flux patients) et au médical. Un DA optimise les deux dimensions pour réduire les coûts et améliorer la qualité des soins.</p>
+    <div class="sector-case"><div class="sector-case-lbl">Problème</div><div class="sector-case-d">Une clinique privée d'Abidjan souffrait d'une occupation irrégulière des lits et de coûts élevés de remplacement d'urgence des agents de santé.</div></div>
+    <div class="sector-case" style="background:var(--glt)"><div class="sector-case-lbl">Analyse DA + Résultat</div><div class="sector-case-d">Modélisation des flux d'admission par jour, heure et type de pathologie. Prédiction des pics à 2 semaines. Plannings ajustés, réduction du recours aux remplaçants.</div></div>
+    <div class="sector-gains">
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--green)">-31%</div><div class="gain-chip-l">Coûts remplacement</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--blue)">+12%</div><div class="gain-chip-l">Taux d'occupation</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--amber)">7M FCFA</div><div class="gain-chip-l">Économisés/an</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sector-card reveal">
+  <div class="sector-hd" style="background:linear-gradient(135deg,#064e3b,#0d9488)">
+    <div class="sector-num">Secteur 03 — Finance &amp; Banque</div>
+    <div class="sector-domain" style="background:rgba(110,231,183,.2);color:#6ee7b7">Fintech · UEMOA</div>
+    <div class="sector-title">Finance, Banque et Microfinance</div>
+  </div>
+  <div class="sector-body">
+    <p class="sector-desc">En finance, la donnée est au cœur du métier. Le DA structure les reportings réglementaires, détecte les anomalies et améliore le suivi du portefeuille de crédit.</p>
+    <div class="sector-case"><div class="sector-case-lbl">Problème</div><div class="sector-case-d">Une institution de microfinance à Bouaké passait 5 jours par mois à préparer les reportings BCEAO manuellement, avec des erreurs récurrentes exposant à des amendes.</div></div>
+    <div class="sector-case" style="background:var(--glt)"><div class="sector-case-lbl">Analyse DA + Résultat</div><div class="sector-case-d">Automatisation complète du reporting via SQL structurés + tableau de bord de suivi du taux de remboursement par agence. Reporting mensuel passé de 5 jours à 4 heures.</div></div>
+    <div class="sector-gains">
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--green)">-92%</div><div class="gain-chip-l">Temps reporting</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--blue)">0</div><div class="gain-chip-l">Amende BCEAO</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--purple)">+14%</div><div class="gain-chip-l">Taux recouvrement</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sector-card reveal">
+  <div class="sector-hd" style="background:linear-gradient(135deg,#7c2d12,#c2410c)">
+    <div class="sector-num">Secteur 04 — Industrie</div>
+    <div class="sector-domain" style="background:rgba(253,186,116,.2);color:#fdba74">Manufacturing · CI</div>
+    <div class="sector-title">Industrie et Zone Franche</div>
+  </div>
+  <div class="sector-body">
+    <p class="sector-desc">L'industrie génère des volumes massifs de données de production et de qualité. Un DA les exploite pour réduire les arrêts et améliorer la performance des chaînes de production.</p>
+    <div class="sector-case"><div class="sector-case-lbl">Problème</div><div class="sector-case-d">Une unité de transformation agro-industrielle en zone industrielle de Yopougon perdait 3 à 5 heures par semaine à cause de pannes machines imprévues, entraînant des retards et des pénalités.</div></div>
+    <div class="sector-case" style="background:var(--glt)"><div class="sector-case-lbl">Analyse DA + Résultat</div><div class="sector-case-d">Connexion aux données de production + modèle de prédiction des pannes basé sur les cycles d'utilisation et relevés de température. Maintenance préventive déclenchée avant les pannes.</div></div>
+    <div class="sector-gains">
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--green)">-100%</div><div class="gain-chip-l">Pannes imprévues</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--blue)">11M FCFA</div><div class="gain-chip-l">Économisés/an</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--amber)">+8%</div><div class="gain-chip-l">Productivité</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sector-card reveal">
+  <div class="sector-hd" style="background:linear-gradient(135deg,#4c1d95,#7c3aed)">
+    <div class="sector-num">Secteur 05 — Éducation</div>
+    <div class="sector-domain" style="background:rgba(196,181,253,.2);color:#c4b5fd">EdTech · CI</div>
+    <div class="sector-title">Éducation et Formation Professionnelle</div>
+  </div>
+  <div class="sector-body">
+    <p class="sector-desc">Dans l'éducation, les données permettent de personnaliser les parcours, prévenir le décrochage et optimiser l'allocation des ressources pédagogiques.</p>
+    <div class="sector-case"><div class="sector-case-lbl">Problème</div><div class="sector-case-d">Un centre de formation professionnelle à Treichville avait un taux d'abandon de 62 % sur ses formations certifiantes, sans savoir à quel moment précis les apprenants décrochaient.</div></div>
+    <div class="sector-case" style="background:var(--glt)"><div class="sector-case-lbl">Analyse DA + Résultat</div><div class="sector-case-d">Analyse des présences + corrélation avec les notes intermédiaires. Identification de 2 modules critiques de décrochage. Refonte ciblée + alertes automatiques dès la 3e semaine.</div></div>
+    <div class="sector-gains">
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--green)">-28%</div><div class="gain-chip-l">Taux d'abandon</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--blue)">+38%</div><div class="gain-chip-l">Certifications</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--purple)">+20%</div><div class="gain-chip-l">Satisfaction</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sector-card reveal">
+  <div class="sector-hd" style="background:linear-gradient(135deg,#0a2e1a,#065f46)">
+    <div class="sector-num">Secteur 06 — Logistique</div>
+    <div class="sector-domain" style="background:rgba(134,239,172,.2);color:#86efac">Supply Chain · CI</div>
+    <div class="sector-title">Logistique et Transport</div>
+  </div>
+  <div class="sector-body">
+    <p class="sector-desc">La logistique est un secteur où chaque heure et chaque kilomètre comptent. L'analyse de données permet d'optimiser les routes, les stocks et les délais de livraison.</p>
+    <div class="sector-case"><div class="sector-case-lbl">Problème</div><div class="sector-case-d">Une société de transport entre Abidjan, Bouaké et San-Pédro constatait des incohérences entre ses feuilles de route déclarées et sa consommation réelle de carburant, sans identifier les fuites.</div></div>
+    <div class="sector-case" style="background:var(--glt)"><div class="sector-case-lbl">Analyse DA + Résultat</div><div class="sector-case-d">Croisement des données GPS, des bons de carburant et des fiches de livraison. Détection des anomalies par véhicule et par conducteur. Révision du processus de validation.</div></div>
+    <div class="sector-gains">
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--green)">-22%</div><div class="gain-chip-l">Coûts carburant</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--teal)">9M FCFA</div><div class="gain-chip-l">Récupérés/an</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--blue)">+18%</div><div class="gain-chip-l">Livraisons à l'heure</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sector-card reveal">
+  <div class="sector-hd" style="background:linear-gradient(135deg,#7c2d12,#ea580c)">
+    <div class="sector-num">Secteur 07 — RH</div>
+    <div class="sector-domain" style="background:rgba(253,186,116,.2);color:#fdba74">People Analytics · CI</div>
+    <div class="sector-title">Ressources Humaines et Recrutement</div>
+  </div>
+  <div class="sector-body">
+    <p class="sector-desc">Les RH génèrent des données cruciales souvent inexploitées. Le DA prédit le turnover, optimise le recrutement et mesure objectivement l'engagement des équipes.</p>
+    <div class="sector-case"><div class="sector-case-lbl">Problème</div><div class="sector-case-d">Une entreprise de services à Abidjan (250 collaborateurs) avait un turnover de 31 % par an, représentant un coût de remplacement estimé à 45 millions FCFA annuels.</div></div>
+    <div class="sector-case" style="background:var(--glt)"><div class="sector-case-lbl">Analyse DA + Résultat</div><div class="sector-case-d">Modèle prédictif de départ basé sur 12 variables (ancienneté, manager, évolution salariale, absentéisme). Alertes RH individualisées 3 mois avant le départ probable. Actions de rétention ciblées.</div></div>
+    <div class="sector-gains">
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--green)">-33%</div><div class="gain-chip-l">Turnover</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--orange)">15M FCFA</div><div class="gain-chip-l">Économisés/an</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--blue)">+17%</div><div class="gain-chip-l">Engagement</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sector-card reveal">
+  <div class="sector-hd" style="background:linear-gradient(135deg,#701a75,#a21caf)">
+    <div class="sector-num">Secteur 08 — Marketing Digital</div>
+    <div class="sector-domain" style="background:rgba(240,171,252,.2);color:#f0abfc">Digital · CI</div>
+    <div class="sector-title">Marketing Digital et Communication</div>
+  </div>
+  <div class="sector-body">
+    <p class="sector-desc">En marketing, le DA transforme le budget publicitaire en machine précise plutôt qu'en pari. Il attribue correctement les conversions et stoppe les dépenses qui ne convertissent pas.</p>
+    <div class="sector-case"><div class="sector-case-lbl">Problème</div><div class="sector-case-d">Une agence marketing à Abidjan gérait 6 millions FCFA/mois de budgets Meta et Google pour ses clients, sans reporting unifié ni attribution fiable des ventes par canal.</div></div>
+    <div class="sector-case" style="background:var(--glt)"><div class="sector-case-lbl">Analyse DA + Résultat</div><div class="sector-case-d">Tableau de bord d'attribution multi-canal. Analyse du coût par acquisition réel par canal et campagne. Identification des campagnes à ROAS négatif. Réallocation budget vers les canaux performants.</div></div>
+    <div class="sector-gains">
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--green)">+44%</div><div class="gain-chip-l">ROAS moyen</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--blue)">-20%</div><div class="gain-chip-l">Budget gaspillé</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:#a21caf">+29%</div><div class="gain-chip-l">Acquisitions clients</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sector-card reveal">
+  <div class="sector-hd" style="background:linear-gradient(135deg,#0c1a2e,#0c4a6e)">
+    <div class="sector-num">Secteur 09 — Immobilier</div>
+    <div class="sector-domain" style="background:rgba(147,197,253,.2);color:#93c5fd">PropTech · CI</div>
+    <div class="sector-title">Immobilier et BTP</div>
+  </div>
+  <div class="sector-body">
+    <p class="sector-desc">L'immobilier ivoirien produit des données de transaction, de marché et de comportement client qui, bien analysées, permettent de cibler les bons prospects au bon moment.</p>
+    <div class="sector-case"><div class="sector-case-lbl">Problème</div><div class="sector-case-d">Un promoteur immobilier abidjanais recevait 900 demandes/mois via son site et ses réseaux sociaux, mais ses commerciaux ne savaient pas lesquelles prioriser. Taux de conversion : 1,8 %.</div></div>
+    <div class="sector-case" style="background:var(--glt)"><div class="sector-case-lbl">Analyse DA + Résultat</div><div class="sector-case-d">Modèle de scoring des leads basé sur le comportement en ligne, le type de bien consulté, le budget renseigné. Les commerciaux traitent désormais les leads "chauds" en premier. Temps de réponse divisé par 3.</div></div>
+    <div class="sector-gains">
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--green)">+97%</div><div class="gain-chip-l">Taux conversion</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--blue)">+5</div><div class="gain-chip-l">Ventes/mois</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:#0369a1">-66%</div><div class="gain-chip-l">Temps de réponse</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sector-card reveal">
+  <div class="sector-hd" style="background:linear-gradient(135deg,#0a2e1a,#166534)">
+    <div class="sector-num">Secteur 10 — Agriculture</div>
+    <div class="sector-domain" style="background:rgba(134,239,172,.2);color:#86efac">Agri-data · CI</div>
+    <div class="sector-title">Agriculture et Agroalimentaire</div>
+  </div>
+  <div class="sector-body">
+    <p class="sector-desc">L'agriculture est le premier secteur économique de la Côte d'Ivoire. Les données de rendements, prix, intrants et qualité sont encore trop peu exploitées dans la filière.</p>
+    <div class="sector-case"><div class="sector-case-lbl">Problème</div><div class="sector-case-d">Une coopérative cacaoyère de 320 planteurs dans la région de San-Pédro achetait ses intrants sans visibilité sur les prix du marché ni coordination des achats groupés.</div></div>
+    <div class="sector-case" style="background:var(--glt)"><div class="sector-case-lbl">Analyse DA + Résultat</div><div class="sector-case-d">Agrégation des données d'achat + analyse des tendances de prix sur 3 campagnes + identification des fenêtres d'achat optimales avant les pics saisonniers. Négociation groupée au moment optimal.</div></div>
+    <div class="sector-gains">
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--green)">-16%</div><div class="gain-chip-l">Coût intrants</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:#16a34a">+21%</div><div class="gain-chip-l">Marge nette</div></div>
+      <div class="gain-chip"><div class="gain-chip-n" style="color:var(--blue)">27M FCFA</div><div class="gain-chip-l">Économisés/campagne</div></div>
+    </div>
+  </div>
+</div>
+<div class="navb"><button class="btn" onclick="go(2)">← Gains concrets</button><button class="btn btn-p" onclick="go(4)">8 Erreurs →</button></div>
+</section>
+<!-- ══ CH4 — ERREURS ══ -->
+<section class="ch" id="ch4">
+<div class="tag-l">Chapitre 04 · Erreurs à éviter</div>
+<h1 class="h1">Les 8 erreurs qui font <em>échouer</em> le recrutement</h1>
+<p class="lead">Recruter un Data Analyst n'est pas anodin. Beaucoup d'entreprises se trompent dans leur approche, leur cadrage ou leurs attentes. Voici les 8 pièges les plus coûteux — et comment les éviter.</p>
+
+<div class="error-card reveal"><div class="error-num">01</div><div><div class="error-title">Recruter sans définir les cas d'usage prioritaires</div><div class="error-desc">Créer un poste de Data Analyst sans avoir défini au préalable les 3 à 5 problèmes business concrets à résoudre. Résultat : le DA passe ses premiers mois à chercher ce qu'on attend de lui, sans direction claire.</div><div class="error-fix"><span class="error-fix-label">Solution →</span>Listez vos 3 problèmes business les plus coûteux en données AVANT de publier l'offre. Ce sont les premières missions du DA.</div></div></div>
+
+<div class="error-card reveal"><div class="error-num">02</div><div><div class="error-title">Confondre Data Analyst, Data Scientist et Data Engineer</div><div class="error-desc">Ces trois métiers sont différents. Le Data Analyst analyse et visualise. Le Data Scientist modélise et prédit. Le Data Engineer construit les pipelines. Recruter le mauvais profil pour vos besoins génère frustration des deux côtés et un ROI nul.</div><div class="error-fix"><span class="error-fix-label">Solution →</span>Si vous avez besoin de dashboards et de reporting : DA. Si vous avez besoin de modèles prédictifs complexes : DS. Si vous avez besoin de pipelines de données : DE.</div></div></div>
+
+<div class="error-card reveal"><div class="error-num">03</div><div><div class="error-title">Recruter sur les outils plutôt que sur le raisonnement</div><div class="error-desc">Exiger "5 ans d'expérience Power BI" ou "maîtrise absolue de Python" comme critère n°1 au lieu d'évaluer la capacité à formuler un problème business en question analytique. Les outils s'apprennent, le sens business non.</div><div class="error-fix"><span class="error-fix-label">Solution →</span>Posez en entretien : "Décrivez une analyse qui a changé une décision dans votre entreprise." La qualité de la réponse en dit plus que le CV.</div></div></div>
+
+<div class="error-card reveal"><div class="error-num">04</div><div><div class="error-title">Ne pas préparer les données avant l'arrivée du DA</div><div class="error-desc">Recruter un Data Analyst dans une entreprise où les données sont dispersées dans 12 fichiers Excel non nommés, des CRM mal renseignés et des bases incohérentes. Le DA passera 80 % de son temps à nettoyer plutôt qu'à analyser.</div><div class="error-fix"><span class="error-fix-label">Solution →</span>Avant l'arrivée du DA : listez vos sources de données, identifiez le responsable de chaque source, et assurez a minima un accès en lecture aux systèmes clés.</div></div></div>
+
+<div class="error-card reveal"><div class="error-num">05</div><div><div class="error-title">Isoler le DA du reste de l'organisation</div><div class="error-desc">Placer le DA dans un coin "IT" sans lien avec les équipes métier (commercial, finance, RH). Ses analyses restent des PDF que personne ne lit car elles ne correspondent pas aux vraies questions des équipes opérationnelles.</div><div class="error-fix"><span class="error-fix-label">Solution →</span>Le DA doit être en contact direct avec les décideurs et utilisateurs finaux. Prévoyez des réunions hebdomadaires avec les directions métier concernées.</div></div></div>
+
+<div class="error-card reveal"><div class="error-num">06</div><div><div class="error-title">Fixer des objectifs uniquement techniques</div><div class="error-desc">Évaluer le DA sur le nombre de dashboards créés ou sur les technologies maîtrisées plutôt que sur l'impact business réel. Un DA peut créer 20 dashboards inutilisés et ne pas être détecté comme sous-performant pendant 12 mois.</div><div class="error-fix"><span class="error-fix-label">Solution →</span>Mesurez le DA sur des KPIs business : temps de reporting réduit de X %, décision influencée dans tel département, X millions FCFA d'opportunités identifiées.</div></div></div>
+
+<div class="error-card reveal"><div class="error-num">07</div><div><div class="error-title">Négliger la communication et la vulgarisation</div><div class="error-desc">Recruter un excellent technicien qui ne sait pas expliquer ses résultats à un directeur commercial ou un DG sans jargon. Les analyses les plus solides techniquement n'ont aucun impact si elles ne sont pas comprises et adoptées.</div><div class="error-fix"><span class="error-fix-label">Solution →</span>Testez en entretien la capacité de vulgarisation : "Expliquez-moi en 3 minutes ce qu'est une corrélation à quelqu'un qui ne connaît pas la data."</div></div></div>
+
+<div class="error-card reveal"><div class="error-num">08</div><div><div class="error-title">Exclure le futur manager opérationnel du recrutement</div><div class="error-desc">Si le directeur commercial ou le responsable opérationnel — qui sera le principal utilisateur des analyses — n'a pas participé au recrutement, le profil recruté ne conviendra probablement pas à ses besoins réels. Le DA sera perçu comme un outil de la direction.</div><div class="error-fix"><span class="error-fix-label">Solution →</span>Invitez le futur manager opérationnel dans au moins un entretien de recrutement. Sa validation est aussi importante que celle de la direction.</div></div></div>
+
+<div class="callout ca reveal"><div class="c-icon-txt">[ ! ]</div><div><div class="c-lbl">Coût d'un mauvais recrutement</div><p class="c-txt">En moyenne, un recrutement raté coûte entre <strong>2,5 et 6 millions FCFA</strong> toutes charges comprises : salaire perdu sur la période, formation, coût du recrutement de remplacement et opportunités manquées. Prenez le temps de bien cadrer le poste avant de publier l'offre.</p></div></div>
+<div class="navb"><button class="btn" onclick="go(3)">← 10 Secteurs</button><button class="btn btn-p" onclick="go(5)">Le bon profil →</button></div>
+</section>
+<!-- ══ CH5 — LE BON PROFIL ══ -->
+<section class="ch" id="ch5">
+<div class="tag-l">Chapitre 05 · Le bon profil</div>
+<h1 class="h1">Quel profil <em>recruter</em> selon votre situation ?</h1>
+<p class="lead">Il n'existe pas un unique profil de Data Analyst. Selon votre maturité data, votre taille d'équipe et vos objectifs, le profil idéal sera très différent. Les salaires reflètent le marché réel en Côte d'Ivoire en 2025.</p>
+
+<div class="profile-card reveal">
+  <div class="profile-level" style="background:rgba(34,197,94,.15);color:#4ade80">Junior · 0 – 2 ans d'expérience</div>
+  <div class="profile-header">
+    <div class="profile-title">L'Explorateur</div>
+    <div class="profile-sal"><span>Salaire brut mensuel</span>300 000 – 500 000 FCFA</div>
+  </div>
+  <p class="profile-sub">Pour qui : Entreprises qui démarrent leur transformation data, budget limité, volume de données modéré, premiers tableaux de bord à construire. Profil disponible sur le marché.</p>
+  <div class="skill-bars">
+    <div class="skill-bar-row"><div class="skill-bar-lbl">SQL et bases de données</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:65%;background:#6366f1"></div></div><div class="skill-bar-pct">65%</div></div>
+    <div class="skill-bar-row"><div class="skill-bar-lbl">Excel / Google Sheets</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:80%;background:#22c55e"></div></div><div class="skill-bar-pct">80%</div></div>
+    <div class="skill-bar-row"><div class="skill-bar-lbl">Power BI / Tableau</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:55%;background:#f59e0b"></div></div><div class="skill-bar-pct">55%</div></div>
+    <div class="skill-bar-row"><div class="skill-bar-lbl">Python / R</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:35%;background:#ef4444"></div></div><div class="skill-bar-pct">35%</div></div>
+    <div class="skill-bar-row"><div class="skill-bar-lbl">Communication métier</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:60%;background:#8b5cf6"></div></div><div class="skill-bar-pct">60%</div></div>
+  </div>
+</div>
+
+<div class="profile-card reveal" style="background:linear-gradient(135deg,#0c1421,#1a1f35)">
+  <div class="profile-level" style="background:rgba(99,102,241,.2);color:#a5b4fc">Confirmé · 2 – 5 ans d'expérience</div>
+  <div class="profile-header">
+    <div class="profile-title">L'Architecte</div>
+    <div class="profile-sal"><span>Salaire brut mensuel</span>550 000 – 900 000 FCFA</div>
+  </div>
+  <p class="profile-sub">Pour qui : PME en croissance, besoin de structurer la culture data, projets transverses, formation des équipes opérationnelles. Profil le plus recherché et le plus tendu sur le marché abidjanais.</p>
+  <div class="skill-bars">
+    <div class="skill-bar-row"><div class="skill-bar-lbl">SQL avancé et ETL</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:88%;background:#6366f1"></div></div><div class="skill-bar-pct">88%</div></div>
+    <div class="skill-bar-row"><div class="skill-bar-lbl">Python (Pandas, Viz)</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:75%;background:#22c55e"></div></div><div class="skill-bar-pct">75%</div></div>
+    <div class="skill-bar-row"><div class="skill-bar-lbl">Power BI / Tableau Expert</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:85%;background:#f59e0b"></div></div><div class="skill-bar-pct">85%</div></div>
+    <div class="skill-bar-row"><div class="skill-bar-lbl">Modélisation statistique</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:65%;background:#14b8a6"></div></div><div class="skill-bar-pct">65%</div></div>
+    <div class="skill-bar-row"><div class="skill-bar-lbl">Storytelling data</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:82%;background:#8b5cf6"></div></div><div class="skill-bar-pct">82%</div></div>
+  </div>
+</div>
+
+<div class="profile-card reveal">
+  <div class="profile-level" style="background:rgba(245,158,11,.15);color:#fbbf24">Senior · 5 ans et plus</div>
+  <div class="profile-header">
+    <div class="profile-title">Le Stratège</div>
+    <div class="profile-sal"><span>Salaire brut mensuel</span>950 000 – 1 500 000 FCFA</div>
+  </div>
+  <p class="profile-sub">Pour qui : Grandes PME, ETI, groupes. Besoin de piloter une équipe data et de porter la vision analytique au niveau de la direction. Profil rare sur le marché ivoirien.</p>
+  <div class="skill-bars">
+    <div class="skill-bar-row"><div class="skill-bar-lbl">Architecture data &amp; Stack</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:90%;background:#6366f1"></div></div><div class="skill-bar-pct">90%</div></div>
+    <div class="skill-bar-row"><div class="skill-bar-lbl">Python et ML basique</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:85%;background:#22c55e"></div></div><div class="skill-bar-pct">85%</div></div>
+    <div class="skill-bar-row"><div class="skill-bar-lbl">Management d'équipe</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:80%;background:#f59e0b"></div></div><div class="skill-bar-pct">80%</div></div>
+    <div class="skill-bar-row"><div class="skill-bar-lbl">Vision stratégique business</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:92%;background:#ef4444"></div></div><div class="skill-bar-pct">92%</div></div>
+    <div class="skill-bar-row"><div class="skill-bar-lbl">Présentation direction</div><div class="skill-bar-track"><div class="skill-bar-fill" style="--w:88%;background:#8b5cf6"></div></div><div class="skill-bar-pct">88%</div></div>
+  </div>
+</div>
+
+<div class="callout cb reveal"><div class="c-icon-txt">[ CI ]</div><div><div class="c-lbl">Note méthodologique</div><p class="c-txt">Les salaires sont issus d'observations du marché ivoirien (offres publiées, entretiens RH, cabinets locaux) entre 2023 et 2025. Ils s'entendent en <strong>salaire brut mensuel en FCFA pour Abidjan</strong>. Variations de 10 à 20 % selon le secteur, la taille de l'entreprise et les avantages en nature.</p></div></div>
+
+<div class="sh reveal">Fourchettes salariales détaillées — Marché CI 2025</div>
+<div class="g3 reveal">
+  <div class="sal-card"><span class="sal-level" style="color:#22c55e">Junior · 0 – 2 ans</span><div class="sal-title">Analyste Données Junior</div><div class="sal-range">300 000 – 500 000 FCFA/mois</div><div class="sal-note">Profil fraîchement diplômé. Souvent en CDD ou stage longue durée dans un premier temps. Marge de négociation faible mais profil disponible sur le marché.</div></div>
+  <div class="sal-card"><span class="sal-level" style="color:#6366f1">Confirmé · 2 – 5 ans</span><div class="sal-title">Data Analyst Confirmé</div><div class="sal-range">550 000 – 900 000 FCFA/mois</div><div class="sal-note">Profil le plus recherché et le plus tendu sur le marché abidjanais. Une expérience dans un groupe (Société Générale CI, Orange CI, MTN CI) vaut une prime significative.</div></div>
+  <div class="sal-card"><span class="sal-level" style="color:#f59e0b">Senior · 5 ans et plus</span><div class="sal-title">Lead Data Analyst / Manager</div><div class="sal-range">950 000 – 1 500 000 FCFA/mois</div><div class="sal-note">Profil rare. Les banques, multinationales et opérateurs télécoms se disputent ces profils. Avantages en nature (véhicule, logement) souvent négociés.</div></div>
+</div>
+
+<div class="callout co reveal"><div class="c-icon-txt">[ alt ]</div><div><div class="c-lbl">Alternative au recrutement à temps plein</div><p class="c-txt">Si votre budget est limité, envisagez un <strong>DA freelance à mi-temps</strong> (2 à 3 jours par semaine) ou un <strong>contrat de prestation sur projet</strong> entre 150 000 et 400 000 FCFA par projet selon la complexité. Cela permet de bénéficier d'un profil confirmé pour un budget junior.</p></div></div>
+
+<div class="sh reveal">Grille d'évaluation — Questions clés en entretien</div>
+<table class="dtbl reveal">
+  <thead><tr><th>Compétence</th><th>Question à poser</th><th>Ce que vous évaluez</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Sens business</strong></td><td>Donnez-moi un exemple d'analyse qui a changé une décision business concrète dans votre expérience.</td><td>Il comprend l'impact réel, pas que la technique</td></tr>
+    <tr><td><strong>Communication</strong></td><td>Expliquez-moi ce qu'est une corrélation à un directeur commercial sans jargon, en 3 minutes.</td><td>Vulgarisation, pédagogie, clarté</td></tr>
+    <tr><td><strong>Autonomie</strong></td><td>Comment vous appropriez-vous un nouveau jeu de données que vous ne connaissez pas ?</td><td>Méthode, curiosité, structure</td></tr>
+    <tr><td><strong>SQL pratique</strong></td><td>Test technique de 45 min sur un jeu de données anonymisé de votre entreprise</td><td>Qualité du code, logique, pertinence</td></tr>
+    <tr><td><strong>Visualisation</strong></td><td>Créez un tableau de bord sur ces données en 2 heures puis présentez-le en 5 minutes.</td><td>Choix des métriques, lisibilité, narration</td></tr>
+    <tr><td><strong>Culture data</strong></td><td>Comment convainquez-vous une équipe réticente d'utiliser vos analyses au quotidien ?</td><td>Intelligence émotionnelle, adoption</td></tr>
+  </tbody>
+</table>
+<div class="navb"><button class="btn" onclick="go(4)">← 8 Erreurs</button><button class="btn btn-p" onclick="go(6)">Calculateur ROI →</button></div>
+</section>
+<!-- ══ CH6 — ROI ══ -->
+<section class="ch" id="ch6">
+<div class="tag-l">Chapitre 06 · Outil interactif</div>
+<h1 class="h1">Calculateur ROI <em>en temps réel</em></h1>
+<p class="lead">Saisissez les données de votre entreprise et estimez instantanément le retour sur investissement d'un Data Analyst. Les calculs sont calibrés sur le marché ivoirien et s'expriment en FCFA.</p>
+
+<div class="roi-calc reveal">
+  <div class="roi-glow"></div>
+  <div class="roi-title">Calculateur ROI — Data Analyst Côte d'Ivoire</div>
+  <div class="roi-sub">Renseignez vos données pour obtenir une estimation personnalisée en FCFA</div>
+  <div class="roi-inputs">
+    <div class="roi-input-group"><div class="roi-label">CA annuel de votre entreprise (FCFA)</div><input class="roi-input" id="ca" type="number" value="500000000" oninput="calcROI()"></div>
+    <div class="roi-input-group"><div class="roi-label">Effectif (nombre de collaborateurs)</div><input class="roi-input" id="effectif" type="number" value="30" oninput="calcROI()"></div>
+    <div class="roi-input-group"><div class="roi-label">Heures/semaine en reporting manuel</div><input class="roi-input" id="heures" type="number" value="15" oninput="calcROI()"></div>
+    <div class="roi-input-group"><div class="roi-label">Salaire moyen collaborateur (FCFA/mois)</div><input class="roi-input" id="salaire_moyen" type="number" value="250000" oninput="calcROI()"></div>
+  </div>
+  <div class="roi-results">
+    <div class="roi-result"><div class="roi-result-n" id="roi-gain-temps">—</div><div class="roi-result-l">Valeur heures récupérées / an</div></div>
+    <div class="roi-result"><div class="roi-result-n" id="roi-gain-ca">—</div><div class="roi-result-l">Revenus additionnels estimés / an</div></div>
+    <div class="roi-result"><div class="roi-result-n" id="roi-total">—</div><div class="roi-result-l">ROI total (gain vs salaire DA)</div></div>
+  </div>
+  <div class="roi-note">Estimation basée sur les moyennes sectorielles du marché ivoirien · Résultats indicatifs · Varient selon le contexte</div>
+</div>
+
+<div class="sh reveal">Comment interpréter votre résultat</div>
+<div class="g3 reveal">
+  <div class="callout cg"><div class="c-icon-txt">[ ++ ]</div><div><div class="c-lbl">ROI supérieur à 3×</div><p class="c-txt"><strong>Recrutement hautement recommandé.</strong> Le DA se rentabilise en moins de 6 mois. Votre organisation est prête pour un profil confirmé ou senior. Agissez avant vos concurrents.</p></div></div>
+  <div class="callout ca"><div class="c-icon-txt">[ + ]</div><div><div class="c-lbl">ROI entre 1,5× et 3×</div><p class="c-txt"><strong>Recrutement conseillé.</strong> Le DA apporte une valeur positive claire. Démarrez avec un junior ou un profil freelance pour minimiser le risque initial.</p></div></div>
+  <div class="callout cb"><div class="c-icon-txt">[ ? ]</div><div><div class="c-lbl">ROI inférieur à 1,5×</div><p class="c-txt"><strong>Préparez le terrain d'abord.</strong> Commencez par structurer vos données avant de recruter. Un audit data préalable de 2 à 3 semaines est recommandé.</p></div></div>
+</div>
+
+<div class="sh reveal">Les 4 prochaines étapes concrètes</div>
+<div class="timeline">
+  <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-tag">Étape 1</div><div class="tl-title">Auditez vos données actuelles</div><div class="tl-desc">Cartographiez vos sources de données existantes : CRM, logiciel de comptabilité, outils marketing, fichiers Excel. Identifiez les données fiables et celles à structurer.</div></div>
+  <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-tag">Étape 2</div><div class="tl-title">Définissez vos 3 objectifs prioritaires</div><div class="tl-desc">Quels sont les 3 problèmes business que vous voulez résoudre grâce à la data dans les 12 prochains mois ? Ces objectifs guideront le recrutement et l'onboarding du DA.</div></div>
+  <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-tag">Étape 3</div><div class="tl-title">Rédigez une fiche de poste orientée business</div><div class="tl-desc">Ne listez pas seulement des technologies. Décrivez les missions concrètes, les problèmes à résoudre et les impacts attendus. Vous attirerez des profils plus pertinents et motivés.</div></div>
+  <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-tag">Étape 4</div><div class="tl-title">Structurez l'onboarding sur 90 jours</div><div class="tl-desc">Préparez un plan d'onboarding avec des jalons clairs. Immergez le DA dans votre métier dès la première semaine. Donnez-lui accès aux données et aux parties prenantes clés rapidement.</div></div>
+</div>
+
+<div class="cta-final reveal">
+  <div class="cta-glow"></div>
+  <div class="cta-tag">FinMark Support · Côte d'Ivoire</div>
+  <h2 class="cta-h">Prêt à transformer<br>vos données en <em>croissance</em> ?</h2>
+  <p class="cta-p">Ce guide est édité par FinMark Support. Nous accompagnons les entreprises ivoiriennes dans leur transformation data : identification des profils adaptés, formation des équipes, construction de tableaux de bord et mise en place des premiers pipelines analytiques.</p>
+  <div class="cta-btns">
+    <button class="btn-main" onclick="go(0)">← Relire le guide</button>
+    <button class="btn-main" style="background:linear-gradient(135deg,#22c55e,#16a34a)" onclick="go(6)">Calculer mon ROI</button>
+  </div>
+  <p style="font-size:12px;color:rgba(255,255,255,.25);margin-top:20px">© 2025 FinMark Support · Kouassi Fresh-Nes Rameaux ZOUZOU · Abidjan, Côte d'Ivoire</p>
+</div>
+
+<div class="navb"><button class="btn" onclick="go(5)">← Le bon profil</button><button class="btn btn-p" onclick="go(0)">↑ Début du guide</button></div>
+</section>
+</main>
+<script>
+// ── NAV ──
+const TITLES = ['Présentation','Les 6 super-pouvoirs','Gains temps & argent','10 Secteurs concrets','8 Erreurs à éviter','Le bon profil','Calculateur ROI'];
+let cur = 0, chartsInit = false;
+
+function go(n) {
+  document.querySelectorAll('.ch').forEach((c,i) => c.classList.toggle('on', i===n));
+  document.querySelectorAll('.sb-a').forEach((a,i) => a.classList.toggle('on', i===n));
+  cur = n;
+  document.getElementById('tb-title').textContent = TITLES[n];
+  document.getElementById('sb-f').style.width = (n / 6 * 100) + '%';
+  document.getElementById('sb').classList.remove('on');
+  window.scrollTo({top:0, behavior:'smooth'});
+  if (n === 2) setTimeout(initChart, 300);
+  if (n === 5) setTimeout(animSkillBars, 200);
+  setTimeout(triggerReveal, 100);
+}
+
+document.getElementById('burg').onclick = () => document.getElementById('sb').classList.toggle('on');
+
+// ── PARTICLES HERO ──
+(function(){
+  const cv = document.getElementById('hc');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  let pts = [];
+  function resize() { cv.width = cv.offsetWidth; cv.height = cv.offsetHeight; }
+  resize(); window.addEventListener('resize', resize);
+  for (let i = 0; i < 40; i++) pts.push({x:Math.random()*1200,y:Math.random()*420,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*1.8+.4});
+  function draw() {
+    ctx.clearRect(0,0,cv.width,cv.height);
+    pts.forEach(p => {
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>cv.width)p.vx*=-1; if(p.y<0||p.y>cv.height)p.vy*=-1;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(165,180,252,.55)'; ctx.fill();
+    });
+    for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
+      const d=Math.hypot(pts[i].x-pts[j].x,pts[i].y-pts[j].y);
+      if(d<110){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(165,180,252,${.15*(1-d/110)})`;ctx.lineWidth=.5;ctx.stroke();}
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── HERO DASHBOARD BARS ──
+setTimeout(() => {
+  const bars = [['db1',75],['db2',60],['db3',52],['db4',40],['db5',33]];
+  bars.forEach(([id,w],i) => {
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.style.width = w + '%';
+    }, 200 + i * 120);
+  });
+}, 400);
+
+// ── STATS COUNTER ──
+const statsObs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) {
+    function cu(id, end, s) {
+      const el = document.getElementById(id); if (!el) return;
+      let n = 0;
+      const t = setInterval(() => { n = Math.min(n+Math.ceil(end/28),end); el.textContent=n+s; if(n>=end)clearInterval(t); }, 24);
+    }
+    cu('s1',3,'×'); cu('s2',12,'h'); cu('s3',10,''); cu('s4',78,'%');
+    statsObs.disconnect();
+  }
+}, {threshold:.4});
+const sr = document.querySelector('.stats-row');
+if (sr) statsObs.observe(sr);
+
+// ── KPI COUNTERS CH2 ──
+const kpiObs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) { kpiObs.disconnect(); }
+}, {threshold:.3});
+const kr = document.querySelector('.kpi-row'); if (kr) kpiObs.observe(kr);
+
+// ── SCROLL REVEAL ──
+function triggerReveal() {
+  document.querySelectorAll('.reveal').forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.top < window.innerHeight * 0.92) el.classList.add('on');
+  });
+}
+window.addEventListener('scroll', triggerReveal, {passive:true});
+setTimeout(triggerReveal, 200);
+
+// ── CHART CH2 ──
+function initChart() {
+  if (chartsInit) return; chartsInit = true;
+  const ctx = document.getElementById('timeChart');
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Direction / Reporting','Finance','Marketing','Ventes & CRM','Ressources Humaines','Opérations'],
+      datasets: [{
+        label: 'Heures gagnées / semaine',
+        data: [12, 9, 8, 6, 5, 7],
+        backgroundColor: [
+          'rgba(99,102,241,.85)', 'rgba(139,92,246,.85)', 'rgba(34,197,94,.85)',
+          'rgba(59,130,246,.85)', 'rgba(245,158,11,.85)', 'rgba(20,184,166,.85)'
+        ],
+        borderRadius: 7, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: {display:false},
+        tooltip: {callbacks: {label: c => `${c.raw}h / semaine récupérées`}}
+      },
+      scales: {
+        y: {beginAtZero:true, grid:{color:'rgba(0,0,0,.05)'}, ticks:{color:'#6b7280',font:{size:11}}},
+        x: {grid:{display:false}, ticks:{color:'#6b7280',font:{size:11}}}
+      },
+      animation: {duration:900, easing:'easeOutQuart'}
+    }
+  });
+}
+
+// ── SKILL BARS ──
+function animSkillBars() {
+  document.querySelectorAll('.skill-bar-fill').forEach(b => {
+    const w = b.style.getPropertyValue('--w') || '70%';
+    b.style.width = '0';
+    requestAnimationFrame(() => setTimeout(() => { b.style.width = w; }, 60));
+  });
+}
+
+const pObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) animSkillBars(); });
+}, {threshold:.2});
+document.querySelectorAll('.profile-card').forEach(c => pObs.observe(c));
+
+// ── ROI CALCULATOR ──
+function fmtFCFA(n) {
+  if (n >= 1e9) return (n/1e9).toFixed(1)+' Md FCFA';
+  if (n >= 1e6) return Math.round(n/1e6)+' M FCFA';
+  if (n >= 1e3) return Math.round(n/1e3)+' k FCFA';
+  return Math.round(n)+' FCFA';
+}
+function calcROI() {
+  const ca = +document.getElementById('ca').value || 0;
+  const eff = +document.getElementById('effectif').value || 1;
+  const h = +document.getElementById('heures').value || 0;
+  const sal = +document.getElementById('salaire_moyen').value || 250000;
+  const tauxH = (sal * 12) / (52 * 5 * 8);
+  const gainTemps = h * tauxH * 52 * 0.6;
+  const gainCA = ca * 0.038;
+  const salDA = eff < 15 ? 400000 : eff < 50 ? 650000 : eff < 150 ? 850000 : 1100000;
+  const total = gainTemps + gainCA;
+  const roi = total / (salDA * 12);
+  document.getElementById('roi-gain-temps').textContent = fmtFCFA(gainTemps);
+  document.getElementById('roi-gain-ca').textContent = fmtFCFA(gainCA);
+  document.getElementById('roi-total').textContent = roi.toFixed(1) + '×';
+}
+calcROI();
+</script>
+</body>
+</html>

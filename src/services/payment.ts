@@ -1,25 +1,32 @@
 // Service de paiement GeniusPay côté client.
-// Inspiré de topic_exam/src/services/payment.ts
+// L'accès aux cours est géré côté Firestore via AuthContext.
 
-export type CourseSlug = 'dataviz' | 'sql' | 'kpi' | 'bundle';
+export type CourseSlug = 'dataviz' | 'sql' | 'kpi' | 'python' | 'scoring' | 'recrutement' | 'bundle';
 
 // Doit rester aligné avec COURSE_PRICES dans netlify/functions/create-payment.ts.
 export const COURSE_PRICES: Record<CourseSlug, number> = {
   dataviz: 12900,
   sql: 12900,
   kpi: 12900,
-  bundle: 29900,
+  python: 12900,
+  scoring: 12900,
+  recrutement: 12900,
+  bundle: 44900,
 };
 
 export const COURSE_NAMES: Record<CourseSlug, string> = {
   dataviz: 'Maîtriser la Data Visualisation',
   sql: 'Maîtriser SQL',
   kpi: 'Maîtriser les KPIs',
-  bundle: 'Bundle — 3 formations data',
+  python: 'Python & Data Analytics',
+  scoring: 'Scoring & Modèles prédictifs',
+  recrutement: "Recruter un Data Analyst en Côte d'Ivoire",
+  bundle: 'Bundle complet — toutes les formations',
 };
 
 export interface CreatePaymentParams {
   courseSlug: CourseSlug;
+  uid: string;
   email: string;
   displayName?: string;
   phone?: string;
@@ -140,36 +147,4 @@ export async function verifyCoursePayment(reference: string): Promise<VerifyPaym
     throw new PaymentApiError(err, res.status);
   }
   return data.data as VerifyPaymentResponse;
-}
-
-// Stockage local des cours débloqués après paiement validé.
-const UNLOCK_KEY = 'finmark.unlocked';
-
-export function getUnlockedCourses(): CourseSlug[] {
-  try {
-    const raw = localStorage.getItem(UNLOCK_KEY);
-    if (!raw) return [];
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr.filter((s): s is CourseSlug => s in COURSE_PRICES) : [];
-  } catch {
-    return [];
-  }
-}
-
-export function unlockCourse(slug: CourseSlug): void {
-  const current = new Set(getUnlockedCourses());
-  if (slug === 'bundle') {
-    current.add('dataviz');
-    current.add('sql');
-    current.add('kpi');
-  } else {
-    current.add(slug);
-  }
-  try {
-    localStorage.setItem(UNLOCK_KEY, JSON.stringify([...current]));
-  } catch { /* ignore */ }
-}
-
-export function isCourseUnlocked(slug: CourseSlug): boolean {
-  return getUnlockedCourses().includes(slug);
 }
