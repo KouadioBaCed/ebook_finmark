@@ -67,8 +67,10 @@ async function fetchPayment(
   ref: string,
   apiKey: string,
   apiSecret: string,
-): Promise<{ ok: boolean; status: number; tx?: GeniusPayTx; error?: { code: string; message: string } }> {
-  const upstream = await fetch(`${baseUrl}/payments/${encodeURIComponent(ref)}`, {
+): Promise<{ ok: boolean; status: number; tx?: GeniusPayTx; error?: { code: string; message: string }; raw?: string }> {
+  const url = `${baseUrl}/payments/${encodeURIComponent(ref)}`;
+  console.log('[verify-payment] GET', url);
+  const upstream = await fetch(url, {
     method: 'GET',
     headers: {
       'X-API-Key': apiKey,
@@ -76,14 +78,18 @@ async function fetchPayment(
       Accept: 'application/json',
     },
   });
-  const data = await upstream.json().catch(() => null);
+  const rawText = await upstream.text();
+  console.log('[verify-payment] upstream status', upstream.status, 'body', rawText.slice(0, 500));
+  let data: { success?: boolean; data?: GeniusPayTx; error?: { code: string; message: string } } | null = null;
+  try { data = rawText ? JSON.parse(rawText) : null; } catch { /* not JSON */ }
   if (upstream.ok && data?.success) {
     return { ok: true, status: upstream.status, tx: data.data as GeniusPayTx };
   }
   return {
     ok: false,
     status: upstream.status || 404,
-    error: data?.error || { code: 'TRANSACTION_NOT_FOUND', message: 'Transaction not found' },
+    error: data?.error || { code: 'TRANSACTION_NOT_FOUND', message: `Transaction not found (upstream ${upstream.status}: ${rawText.slice(0, 200)})` },
+    raw: rawText.slice(0, 500),
   };
 }
 
@@ -105,12 +111,15 @@ export default async (req: Request) => {
   const baseUrl = process.env.GENIUS_PAY_BASE_URL || 'https://pay.genius.ci/api/v1/merchant';
 
   if (!apiKey || !apiSecret) {
+    console.error('[verify-payment] Missing API credentials in env');
     return json({ success: false, error: { code: 'CONFIG_MISSING', message: 'GeniusPay credentials are not configured on the server' } }, 500, origin);
   }
+  console.log('[verify-payment] credentials present, key prefix=', apiKey.slice(0, 8));
 
   const url = new URL(req.url);
   const urlRef = url.searchParams.get('reference') || '';
   const cookieRef = getCookie(req, 'gpRef');
+  console.log('[verify-payment] urlRef=', urlRef, 'cookieRef=', cookieRef);
 
   const candidates: string[] = [];
   if (urlRef && REF_RE.test(urlRef)) candidates.push(urlRef);
