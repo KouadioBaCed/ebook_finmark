@@ -92,10 +92,15 @@ export function formatPriceXof(amount: number): string {
   return new Intl.NumberFormat('fr-FR').format(amount) + ' FCFA';
 }
 
+// On utilise les URLs Netlify Functions directes (/.netlify/functions/…) plutôt que
+// les redirects /api/payment/* — ces derniers se comportaient mal en prod (404).
+const CREATE_URL = '/.netlify/functions/create-payment';
+const VERIFY_URL = '/.netlify/functions/verify-payment';
+
 export async function createCoursePayment(params: CreatePaymentParams): Promise<CreatePaymentResponse> {
   let res: Response;
   try {
-    res = await fetch('/api/payment/create', {
+    res = await fetch(CREATE_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin',
@@ -138,7 +143,7 @@ export async function createCoursePayment(params: CreatePaymentParams): Promise<
 }
 
 export async function verifyCoursePayment(reference: string): Promise<VerifyPaymentResponse> {
-  const res = await fetch(`/api/payment/verify?reference=${encodeURIComponent(reference)}`, {
+  const res = await fetch(`${VERIFY_URL}?reference=${encodeURIComponent(reference)}`, {
     credentials: 'same-origin',
   });
   const data = await res.json().catch(() => null);
