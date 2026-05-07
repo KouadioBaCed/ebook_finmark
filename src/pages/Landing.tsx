@@ -4,6 +4,8 @@ import { PaymentModal } from '../components/PaymentModal';
 import { useAuth } from '../contexts/AuthContext';
 import type { CourseSlug } from '../services/payment';
 
+const PAID_COURSES: Exclude<CourseSlug, 'bundle'>[] = ['dataviz', 'sql', 'kpi', 'python', 'scoring', 'recrutement'];
+
 export function Landing() {
   const { appUser } = useAuth();
   const navigate = useNavigate();
@@ -11,6 +13,20 @@ export function Landing() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [topbarVisible, setTopbarVisible] = useState(true);
   const heroCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const unlocked = new Set(appUser?.unlockedCourses || []);
+  const isUnlocked = (slug: Exclude<CourseSlug, 'bundle'>) => unlocked.has(slug);
+  const isBundleUnlocked = PAID_COURSES.every(s => unlocked.has(s));
+
+  // Pour les boutons "Acheter / Accéder" : ouvre le modal si pas débloqué, sinon va au cours.
+  const handleCourseClick = (slug: Exclude<CourseSlug, 'bundle'>) => {
+    if (isUnlocked(slug)) navigate(`/cours/${slug}`);
+    else setOpenSlug(slug);
+  };
+  const handleBundleClick = () => {
+    if (isBundleUnlocked) navigate('/mon-compte');
+    else setOpenSlug('bundle');
+  };
 
   useEffect(() => {
     const c = heroCanvasRef.current;
@@ -134,7 +150,9 @@ export function Landing() {
           ) : (
             <button className="nav-outline" onClick={() => navigate('/connexion')}>Connexion</button>
           )}
-          <button className="nav-cta" onClick={() => setOpenSlug('bundle')}>Bundle 44 900 FCFA →</button>
+          <button className="nav-cta" onClick={handleBundleClick}>
+            {isBundleUnlocked ? 'Mes formations →' : 'Bundle 44 900 FCFA →'}
+          </button>
         </div>
       </nav>
 
@@ -164,33 +182,33 @@ export function Landing() {
 
           <div>
             <div className="hero-cards">
-              <button className="hpc" onClick={() => setOpenSlug('dataviz')}>
-                <div className="hpc-top"><span className="hpc-tag hpc-tag-g">DataViz</span><div><span className="hpc-price">12 500</span> <span className="hpc-cur">FCFA</span></div></div>
+              <button className="hpc" onClick={() => handleCourseClick('dataviz')}>
+                <div className="hpc-top"><span className="hpc-tag hpc-tag-g">DataViz</span><div>{isUnlocked('dataviz') ? <span className="hpc-cur" style={{ color: '#6ee7b7' }}>✓ Débloqué</span> : <><span className="hpc-price">12 500</span> <span className="hpc-cur">FCFA</span></>}</div></div>
                 <div className="hpc-name">Data Visualisation</div>
                 <div className="hpc-desc">35 graphiques · Simulateur live · Certifiant</div>
               </button>
-              <button className="hpc" onClick={() => setOpenSlug('sql')}>
-                <div className="hpc-top"><span className="hpc-tag hpc-tag-b">SQL</span><div><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></div></div>
+              <button className="hpc" onClick={() => handleCourseClick('sql')}>
+                <div className="hpc-top"><span className="hpc-tag hpc-tag-b">SQL</span><div>{isUnlocked('sql') ? <span className="hpc-cur" style={{ color: '#93c5fd' }}>✓ Débloqué</span> : <><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></>}</div></div>
                 <div className="hpc-name">SQL Professionnel</div>
                 <div className="hpc-desc">18 exercices · DB intégrée · Expert</div>
               </button>
-              <button className="hpc" onClick={() => setOpenSlug('kpi')}>
-                <div className="hpc-top"><span className="hpc-tag hpc-tag-k">KPI</span><div><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></div></div>
+              <button className="hpc" onClick={() => handleCourseClick('kpi')}>
+                <div className="hpc-top"><span className="hpc-tag hpc-tag-k">KPI</span><div>{isUnlocked('kpi') ? <span className="hpc-cur" style={{ color: '#c4b5fd' }}>✓ Débloqué</span> : <><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></>}</div></div>
                 <div className="hpc-name">Maîtriser les KPIs</div>
                 <div className="hpc-desc">10 domaines · 50 KPIs · Dashboard pro</div>
               </button>
-              <button className="hpc" onClick={() => setOpenSlug('python')}>
-                <div className="hpc-top"><span className="hpc-tag hpc-tag-p">Python</span><div><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></div></div>
+              <button className="hpc" onClick={() => handleCourseClick('python')}>
+                <div className="hpc-top"><span className="hpc-tag hpc-tag-p">Python</span><div>{isUnlocked('python') ? <span className="hpc-cur" style={{ color: '#fcd34d' }}>✓ Débloqué</span> : <><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></>}</div></div>
                 <div className="hpc-name">Python Data Analytics</div>
                 <div className="hpc-desc">11 exercices · Pandas · Scikit-learn</div>
               </button>
-              <button className="hpc" onClick={() => setOpenSlug('scoring')}>
-                <div className="hpc-top"><span className="hpc-tag hpc-tag-sc">Scoring</span><div><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></div></div>
+              <button className="hpc" onClick={() => handleCourseClick('scoring')}>
+                <div className="hpc-top"><span className="hpc-tag hpc-tag-sc">Scoring</span><div>{isUnlocked('scoring') ? <span className="hpc-cur" style={{ color: '#a5b4fc' }}>✓ Débloqué</span> : <><span className="hpc-price">12 900</span> <span className="hpc-cur">FCFA</span></>}</div></div>
                 <div className="hpc-name">Scoring & Modèles prédictifs</div>
                 <div className="hpc-desc">15 exemples · 8 algos · Code Python</div>
               </button>
-              <button className="hpc-bundle" onClick={() => setOpenSlug('bundle')}>
-                <div className="hpc-bundle-badge">Meilleure offre</div>
+              <button className="hpc-bundle" onClick={handleBundleClick}>
+                <div className="hpc-bundle-badge">{isBundleUnlocked ? 'Tout débloqué' : 'Meilleure offre'}</div>
                 <div className="hpc-b-name">Bundle 5 formations complètes</div>
                 <div className="hpc-b-row">
                   <div className="hpc-b-price">
@@ -296,7 +314,7 @@ export function Landing() {
                 "QCM 20 questions + certificat personnalisé",
               ]}
               meta={[['7','Chapitres'],['35+','Graphiques'],['6','Exercices'],['∞','Accès']]}
-              price="12 500" onBuy={() => setOpenSlug('dataviz')}
+              price="12 500" unlocked={isUnlocked('dataviz')} onBuy={() => handleCourseClick('dataviz')}
             />
             <FormationCard
               variant="s" tag="SQL Professionnel" sub="SELECT → JOIN → CTE → Window Functions · Expert"
@@ -309,7 +327,7 @@ export function Landing() {
                 "18 éditeurs SQL · 5 tables données réelles · Certificat",
               ]}
               meta={[['9','Chapitres'],['18','Exercices SQL'],['5','Tables DB'],['∞','Accès']]}
-              price="12 900" onBuy={() => setOpenSlug('sql')}
+              price="12 900" unlocked={isUnlocked('sql')} onBuy={() => handleCourseClick('sql')}
             />
             <FormationCard
               variant="k" tag="KPI & Dashboards" sub="Identifier · Calculer · Visualiser · 10 domaines"
@@ -322,7 +340,7 @@ export function Landing() {
                 "Dashboard décisionnel + QCM + certificat personnalisé",
               ]}
               meta={[['8','Chapitres'],['10','Domaines'],['50+','KPIs'],['∞','Accès']]}
-              price="12 900" onBuy={() => setOpenSlug('kpi')}
+              price="12 900" unlocked={isUnlocked('kpi')} onBuy={() => handleCourseClick('kpi')}
             />
           </div>
 
@@ -338,7 +356,7 @@ export function Landing() {
                 "11 éditeurs Python live · Skulpt (zéro installation) · Certificat",
               ]}
               meta={[['9','Chapitres'],['11','Exercices live'],['8','Librairies'],['∞','Accès']]}
-              price="12 900" onBuy={() => setOpenSlug('python')}
+              price="12 900" unlocked={isUnlocked('python')} onBuy={() => handleCourseClick('python')}
             />
             <FormationCard
               variant="sc" isNew tag="Scoring & ML" sub="Crédit · Fraude · Churn · Lead · 8 algorithmes"
@@ -351,7 +369,7 @@ export function Landing() {
                 "QCM 20 questions + certificat personnalisé",
               ]}
               meta={[['7','Chapitres'],['15','Exemples'],['8','Algorithmes'],['∞','Accès']]}
-              price="12 900" onBuy={() => setOpenSlug('scoring')}
+              price="12 900" unlocked={isUnlocked('scoring')} onBuy={() => handleCourseClick('scoring')}
             />
           </div>
         </div>
@@ -385,8 +403,10 @@ export function Landing() {
                   <div className="bperk"><span>✓</span>Données réelles africaines</div>
                 </div>
                 <div className="bundle-cta">
-                  <button className="bundle-btn" onClick={() => setOpenSlug('bundle')}>S'inscrire au bundle — 44 900 FCFA →</button>
-                  <span className="bundle-note">🔒 Paiement sécurisé · Accès immédiat · Accès à vie</span>
+                  <button className="bundle-btn" onClick={handleBundleClick}>
+                    {isBundleUnlocked ? 'Voir mes formations →' : "S'inscrire au bundle — 44 900 FCFA →"}
+                  </button>
+                  <span className="bundle-note">{isBundleUnlocked ? '✅ Toutes les formations débloquées' : '🔒 Paiement sécurisé · Accès immédiat · Accès à vie'}</span>
                 </div>
               </div>
               <div className="bundle-price-col">
@@ -423,8 +443,10 @@ export function Landing() {
                 <li><span>✓</span>Salaires réels marché CI 2025 · Grille de questions d'entretien</li>
                 <li><span>✓</span>Calculateur ROI interactif en FCFA — estimez votre retour en 30 secondes</li>
               </ul>
-              <button className="fc-btn fc-btn-eb" style={{ fontSize: 14, padding: '13px 28px' }} onClick={() => setOpenSlug('recrutement')}>S'inscrire — 12 900 FCFA →</button>
-              <p style={{ fontSize: 11.5, color: 'rgba(255,255,255,.3)', marginTop: 12 }}>🔒 Paiement sécurisé · Accès immédiat · À vie</p>
+              <button className="fc-btn fc-btn-eb" style={{ fontSize: 14, padding: '13px 28px' }} onClick={() => handleCourseClick('recrutement')}>
+                {isUnlocked('recrutement') ? 'Accéder au guide →' : "S'inscrire — 12 900 FCFA →"}
+              </button>
+              <p style={{ fontSize: 11.5, color: 'rgba(255,255,255,.3)', marginTop: 12 }}>{isUnlocked('recrutement') ? '✅ Guide débloqué · Cliquez pour ouvrir' : '🔒 Paiement sécurisé · Accès immédiat · À vie'}</p>
             </div>
             <div className="ebook-price-col">
               <div className="ebook-price-free" style={{ fontSize: 32 }}>12 900 <span style={{ fontSize: 14, color: 'rgba(196,181,253,.6)' }}>FCFA</span></div>
@@ -524,7 +546,9 @@ export function Landing() {
           <h2 className="fcta-title">Prêt à maîtriser<br/><em>la data analytics ?</em></h2>
           <p className="fcta-sub">5 formations · 5 certificats · Éditeurs interactifs intégrés. Commencez aujourd'hui.</p>
           <div className="fcta-btns">
-            <button className="bundle-btn" onClick={() => setOpenSlug('bundle')}>S'inscrire au bundle 5-en-1 — 44 900 FCFA →</button>
+            <button className="bundle-btn" onClick={handleBundleClick}>
+              {isBundleUnlocked ? 'Voir mes formations →' : "S'inscrire au bundle 5-en-1 — 44 900 FCFA →"}
+            </button>
             <button className="btn-hero-ghost" style={{ padding: '15px 24px' }} onClick={() => scrollTo('formations')}>Voir les formations →</button>
           </div>
           <p className="fcta-note">🔒 Paiement sécurisé · 📥 Accès immédiat · ♾ Accès à vie · Certificats personnalisés</p>
@@ -568,6 +592,7 @@ interface FormationCardProps {
   feats: string[];
   meta: [string, string][];
   price: string;
+  unlocked?: boolean;
   onBuy: () => void;
 }
 
@@ -593,12 +618,23 @@ function FormationCard(p: FormationCardProps) {
         </div>
         <div className="fc-buy">
           <div>
-            <div className={`fc-price-main fc-price-${p.variant}`}>{p.price} <span style={{ fontSize: 15, letterSpacing: 0, fontWeight: 600 }}>FCFA</span></div>
-            <div className="fc-price-note">Paiement unique · Accès immédiat</div>
+            {p.unlocked ? (
+              <>
+                <div className={`fc-price-main fc-price-${p.variant}`} style={{ fontSize: 18 }}>✓ Formation débloquée</div>
+                <div className="fc-price-note">Accès à vie · Cliquez pour ouvrir</div>
+              </>
+            ) : (
+              <>
+                <div className={`fc-price-main fc-price-${p.variant}`}>{p.price} <span style={{ fontSize: 15, letterSpacing: 0, fontWeight: 600 }}>FCFA</span></div>
+                <div className="fc-price-note">Paiement unique · Accès immédiat</div>
+              </>
+            )}
           </div>
-          <button className={`fc-btn fc-btn-${p.variant}`} onClick={p.onBuy}>S'inscrire →</button>
+          <button className={`fc-btn fc-btn-${p.variant}`} onClick={p.onBuy}>
+            {p.unlocked ? 'Accéder →' : "S'inscrire →"}
+          </button>
         </div>
-        <div className="fc-dl">🔒 Paiement sécurisé · Accès envoyé instantanément</div>
+        <div className="fc-dl">{p.unlocked ? '✅ Achat validé · Accès illimité' : '🔒 Paiement sécurisé · Accès envoyé instantanément'}</div>
       </div>
     </div>
   );
